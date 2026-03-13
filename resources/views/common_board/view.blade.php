@@ -19,7 +19,7 @@
 			</div>
 
 			<div class="board-content">
-				{!! $item->bd_content !!}
+				{!! str_replace('src="/', 'src="https://samma-erp.com/', $item->bd_content) !!}
 			</div>
 			<ul class="board-attachment">
 				@if(isset($item->files) && $item->files->count() > 0)

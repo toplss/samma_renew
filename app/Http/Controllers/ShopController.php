@@ -746,7 +746,6 @@ class ShopController extends Controller
 
         $it_ids = $request->input('it_id');
 
-
         $od_id = ShopCart::where('it_id', $it_ids[0])->where('mb_code', session('ss_mb_code'))
         ->where('ct_status', '쇼핑')->value('od_id');
 

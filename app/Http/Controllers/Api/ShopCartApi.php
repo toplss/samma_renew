@@ -40,7 +40,7 @@ class ShopCartApi extends Controller
             $it_id = $request->input('it_id');
 
             if (!$member) throw new \Exception("회원정보가 존재하지 않습니다.");
-            
+
 
             /***** 장바구니 검수  *****/
             if ($mode !== 'all_cart_delete' && $mode !== 'cart_delete' && $mode !== 'cart_selected_delete'  && $mode !== 'show') 
@@ -67,6 +67,10 @@ class ShopCartApi extends Controller
                     
                     if (!$it_price || $it_price <= 0) {
                         throw new \RuntimeException("구매할 수 없는 상품입니다.");
+                    }
+
+                    if (trim($member['mb_gubun_type']) == 'employee') {
+                        throw new \Exception("직원 계정은 장바구니 사용이 불가능합니다.");
                     }
                 }
             }

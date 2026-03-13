@@ -186,7 +186,8 @@ if (isset($activeMember['mb_level_type'])) {
                             
                             
                             @if($row['it_soldout'] == '1' || $row['it_force_soldout'] == '10')
-                                <td colspan="2" class="pi-soldout"><span class="txt-red">품절</span></td>
+                                <td class="pi-soldout"><span class="txt-red">품절</span></td>
+                                <td>-</td>
                             @else
                                 <td>{{ $row['ct_qty'] }}</td>
                                 <td>{{ number_format($row['ct_price'] * $row['ct_qty']) }}원</td>
@@ -243,7 +244,8 @@ if (isset($activeMember['mb_level_type'])) {
                             <td class="pi-name">{{ $row['it_name'] }}<span>{{ $row['it_basic'] }}</span></td>
 
                             @if($row['it_soldout'] == '1' || $row['it_force_soldout'] == '10')
-                                <td colspan="2" class="pi-soldout"><span class="txt-red">품절</span></td>
+                                <td class="pi-soldout"><span class="txt-red">품절</span></td>
+                                <td>-</td>
                             @else
                                 <td>{{ $row['ct_qty'] }}</td>
                                 <td>{{ number_format($row['ct_price'] * $row['ct_qty']) }}원</td>

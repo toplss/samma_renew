@@ -91,7 +91,7 @@
             <!-- <span class="show-820">총 0000원</span> -->
               @if($row['it_soldout'] == '1' || $row['it_force_soldout'] == '10')
                 <div class="flex-center">
-                  <span class="txt-red">품절</span>
+                  <span class="ct-soldout">품절</span>
                 </div>
               @else                
               <div class="flex-between">
@@ -503,7 +503,7 @@ function setting_table(data) {
           `;
 
           if(val.it_soldout == '1' || val.it_force_soldout == '10') {
-            tbody_html += `<div class="flex-center"><span class="txt-red">품절</span></div>`;
+            tbody_html += `<div class="flex-center"><span class="ct-soldout">품절</span></div>`;
           }else{
             tbody_html += `
               <div class="flex-between">

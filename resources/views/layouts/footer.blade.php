@@ -662,7 +662,10 @@
 					} else {
 						if (item_sold_out > 0) {
 							confirm_content = `
-							<span style="line-height:2; color:#e02f30; font-weight:bold;">총 ${item_sold_out}개의 상품이 품절입니다.</span>`;
+							장바구니에 담긴 상품을 구매하시겠습니까?
+							<br>
+							<span style="line-height:2; color:#e02f30; font-weight:bold;">총 ${item_sold_out}개의 품절상품은 자동 삭제 됩니다.</span>
+							`;
 
 						} else if (amount_min_use == '1' && total_amount < min_order_amount && mb_sendcost == '1') {
 							confirm_content = `
