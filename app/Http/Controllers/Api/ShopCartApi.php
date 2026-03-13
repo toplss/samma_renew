@@ -291,12 +291,13 @@ class ShopCartApi extends Controller
             ->where('ct_status', '쇼핑')
             ->select($selected)
 
-            // ->orderByRaw('it_force_soldout ASC ')
-            // ->orderByRaw('it_soldout ASC ')
-            // ->orderByRaw('it_storage ASC ')
+            ->orderBy('si.it_force_soldout')
+            ->orderBy('si.it_soldout')
+            ->orderBy('si.it_storage')
+            ->orderBy('g5_shop_cart.ct_id', 'DESC')
 
-            ->orderByRaw('it_soldout = 1 DESC ')
-            ->orderByRaw('ct_id DESC ')
+            // ->orderByRaw('it_soldout = 1 DESC ')
+            // ->orderByRaw('ct_id DESC ')
 
             ->get()->toArray();
             
