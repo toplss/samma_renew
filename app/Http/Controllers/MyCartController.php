@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Redis;
 
 class MyCartController extends Controller
 {
-    //
 
     public function MyCartList(Request $request)
     {
@@ -38,8 +37,8 @@ class MyCartController extends Controller
 
         ->sortBy(function ($item) {
             return [
-                $item['it_force_soldout'],
-                $item['it_soldout'],
+                -$item['it_force_soldout'],
+                -$item['it_soldout'],
                 $item['it_storage']
             ];
         })

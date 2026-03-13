@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>서버 오류</title>
+    <title>페이지 오류</title>
     <style>
         @font-face {
             font-family: 'Pretendard Variable';
@@ -33,12 +33,12 @@
     <div class="error-wrap">
         <div class="error-ballon">
             <img src="{{ asset('images/icon/error.png') }}">
-            <h1>500<span>ERROR</span></h1>
+            <h1>404<span>ERROR</span></h1>
         </div>
 
         <p>
             <img src="{{ asset('images/icon/tool.svg') }}">
-            서버에서 문제가 발생했습니다.<br>잠시 후 다시 시도해주세요.
+            존재하지 않는 페이지 입니다.<br>다시 확인해 주세요.
         </p>
 
         <a href="{{ url('/') }}">홈으로 이동</a>

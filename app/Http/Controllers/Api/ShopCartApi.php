@@ -291,8 +291,8 @@ class ShopCartApi extends Controller
             ->where('ct_status', '쇼핑')
             ->select($selected)
 
-            ->orderBy('si.it_force_soldout')
-            ->orderBy('si.it_soldout')
+            ->orderBy('si.it_force_soldout', 'DESC')
+            ->orderBy('si.it_soldout', 'DESC')
             ->orderBy('si.it_storage')
             ->orderBy('g5_shop_cart.ct_id', 'DESC')
 
@@ -691,7 +691,9 @@ class ShopCartApi extends Controller
         $cartGubun   = [];
         $cart_sold_out = 0 ;
         foreach ($cartArr as $key => $row) {
-            $storage = ($row['it_gubun1'] == '1') ? '1' : '2';   // 창고 기준 키
+            
+            $storage = ($row['it_gubun1'] == '1') ? '1' : '2';   // 창고 기준 키            
+            // $storage = ($row['it_soldout'] == '1' || $row['it_force_soldout'] == '10') ? '0' : $storage;   // 품절상품을 위로 모으기 위해 추가
 
             // 해당 창고 그룹이 없으면 초기화
             if (!isset($cartGubun[$storage])) {
@@ -721,6 +723,7 @@ class ShopCartApi extends Controller
                 'sold_out'          => $cart_sold_out,
                 'deilivery_cost'    => (int) $cost,
                 'header_into'       => $topINfo,
+                'cartList'          => $cartArr
             ],
             'res' => $cartList['res']
         ]);

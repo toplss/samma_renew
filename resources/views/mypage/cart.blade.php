@@ -415,152 +415,141 @@ function checked_del() {
     });
 }
 
+
 function setting_table(data) {
   var items = JSON.parse(JSON.stringify(data));
 
-  if (Object.keys(items.cart_items).length > 0) {
+  if (Object.keys(items.cartList).length > 0) {
 
       let tbody_html = '';
       let img_root   = '/images/item/';
       const activeMember = <?= json_encode($activeMember) ?>;
 
       let index = 0;
-      $.each(items.cart_items, function(e) {
-          var cartList = items.cart_items[e];
-          
-          
-          $.each(cartList, function(i, val) {
-            
-              // tbody_html += '<tr>';
-                tbody_html += `<tr data-it_id="${val.it_id}">`;
+      var cartList = items.cartList;
 
-              index++;
-              let image_url = img_root + val.it_img1;
-              let min_cart_ct_qty = 0;
-              let box_min_qty = 0;
-              let max_cart_ct_qty = 0;
+      $.each(cartList, function(i, val) {
         
-              if (
-                  activeMember &&
-                  activeMember.mb_level &&
-                  activeMember.mb_level.substring(0, 2) === '30' &&
-                  val.agency_it_buy_min_qty > 0
-              ) {
+          // tbody_html += '<tr>';
+            tbody_html += `<tr data-it_id="${val.it_id}">`;
 
-                  min_cart_ct_qty = val.agency_it_buy_min_qty; // 주문최소
-                  box_min_qty = (val.it_gubun === 'pack')
-                      ? val.it_box_sale_pack
-                      : val.it_box_sale_tot; // 박스구매
-                  max_cart_ct_qty = val.agency_it_buy_max_qty; // 최대 구매
+          index++;
+          let image_url = img_root + val.it_img1;
+          let min_cart_ct_qty = 0;
+          let box_min_qty = 0;
+          let max_cart_ct_qty = 0;
+    
+          if (
+              activeMember &&
+              activeMember.mb_level &&
+              activeMember.mb_level.substring(0, 2) === '30' &&
+              val.agency_it_buy_min_qty > 0
+          ) {
 
-              } else {
+              min_cart_ct_qty = val.agency_it_buy_min_qty; // 주문최소
+              box_min_qty = (val.it_gubun === 'pack')
+                  ? val.it_box_sale_pack
+                  : val.it_box_sale_tot; // 박스구매
+              max_cart_ct_qty = val.agency_it_buy_max_qty; // 최대 구매
 
-                  min_cart_ct_qty = val.it_buy_min_qty;
-                  box_min_qty = (val.it_gubun === 'pack')
-                      ? val.it_box_sale_pack
-                      : val.it_box_sale_tot; // 박스구매
-                  max_cart_ct_qty = val.it_buy_max_qty; // 최대 구매
+          } else {
 
-              }
+              min_cart_ct_qty = val.it_buy_min_qty;
+              box_min_qty = (val.it_gubun === 'pack')
+                  ? val.it_box_sale_pack
+                  : val.it_box_sale_tot; // 박스구매
+              max_cart_ct_qty = val.it_buy_max_qty; // 최대 구매
 
-              var tempArr = {'1' : 'room_temp', '3' : 'low_temp', '2' : 'frozen_temp', '4' : ''};
-              var it_id   = val.it_id;
-              var tempClass = (val.it_return_label == '반품가능') ? 'return_o' : 'return_x';
+          }
 
+          var tempArr = {'1' : 'room_temp', '3' : 'low_temp', '2' : 'frozen_temp', '4' : ''};
+          var it_id   = val.it_id;
+          var tempClass = (val.it_return_label == '반품가능') ? 'return_o' : 'return_x';
+
+          tbody_html += `
+          <td class="cart-table-check">
+            <label for="ct_chk_0">
+              <input type="checkbox" name="ct_chk[]" value="${val.it_id}" class="ct_chk">
+            </label>
+          </td>
+          <td class="cart-table-num hide-820">${index}</td>
+          <td class="cart-table-title">
+            <input type="hidden" class="it_gubun" value="${val.it_gubun}" />
+            <input type="hidden" class="it_box_sale_pcs" value="${val.it_box_sale_pcs}" />
+            <input type="hidden" class="it_box_sale_pack" value="${val.it_box_sale_pack}" />
+            <input type="hidden" class="it_box_sale_tot" value="${val.it_box_sale_tot}" />                
+
+            <div>
+                <img src="${image_url}">
+                <h6>
+                  <span class="my_cart_it_name_short">${val.it_name}</span>
+                  <p class="show-820">
+                    <span class="${tempArr[val.it_storage]}">${val.it_storage_label}</span>
+                    <span class="${tempClass}">${val.it_return_label}</span>
+                  </p>
+                </h6>              
+            </div>
+          </td>
+          `;
+        
+          tbody_html += `
+          <td class="cart-table-type hide-820">
+            <span class="${tempArr[val.it_storage]}">${val.it_storage_label}</span>
+            <span class="${tempClass}">${val.it_return_label}</span>
+          </td>
+          <td class="cart-table-price hide-820">${val.ct_price.toLocaleString()}원</td>
+          <td class="cart-table-ea">
+            <span class="show-820">${val.ct_price.toLocaleString()}원</span>
+          `;
+
+          if(val.it_soldout == '1' || val.it_force_soldout == '10') {
+            tbody_html += `<div class="flex-center"><span class="txt-red">품절</span></div>`;
+          }else{
+            tbody_html += `
+              <div class="flex-between">
+                <p class="Qua wish-num">
+                  <input type="hidden" class="min_ct_qty" value="${min_cart_ct_qty}" />
+                  <button type="button" class="sit_qty_minus cart_qty_minus" data-it_id="${it_id}">
+                    <img src="/images/icon/minus.svg">
+                  </button> 
+                  <input type="text" name="" id="ct_qty_${it_id}" value="${val.ct_qty}" class="cart_ct_qty" >
+                  <button type="button" class="sit_qty_plus cart_qty_plus" data-it_id="${it_id}">
+                    <img src="/images/icon/plus.svg">
+                  </button>
+                </p>
+            `;
+          
+            if(val.it_gubun !== 'box') {
               tbody_html += `
-              <td class="cart-table-check">
-                <label for="ct_chk_0">
-                  <input type="checkbox" name="ct_chk[]" value="${val.it_id}" class="ct_chk">
-                </label>
-              </td>
-              <td class="cart-table-num hide-820">${index}</td>
-              <td class="cart-table-title">
-                <input type="hidden" class="it_gubun" value="${val.it_gubun}" />
-                <input type="hidden" class="it_box_sale_pcs" value="${val.it_box_sale_pcs}" />
-                <input type="hidden" class="it_box_sale_pack" value="${val.it_box_sale_pack}" />
-                <input type="hidden" class="it_box_sale_tot" value="${val.it_box_sale_tot}" />                
-
-                <div>
-                    <img src="${image_url}">
-                    <h6>
-                      <span class="my_cart_it_name_short">${val.it_name}</span>
-                      <p class="show-820">
-                        <span class="${tempArr[val.it_storage]}">${val.it_storage_label}</span>
-                        <span class="${tempClass}">${val.it_return_label}</span>
-                      </p>
-                    </h6>              
-                </div>
-              </td>
+                <input type="hidden" class="cart_buy_box_qty" value="${box_min_qty}" />
+                <button id="buy_box_btn" class="btn2" onclick="cartbuy_box_qty(this); return false;">박스구매</button>
               `;
-            
-              tbody_html += `
-              <td class="cart-table-type hide-820">
-                <span class="${tempArr[val.it_storage]}">${val.it_storage_label}</span>
-                <span class="${tempClass}">${val.it_return_label}</span>
-              </td>
-              <td class="cart-table-price hide-820">${val.ct_price.toLocaleString()}원</td>
-              <td class="cart-table-ea">
-                <span class="show-820">${val.ct_price.toLocaleString()}원</span>
-              `;
+            } //박스구매
 
+          } //품절
 
-              if(val.it_soldout == '1' || val.it_force_soldout == '10') {
+          tbody_html += `
+              </div>
+            </td>
+            <td class="hide-820" id="pt_sales_${it_id}">
+          `;
 
-                tbody_html += `<div class="flex-center"><span class="txt-red">품절</span></div>`;
+          if(val.it_soldout == '1' || val.it_force_soldout == '10') {
 
-              }else{
+            tbody_html += `-`;
 
-                tbody_html += `
-                  <div class="flex-between">
-                    <p class="Qua wish-num">
-                      <input type="hidden" class="min_ct_qty" value="${min_cart_ct_qty}" />
-                      <button type="button" class="sit_qty_minus cart_qty_minus" data-it_id="${it_id}">
-                        <img src="/images/icon/minus.svg">
-                      </button> 
-                      <input type="text" name="" id="ct_qty_${it_id}" value="${val.ct_qty}" class="cart_ct_qty" >
-                      <button type="button" class="sit_qty_plus cart_qty_plus" data-it_id="${it_id}">
-                        <img src="/images/icon/plus.svg">
-                      </button>
-                    </p>
-                `;
-              
-                if(val.it_gubun !== 'box') {
-                  tbody_html += `
+          }else{
+            tbody_html += `${val.pt_sales.toLocaleString()}원`;
+          }
 
-                    <input type="hidden" class="cart_buy_box_qty" value="${box_min_qty}" />
-                    <button id="buy_box_btn" class="btn2" onclick="cartbuy_box_qty(this); return false;">박스구매</button>
-                    `;
-                } //박스
-
-              } //품절
-
-
-              tbody_html += `
-                </div>
-              </td>
-              <td class="hide-820" id="pt_sales_${it_id}">
-
-`;
-
-              if(val.it_soldout == '1' || val.it_force_soldout == '10') {
-
-                tbody_html += `-`;
-
-              }else{
-                tbody_html += `${val.pt_sales.toLocaleString()}원`;
-              }
-
-tbody_html += `
-
-
-                
-              </td>
-              <td>
-                <a href="javascript:;" class="sit_delete_btn" data-it_id="${it_id}"><img src="/images/icon/trash.svg"></a>
-              </td>`;
-              tbody_html += '</tr>';
-          });
-      });     
+          tbody_html += `                
+            </td>
+            <td>
+              <a href="javascript:;" class="sit_delete_btn" data-it_id="${it_id}"><img src="/images/icon/trash.svg"></a>
+            </td>
+          `;
+          tbody_html += '</tr>';
+      });
 
       $('.my_cart_tbody').html(tbody_html);
   } else {
@@ -568,6 +557,8 @@ tbody_html += `
   }
 
 }
+
+
 </script>
 
 <script>
