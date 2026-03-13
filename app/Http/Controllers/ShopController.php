@@ -433,6 +433,8 @@ class ShopController extends Controller
 
         $subBanner = app(BannerService::class)->getRecipeSubBanner($member);
 
+// dd($items);
+
         return view('mall.shop.list_gubun_recipe', [
             'items' => $items, 
             'category' => $data, 

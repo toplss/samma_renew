@@ -21,7 +21,7 @@
           <th>제목</th>
           <th class="hide-680">작성자</th>
           <th class="hide-680">작성일</th>
-          <th>조회수</th>
+          <th class="hide-680">조회수</th>
         </tr>
       </thead>
       <tbody>
@@ -31,7 +31,7 @@
           <td class="tit"><span style="color:{{ $row->bd_ext1 }}; cursor:pointer;" >{{ $row->bd_subject }}</span></td>
           <td class="writer hide-680">{{ $row->bd_name }}</td>
           <td class="date hide-680">{{ $row->write_date }}</td>
-          <td class="hit">{{ $row->bd_view_count }}</td>
+          <td class="hit hide-680">{{ $row->bd_view_count }}</td>
         </tr>
         @endforeach
         @if ($items->total() == 0)

@@ -19,6 +19,9 @@ $(function(){
 });
 
 function cart_res(data) {
+
+console.log(data);
+
     var res = data.data;
 
     var img_url = "/images/item/";

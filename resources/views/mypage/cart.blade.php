@@ -32,7 +32,7 @@
 
         $min_cart_ct_qty = $box_min_qty = $max_cart_ct_qty = 0;
 
-        
+// dd($items);
         if(isset($activeMember['mb_level']) && substr($activeMember['mb_level'], 0, 2) == '30' && $row['agency_it_buy_min_qty'] > 0) {
             $min_cart_ct_qty = $row['agency_it_buy_min_qty']; // 주문최소
             $box_min_qty     = ($row['it_gubun'] == 'pack') ? $row['it_box_sale_pack'] : $row['it_box_sale_tot']; // 박스구매
@@ -242,7 +242,7 @@ $(document).ready(function() {
             if (data.status == 'success') {
               cart_res(data);
 
-// console.log(data);
+  // console.log(data);
 
               let item = Object.values(data.data.cart_items).flat().find(v => v.it_id == it_id);
               if(item){
@@ -295,7 +295,7 @@ $(document).ready(function() {
           if (data.status == 'success') {
               cart_res(data);
 
-// console.log(data);
+  // console.log(data);
 
               let item = Object.values(data.data.cart_items).flat().find(v => v.it_id == it_id);
               if(item){
