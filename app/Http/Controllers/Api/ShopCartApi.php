@@ -290,9 +290,14 @@ class ShopCartApi extends Controller
             })
             ->where('ct_status', '쇼핑')
             ->select($selected)
-            ->orderByRaw('it_storage ASC ')
+
+            // ->orderByRaw('it_force_soldout ASC ')
+            // ->orderByRaw('it_soldout ASC ')
+            // ->orderByRaw('it_storage ASC ')
+
             ->orderByRaw('it_soldout = 1 DESC ')
             ->orderByRaw('ct_id DESC ')
+
             ->get()->toArray();
             
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
