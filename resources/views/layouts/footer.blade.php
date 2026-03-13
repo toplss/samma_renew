@@ -717,15 +717,15 @@
 								confirmButtonText: '닫기',
 								focusConfirm: false
 							});
-						} else if (item_sold_out > 0) {
-							Swal.fire({
-								toast : true,
-								title: '<i class="fas fa-solid fa-plus"></i> 품절 알림',
-								html: confirm_content,
-								icon: 'warning',
-								confirmButtonText: '닫기',
-								focusConfirm: false
-							});
+						// } else if (item_sold_out > 0) {
+						// 	Swal.fire({
+						// 		toast : true,
+						// 		title: '<i class="fas fa-solid fa-plus"></i> 품절 알림',
+						// 		html: confirm_content,
+						// 		icon: 'warning',
+						// 		confirmButtonText: '닫기',
+						// 		focusConfirm: false
+						// 	});
 						} else {
 							Swal.fire({
 								title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',

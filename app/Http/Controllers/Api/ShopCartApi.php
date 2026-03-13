@@ -693,14 +693,13 @@ class ShopCartApi extends Controller
         foreach ($cartArr as $key => $row) {
             
             $storage = ($row['it_gubun1'] == '1') ? '1' : '2';   // 창고 기준 키            
-            // $storage = ($row['it_soldout'] == '1' || $row['it_force_soldout'] == '10') ? '0' : $storage;   // 품절상품을 위로 모으기 위해 추가
 
             // 해당 창고 그룹이 없으면 초기화
             if (!isset($cartGubun[$storage])) {
                 $cartGubun[$storage] = [];
             }
 
-            if ($row['it_soldout'] == '1') {
+            if ($row['it_soldout'] == '1' || $row['it_force_soldout'] == '10') {
                 $cart_sold_out++;
             }
 
