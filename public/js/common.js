@@ -138,6 +138,7 @@ $(document).ready(function(){
 
   $('#mSearchBtn').click(function(){
     $('.m-search-modal').show();
+    $('#skeyword2').focus();
   });
   $('.ms-close').click(function(){
     $('.m-search-modal').hide();

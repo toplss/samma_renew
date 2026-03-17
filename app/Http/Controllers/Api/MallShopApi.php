@@ -225,6 +225,29 @@ class MallShopApi extends Controller
     }
 
 
+    public function checkSoldout(Request $request)
+    {
+
+        $od_id = $request->oid;     
+
+// dd($od_id);
+
+        $resDt = app(PaymentService::class)->checkSystemStockAjaxDt($od_id);
+
+
+// dd($resDt);
+
+        return response()->json($resDt);
+
+        // if ($resDt['status'] == 'reject') {
+        //     throw new Exception($resDt['message'], 409);
+        // }    
+
+        // return response()->json([
+        //     'status' => 'success'
+        // ]);        
+
+    }
 
     public function orderdata(Request $request)
     {
@@ -239,7 +262,7 @@ class MallShopApi extends Controller
             $resDt = app(PaymentService::class)->checkSystemStockAjaxDt($od_id);
 
             if ($resDt['status'] == 'reject') {
-                throw new Exception($resDt['message'], 409);
+                return response()->json($resDt);
             }
 
 

@@ -31,6 +31,11 @@ class BuyChargeItemsController extends Controller
      */
     public function ListCharege(Request $request)
     {
+        $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
+        if(substr($member['level_ca_id2'], -1) == '2') {
+            return redirect()->back()->with('info', '충전금 구매 권한이 없습니다.');
+        }
+
         $redis_key_generate = 'shop:buy:charge';
 
         if (Redis::exists($redis_key_generate)) {

@@ -409,6 +409,10 @@ Route::middleware(['refresh.limit'])->group(function () {
             Route::get('/test', [PaymentController::class, 'test']);   // 요청 페이지
 
 
+            // 결재전 품절체크
+            Route::post('checkSoldout', [MallShopApi::class, 'checkSoldout']);
+
+            
             // 결재전 입력정보 저장
             Route::post('orderdata', [MallShopApi::class, 'orderdata']);
 

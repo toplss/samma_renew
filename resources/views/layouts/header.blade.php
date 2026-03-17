@@ -90,10 +90,10 @@
 			@if(session('ss_mb_code'))
 			<ul class="top-money">
 				@if($activeMember['level_ca_id2_name'] == '선불')
-				<li><span>충전금</span>{{ number_format($activeMember['mb_point']) }}원</li>
-				<li><span>적립금</span>{{ number_format($activeMember['mb_point_reserve']) }}원</li>
+				<li onclick="location.href='/mypage/my_point'" style="cursor: pointer;"><span>충전금</span>{{ number_format($activeMember['mb_point']) }}원</li>
+				<li onclick="location.href='/mypage/my_point_reserve'" style="cursor: pointer;"><span>적립금</span>{{ number_format($activeMember['mb_point_reserve']) }}원</li>
 				@endif
-				<li><span class="bond">채권</span>{{ number_format($activeMember['mb_point_balance']) }}원</li>
+				<li onclick="location.href='/mypage/deposit_history'" style="cursor: pointer;"><span class="bond">채권</span>{{ number_format($activeMember['mb_point_balance']) }}원</li>
 				<li>
 					<span>배송요일</span>
 					@if($activeMember['mb_cs_mon'] == 'y')<u class="{{ $activeMember['delivery_info']['ship_date'] == '월' ? 'cs_delivery_on' : 'cs_delivery' }}">월</u>@endif

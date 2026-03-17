@@ -750,8 +750,6 @@ class PaymentService
 
     public function checkSystemStockAjaxDt($oid)
     {
-        $od_group_code = DB::table('g5_shop_order')->where('od_id', $oid)->value('od_group_code');
-
         $cartItems = DB::table('g5_shop_cart')
         ->leftJoin('g5_shop_item', 'g5_shop_cart.it_id', '=', 'g5_shop_item.it_id')
         ->where('ct_status', '쇼핑')
@@ -779,20 +777,19 @@ class PaymentService
 
         $isIssue = false;
         $message = '';
+
         foreach ($cartItems as $key => $row) {
             if ($row['it_qty_system_stock'] <= 0 || $row['it_soldout'] == '1' || $row['it_force_soldout'] == '10') {
 
                 $isIssue = true;
-                $swalTitle = '품절상품이 포함되어 있습니다.';
-
-                $message .= '<span class="txt-red">['.$row['it_name'].']</span> <br>';
-
+                $title = '품절상품이 포함되어 있습니다.';
+                $message .= '<span class="txt-red">'.$row['it_name'].'</span> <br>';
             } 
             
             if ($row['ct_qty_tot'] > $row['it_qty_system_stock']) {
                 
                 $isIssue = true;
-                $swalTitle = '알림';
+                $title = '알림';
 
                 $buyGroup = $this->ProductUnit($row['it_id'], $row['it_qty_'.$row['it_gubun']] * $row['ct_qty']);
                 $stockGroup = $this->ProductUnit($row['it_id'], $row['it_qty_system_stock']);
@@ -809,7 +806,7 @@ class PaymentService
         if ($isIssue === true) {
             $ret = [
                 'iconType' => 'warning',
-                'swalTitle' => $swalTitle,
+                'title' => $title,
                 'status'  => 'reject',
                 'message' => $message
             ];

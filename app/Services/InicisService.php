@@ -294,7 +294,8 @@ class InicisService
 
         return [
             'signature' => $signature,
-            'hashData'  => $hashData
+            'hashData'  => $hashData,
+            'status'    => 'success'
         ];
     }
 }

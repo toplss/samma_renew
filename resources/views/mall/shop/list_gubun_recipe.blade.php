@@ -19,7 +19,7 @@
         {!! $activeSubBanner['mobile'] !!}
       </div>
     </div>
-    {{-- @dd($items); --}}
+    {{-- @dd($items['total']); --}}
     <div class="recipe-list">
       @foreach ($items as $key => $row)
       @php
@@ -48,6 +48,7 @@
         </li>
       </ul>
       @endforeach
+      ##
     </div>
     
     {{ $items->links() }}

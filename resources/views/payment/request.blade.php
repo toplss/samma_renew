@@ -197,9 +197,8 @@ if (isset($activeMember['mb_level_type'])) {
                             <th colspan="3">합계</th>
                             @php
                             $storage_1_total_cnt = collect($orderInfo['cart_items'][1])
-                                ->filter(function($row){
-                                    return $row['it_soldout'] != 1 && $row['it_force_soldout'] != '10';
-                                })
+                                ->where('it_soldout', '!=', 1)
+                                ->where('it_force_soldout', '!=', '10')                                
                                 ->sum(function ($row) {
                                     return $row['ct_qty'];
                                 })                            
@@ -207,9 +206,8 @@ if (isset($activeMember['mb_level_type'])) {
                             <th>{{ $storage_1_total_cnt }}</th>
                             @php
                             $storage_1_total = collect($orderInfo['cart_items'][1])
-                                ->filter(function($row){
-                                    return $row['it_soldout'] != 1 && $row['it_force_soldout'] != '10';
-                                })
+                                ->where('it_soldout', '!=', 1)
+                                ->where('it_force_soldout', '!=', '10')                                                                
                                 ->sum(function ($row) {
                                     return $row['ct_price'] * $row['ct_qty'];
                                 })
@@ -269,9 +267,8 @@ if (isset($activeMember['mb_level_type'])) {
                             <th colspan="3">합계</th>
                             @php
                             $storage_2_total_cnt = collect($orderInfo['cart_items'][2])
-                                ->filter(function($row){
-                                    return $row['it_soldout'] != 1 && $row['it_force_soldout'] != '10';
-                                })
+                                ->where('it_soldout', '!=', 1)
+                                ->where('it_force_soldout', '!=', '10')                                                                
                                 ->sum(function ($row) {
                                     return $row['ct_qty'];
                                 })                            
@@ -279,9 +276,8 @@ if (isset($activeMember['mb_level_type'])) {
                             <th>{{ $storage_2_total_cnt }}</th>
                             @php
                             $storage_2_total = collect($orderInfo['cart_items'][2])
-                                ->filter(function($row){
-                                    return $row['it_soldout'] != 1 && $row['it_force_soldout'] != '10';
-                                })
+                                ->where('it_soldout', '!=', 1)
+                                ->where('it_force_soldout', '!=', '10')                                                                
                                 ->sum(function ($row) {
                                     return $row['ct_price'] * $row['ct_qty'];
                                 })
@@ -699,22 +695,22 @@ function requestPay() {
             return false;
     }
 
-    $.get({
-        url  : '/payment/refresh',
+    //품절체크    
+    if (is_mobile == '1') {
+        od_id = $('input[name="P_OID"]').val();
+    } else {
+        od_id = $('input[name="oid"]').val();
+    }    
+
+    $.post({
+        url  : '/payment/checkSoldout',
         data : {
-            od_id : $('input[name="od_id"]').val(),
-            price : $('input[name="payable"]').val(),
-            is_mobile : is_mobile,
-            timestamp : $('input[name="paytimestamp"]').val(),
-        },
-        dataType : 'JSON'
-    }).done(function(res) {
+            oid : od_id,
+        }
+    })
+    .done(function (res) {
+
         if (res.status == 'success') {
-            if (is_mobile == '1') {
-                $('input[name="P_CHKFAKE"]').val(res.hashData);
-            } else {
-                $('input[name="signature"]').val(res.signature);
-            }
 
             Swal.fire({
                 title: title,
@@ -725,28 +721,54 @@ function requestPay() {
                 cancelButtonText: '취소'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    payment_act()
+
+                    $.get({
+                        url  : '/payment/refresh',
+                        data : {
+                            od_id : $('input[name="od_id"]').val(),
+                            price : $('input[name="payable"]').val(),
+                            is_mobile : is_mobile,
+                            timestamp : $('input[name="paytimestamp"]').val(),
+                        },
+                        dataType : 'JSON'
+                    }).done(function(res) {
+
+                        if (res.status == 'success') {
+                            if (is_mobile == '1') {
+                                $('input[name="P_CHKFAKE"]').val(res.hashData);
+                            } else {
+                                $('input[name="signature"]').val(res.signature);
+                            }
+
+                            payment_act()
+
+                        } else if (res.status == 'logout') {
+
+                            validationAlertMessage('로그인 후 이용해주세요.','/');
+
+                        } else {
+                            validationAlertMessage('결제 대행사의 통신장애가 발생하였습니다.');
+                        }
+
+                    });
+
+
                 }
-            });            
+            });
+
+            
         } else {
-            Swal.fire({
-                title: res.swalTitle,
-                html: res.message,
-                icon: res.iconType,
-                showCancelButton: false,
-                confirmButtonText: '확인',
-                cancelButtonText: '취소'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    location.href = '/mypage/cart';
-                }
-            }); 
+            CustomizingAlertMessage(res.title, res.message, '/mypage/cart');
+            return false;
         }
-    });
+
+    })    
+    
+
 }
 
 function payment_act() {
-    const od_settle_case = $('input[name="od_settle_case"]:checked').val();
+    let od_settle_case = $('input[name="od_settle_case"]:checked').val();
     const payment_type = $('input[name="payment_type"]').val();
     const payable = $('input[name="payable"]').val();
 
@@ -765,6 +787,7 @@ function payment_act() {
             return false;
     }
 
+
     if (od_settle_case == '신용카드' || od_settle_case == 'PG사가상계좌') {
         if (od_settle_case == '신용카드') {
             $('input[name="gopaymethod"]').val('Card');
@@ -772,7 +795,8 @@ function payment_act() {
         if (od_settle_case == 'PG사가상계좌') {
             $('input[name="gopaymethod"]').val('VBank');
         }
-        
+
+
         const data = {};
         $('#payForm').serializeArray().forEach(function (item) {
             data[item.name] = item.value;
@@ -787,6 +811,7 @@ function payment_act() {
             od_id = $('input[name="oid"]').val();
         }
 
+
         $.post({
             url  : '/payment/orderdata',
             data : {
@@ -795,6 +820,7 @@ function payment_act() {
             }
         })
         .done(function (res) {
+
             if (res.status == 'success') {
                 if (is_mobile == '1') {
                     $('#payForm')
@@ -805,6 +831,8 @@ function payment_act() {
                 } else {
                     INIStdPay.pay('payForm');
                 }
+            }else if (res.status == 'reject') {
+                CustomizingAlertMessage(res.title, res.message, '/mypage/cart')
             } else {
                 validationAlertMessage(res.message);
             }
@@ -831,6 +859,21 @@ function validationAlertMessage(message)  {
       title: '알림',
       html: message,
       confirmButtonText: '확인'
+  });
+}
+
+
+function CustomizingAlertMessage(title, message, redirectUrl = null) {
+  Swal.fire({
+      toast: false,
+      icon: 'warning',
+      title: title,
+      html: message,
+      confirmButtonText: '확인'
+  }).then((result) => {
+      if (result.isConfirmed && redirectUrl) {
+          window.location.href = redirectUrl;
+      }
   });
 }
 
