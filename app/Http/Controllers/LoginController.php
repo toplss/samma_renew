@@ -130,6 +130,7 @@ class LoginController extends Controller
             'login_date'    => time()
         ]);
 
+
         // 중복 로그인 허용 여부에 따라 session_id 저장
         if ($user->mb_duple_login_use == 'N') {
             

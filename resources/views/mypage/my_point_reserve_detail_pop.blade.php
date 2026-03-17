@@ -36,9 +36,7 @@
 <body>
 
     <div class="point-pop">
-
         <h6>적립금 상세내역</h6>
-
         <div class="pp-table">
             <table>
                 <tr>
@@ -62,9 +60,31 @@
                         <td>-</td>
                         <td>{{ number_format($change_point) }}원</td>
                     </tr>
+                @elseif ($po_action == 'pt_incentive')
+                    <tr>
+                        <td class="bg">장려금</td>
+                        <td class="h40">장려금</td>
+                        <td>-</td>
+                        <td>{{ number_format($change_point) }}원</td>
+                    </tr>
+                @elseif ($po_action == 'pt_dc')
+                    <tr>
+                        <td class="bg">DC</td>
+                        <td class="h40">DC</td>
+                        <td>-</td>
+                        <td>{{ number_format($change_point) }}원</td>
+                    </tr>                    
+                @elseif ($po_action == 'modify')
+                    <tr>
+                        <td class="bg">잔액</td>
+                        <td class="h40">잔액</td>
+                        <td>-</td>
+                        <td>{{ number_format($change_point) }}원</td>
+                    </tr>
                 @else
                     @foreach($groups as $ct_cate => $rows)
                         @php
+
                             //납품은 주문으로 표기 변경
                             if ($ct_cate == '납품') {
                                 $ct_cate = '주문';
@@ -72,6 +92,43 @@
                             } else {
                                 $list = $rows->take(3);
                             }
+
+                            /*-------------------------------------------------------
+                            // 장려금, DC 등이 포함되면 ct_cate 정보가 없어 별도처리 START
+                            -------------------------------------------------------*/
+                            if ($ct_cate == '') {   
+                                $ct_cate_label = ['pt_reserve' => '주문', 'pt_incentive' => '장려금', 'pt_dc' => 'DC'];
+                                $comment = ['pt_reserve' => '적립금 사용', 'pt_incentive' => '장려금', 'pt_dc' => 'DC'];
+                                $arr_po_action = explode('|', $po_action);
+                                $row = $rows->first();
+
+                                $html = '';
+                                foreach ($arr_po_action as $key => $value) {
+
+                                    if($mode == 'increase' && $value == 'pt_reserve'){
+                                        continue;
+                                    }
+
+                                    if($mode == 'decrease' && ($value == 'pt_incentive' || $value == 'pt_dc')){
+                                        continue;
+                                    }
+
+                                    $html .= '<tr>
+                                                <td class="bg">'. $ct_cate_label[$value] .'</td>
+                                                <td class="h40">'. $comment[$value] .'</td>
+                                                <td>-</td>
+                                                <td>'. $row->{$value} .'원</td>
+                                            </tr>';
+                                }
+
+                                echo $html;
+                                continue;
+
+                            }
+
+                            /*-------------------------------------------------------
+                            // 장려금, DC 등이 포함되면 ct_cate 정보가 없어 별도처리 END
+                            -------------------------------------------------------*/
 
                             //취소는 주문취소로 표기 변경
                             if ($ct_cate == '취소') {
@@ -86,7 +143,6 @@
                             if ($ct_cate == '반품채권') {
                                 $ct_cate = '반품입금';
                             }
-
                             
                             $rowspan = $list->count() + ($rows->count() > 3 ? 1 : 0);
                         @endphp
@@ -135,7 +191,6 @@
             </table>
         </div>
     </div>
-
 
 </body>
 </html>

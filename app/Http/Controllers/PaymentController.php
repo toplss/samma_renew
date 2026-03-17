@@ -146,11 +146,19 @@ class PaymentController extends Controller
             $goodname = $firstName;
         }
 
-        // 주문번호로 총 결제금액 조회
-        $total = DB::table('g5_shop_cart')
-        ->where('od_id', $orderNo)
-        ->selectRaw('SUM(ct_price * ct_qty) as total')
-        ->value('total');
+        // 주문번호로 총 결제금액 조회 ( 품절상품 제외 )
+
+        // $total = DB::table('g5_shop_cart')
+        // ->where('od_id', $orderNo)
+        // ->selectRaw('SUM(ct_price * ct_qty) as total')
+        // ->value('total');
+
+        $total = DB::table('g5_shop_cart as sc')
+            ->leftJoin('g5_shop_item as si', 'sc.it_id', '=', 'si.it_id')
+            ->where('sc.od_id', $orderNo)
+            ->where('si.it_soldout', '<>', 1)
+            ->where('si.it_force_soldout', '<>', 10)
+            ->sum(DB::raw('sc.ct_price * sc.ct_qty'));        
 
         if ($total <= 0) {
             return redirect()->route('/')->with('error', '주문금액이 올바르지 않습니다.');
@@ -391,6 +399,10 @@ class PaymentController extends Controller
 
         $dt['status']  = $ret['status'];
         $dt['message'] = $ret['message'];
+
+        //알림창 커스터마이징 추가
+        $dt['iconType'] = $ret['iconType']  ?? null;
+        $dt['swalTitle']    = $ret['swalTitle']     ?? null;
 
         return response()->json($dt);
     }

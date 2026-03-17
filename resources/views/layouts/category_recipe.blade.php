@@ -11,13 +11,17 @@
                 <a href="?opt={{ substr($row['category']['ca_id'], 0, 2) }}&opt2={{ $row['category']['ca_id'] }}" class="{{ request('opt2') == $row['category']['ca_id'] ? 'on' : '' }}">{{ $row['category']['ca_name'] }}</a>
                 @if (request('opt2') == $row['category']['ca_id'])
                 <ul class="cate-r-ul">
-                    @foreach($row['category']['sub_category'] as $ckey => $crow)
-                    <li>
-                        <a href="?opt={{ substr($row['category']['ca_id'], 0, 2) }}&opt2={{ $row['category']['ca_id'] }}&opt3={{ $crow['ca_id'] }}">
-                            {{ $crow['ca_name'] }}({{ $crow['cnt'] ?? 0 }})
-                        </a>
-                    </li>
-                    @endforeach
+
+                    @if(isset($row['category']['sub_category']))
+                        @foreach($row['category']['sub_category'] as $ckey => $crow)
+                        <li>
+                            <a href="?opt={{ substr($row['category']['ca_id'], 0, 2) }}&opt2={{ $row['category']['ca_id'] }}&opt3={{ $crow['ca_id'] }}">
+                                {{ $crow['ca_name'] }}({{ $crow['cnt'] ?? 0 }})
+                            </a>
+                        </li>
+                        @endforeach
+                    @endif
+
                 </ul>
                 @endif
             </li>
@@ -96,8 +100,8 @@ function choiceRecipe() {
 
     if (checked.length == 0) {
         Swal.fire({
-            toast: true,
-            icon: 'error',
+            toast: false,
+            icon: 'warning',
             title: '선택된 레시피가 존재하지 않습니다.',
             confirmButtonText: '확인'
         });
@@ -156,9 +160,9 @@ function searchKeywordRecipe() {
 	var frm = $('#recipe_search_frm')[0];
 	if (!$('#recipe_skeyword').val().trim()) {
 		swal.fire({
-			toast: true,
-      icon: 'error',
-      title: '입력 오류',
+			toast: false,
+      icon: 'warning',
+      title: '알림',
       html: '검색 키워드를 입력하세요',
       confirmButtonText: '확인'
 		});

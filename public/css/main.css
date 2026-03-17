@@ -93,11 +93,9 @@ main{margin: 0.5rem auto;}
 
 .sale-item-tab{display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; position: relative; text-align: center;}
 .sale-item-tab:after{content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px; background-color: #8ec251;}
-.sale-item-tab li{background-color: #fff; color: #8ec251; font-weight: 500; border-radius: 0.5rem 0.5rem 0 0; padding: 0.5rem 0.8rem; cursor: pointer; background-color: #f0f7ea; min-height: 32px;}
-.sale-item-tab li img{width: 1.2rem; display: none; vertical-align: top; margin-left: 1px;}
+.sale-item-tab li{background-color: #fff; color: #8ec251; font-weight: 500; border-radius: 0.5rem 0.5rem 0 0; padding: 0.5rem; cursor: pointer; background-color: #f0f7ea; min-height: 25px; white-space: nowrap;}
 .sale-item-tab li:hover{background-color: #e9f3e1;}
 .sale-item-tab li.active{background-color: #8ec251; border: 1px solid #8ec251; color: #fff; z-index: 2;}
-.sale-item-tab li.active img{display: inline-block;}
 .sale-item-slide{overflow: hidden; visibility: hidden; opacity: 0; height: 0;}
 .sale-item-slide.slick-initialized {visibility: visible;}
 .sale-item-slide .slick-track{display:flex;margin:0.5rem 0;}
@@ -203,6 +201,8 @@ main{margin: 0.5rem auto;}
   #mc8,#mc9{grid-column: 1 / span 10; padding: 0.6rem;}
   #mc1 ul li:nth-of-type(n+4){display: none;}
   #mc3 ul li:nth-of-type(n+5){display: none;}
+
+  .sale-item-tab li{padding: 0.5rem 0.1rem; min-height: auto;}
 
   .sale-item-list{padding: 0.4rem;}
   .sale-item-list ul{gap: 0.1rem;}

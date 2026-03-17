@@ -119,7 +119,7 @@ function Sendit_chk() {
 
 function validationAlertMessage(message)  {
   Swal.fire({
-      toast: true,
+      toast: false,
       icon: 'warning',
       title: '알림',
       html: message,

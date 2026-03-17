@@ -20,8 +20,6 @@
         <col style="width:22%;">
         <col style="width:22%;">
         <col style="width:22%;">
-        {{-- <col style="width:auto;"> --}}
-
       </colgroup>
       <thead>
         <tr>
@@ -30,12 +28,11 @@
           <th>구분</th>
           <th>적립</th>
           <th>사용</th>
-          {{-- <th>충전금잔액</th> --}}
         </tr>
       </thead>
       <tbody>
 
-        @foreach($items as $key => $row)
+        @foreach($items['data'] as $key => $row)
           @php
             if ($row->od_delivery_step == 8) {  //잔액조정
               $gubun = '잔액';
@@ -46,8 +43,6 @@
             }
 
             $arr_po_action = [
-              "od_use"=>"주문",
-              "od_cancel"=>"주문취소",
               "pt_charge"=>"주문",
               "pt_buy_charge"=>"충전",
               ];
@@ -57,30 +52,12 @@
           @endphp
         <tr>
           <td class="hide-820">{{ $items->firstItem() + $key }}</td>
-          <td>{{ \Carbon\Carbon::parse($row->reg_date)->format('y/m/d') }}</td>
+          <td>{{ \Carbon\Carbon::parse($row->od_delivery_date)->format('y/m/d') }}</td>
           <td>{{ $po_action }} {{ $gubun }}</td>
           <td class="{{ ($gubun == '적립' or $gubun == '잔액') ? 'txt-red' : '' }}">{{ ($gubun == '적립' or $gubun == '잔액') ? number_format($row->change_point) . '원' : '-' }}</td>
           <td class="{{ ($gubun == '사용') ? 'txt-blue' : '' }}">{{ ($gubun == '사용') ? number_format($row->change_point) . '원' : '-' }}</td>
-          {{-- <td>{{ number_format($row->current_point) }}원</td> --}}
         </tr>
         @endforeach
-
-        <!-- 이월 -->
-        {{-- @if($items->total() > 0)
-        <tr class="txt-bold" style="background-color:#f5f5f5;">
-          <td class="hide-820"></td>
-          <td>이월</td>
-          <td colspan="3"></td>
-          <td>
-            @if($carry_balance > 0)
-                {{ number_format($carry_balance) }}원
-            @else
-                -
-            @endif            
-          </td>
-        </tr>
-        @endif --}}
-
 
         <!-- 없을때 -->
         @if($items->total() < 1)

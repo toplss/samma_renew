@@ -115,7 +115,8 @@ if (!rememberMe.checked) {
 @if(request()->has('msg'))
 <script>
 	Swal.fire({
-		toast: true,
+		toast: false,
+		icon: 'info',
         title: '알림',
         text: "{{ request()->get('msg') }}",
         confirmButtonText: '확인'
@@ -127,8 +128,9 @@ if (!rememberMe.checked) {
 @if(session('login'))
 <script>
 	Swal.fire({
-		toast: true,
-        title: '오류',
+		toast: false,
+		icon: 'info',
+        title: '알림',
         text: "{{ session('login') }}",
         confirmButtonText: '확인'
     });
@@ -138,8 +140,9 @@ if (!rememberMe.checked) {
 @if(session('error'))
 <script>
 	Swal.fire({
-		toast: true,
-        title: '오류',
+		toast: false,
+		icon: 'warning',
+        title: '알림',
         text: "{{ session('error') }}",
         confirmButtonText: '확인'
     });
@@ -150,7 +153,8 @@ if (!rememberMe.checked) {
 @if(session('info'))
 <script>
 	Swal.fire({
-		toast: true,
+		toast: false,
+		icon: 'info',
         title: '알림',
         text: "{{ session('info') }}",
         confirmButtonText: '확인'
@@ -162,7 +166,8 @@ if (!rememberMe.checked) {
 @if(session('success'))
 <script>
 	Swal.fire({
-		toast: true,
+		toast: false,
+		icon: 'info',
         title: '성공',
         text: "{{ session('success') }}",
         confirmButtonText: '확인'

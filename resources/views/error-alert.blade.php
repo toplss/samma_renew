@@ -38,9 +38,9 @@
 <script>
     const message = {!! json_encode(session('error')) !!};
     Swal.fire({
-		toast: true,
+		toast: false,
         icon: 'info',
-        title: '오류',
+        title: '알림',
         html: message,
         confirmButtonText: '확인'
     });
@@ -51,7 +51,7 @@
 <script>
     const message = {!! json_encode(session('success')) !!};
     Swal.fire({
-		toast: true,
+		toast: false,
         icon: 'success',
         title: '성공',
         html: message,
@@ -64,7 +64,7 @@
 <script>
     const message = {!! json_encode(session('info')) !!};
     Swal.fire({
-		toast: true,
+		toast: false,
         icon: 'info',
         title: '알림',
         html: message,
@@ -78,7 +78,7 @@
     const errorHtml = {!! json_encode(implode('<br>', $errors->all())) !!};
 
     Swal.fire({
-		toast: true,
+		toast: false,
         icon: 'info',
         title: '입력 오류',
         html: errorHtml,

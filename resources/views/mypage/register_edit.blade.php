@@ -523,6 +523,7 @@
 
 
     Swal.fire({
+        toast: false,
         title: '회원정보 수정',
         text: '회원정보를 수정 하시겠습니까?',
         icon: 'question',
@@ -541,7 +542,7 @@
 
   function validationAlertMessage(message)  {
     Swal.fire({
-        toast: true,
+        toast: false,
         icon: 'warning',
         title: '알림',
         html: message,

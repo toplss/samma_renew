@@ -296,7 +296,7 @@
     
     if (!getCookie('joinAgree')) {
       Swal.fire({
-        toast: true,
+        toast: false,
         icon: 'warning',
         title: '알림',
         text: '가입약관 동의가 필요합니다.',
@@ -982,6 +982,7 @@
       }
 
       Swal.fire({
+          toast: false,
           title: '회원가입',
           text: '회원가입을 완료하시겠습니까?',
           icon: 'question',
@@ -1000,7 +1001,7 @@
 
   function validationAlertMessage(message, callback = null) {
     Swal.fire({
-      toast: true,
+      toast: false,
       icon: 'warning',
       title: '알림',
       html: message,

@@ -103,7 +103,7 @@ class BannerService
         $redis_key_generate = 'menu_banner';
 
         $menu_banners = [];
-        
+
         if (Redis::exists($redis_key_generate)) {
             
             $menu_banners = $this->getReids($redis_key_generate);
@@ -155,8 +155,6 @@ class BannerService
                 'renew_menu_event'
             );
             
-            $menu_banners['recipe_menu'] = $this->getRecipeSubCategory($member);
-
 
             $menu_banners['all_menu_sub_category'] = $this->getAllMenuSubCategory();
 
@@ -164,10 +162,8 @@ class BannerService
             $this->setRedis($redis_key_generate, $menu_banners);
         }
 
-
-
+        $menu_banners['recipe_menu'] = $this->getRecipeSubCategory($member);
         $menu_banners['chain_menu'] = $this->getChainSubCategoryList($member);
-
 
         return $menu_banners;
     }
@@ -256,6 +252,8 @@ class BannerService
                 'rec.opt2',
                 'rec.opt2_name',
                 'rec_ct.ca_img1 as img1',
+                'rec_ct.ca_id',
+                'rec_ct.ca_order',
                 DB::raw('MAX(rec.rank_order) as rank_order')
             )
             ->where('rec.state', 2)
@@ -263,6 +261,8 @@ class BannerService
             ->whereRaw('LENGTH(rec_ct.ca_id) = 4')
             ->where('rec_ct.ca_use', 1)
             ->groupBy('rec.opt2')
+            ->orderBy('rec_ct.ca_order')
+            ->orderBy('rec_ct.ca_id')
             ->get()
             ->map(function($item){
                 return (array) $item;  // stdClass → 연관 배열
@@ -420,10 +420,9 @@ class BannerService
 
 
 
-    public function getRecipeSubBanner($member)
+    public function getRecipeSubBanner($member, $request)
     {
         $data = ['pc' => '', 'mobile' => ''];
-
 
         if ($member) {
             if(substr($member['mb_level'],0,2) >= '70' && substr($member['mb_level'],0,2) <= '90' || $member['mb_launching'] == '10') { // 에스엠
@@ -435,7 +434,8 @@ class BannerService
             } else {
                 $banner_opt = "";
             }
-    
+
+            $banner_opt2 = $request->input('opt2', '');
             
             $res = DB::table('tb_banner')
             ->where('group_id', 'shop_recipe')
@@ -444,6 +444,9 @@ class BannerService
             ->whereRaw('date_end >= now()')
             ->when($banner_opt, function($query) use ($banner_opt) {
                 $query->where('ca_id', $banner_opt);
+            })
+            ->when($banner_opt2, function($query) use ($banner_opt2) {
+                $query->where('ca_id2', $banner_opt2);
             })
             ->select('idx', 'banner_url', 'link_type', 'view_count', 'banner_name', 'banner_img1', 'ca_id')
             ->orderBy('rank_order', 'asc')
@@ -454,7 +457,6 @@ class BannerService
                 $data['pc'] = '<img src="'.asset('images/common_data/banner/'.$row->banner_img1).'" alt="'.$row->banner_name.'" >';
             }
 
-
             $res = DB::table('tb_banner')
             ->where('group_id', 'm_shop_recipe')
             ->where('banner_display', 'Y')
@@ -463,6 +465,9 @@ class BannerService
             ->when($banner_opt, function($query) use ($banner_opt) {
                 $query->where('ca_id', $banner_opt);
             })
+            ->when($banner_opt2, function($query) use ($banner_opt2) {
+                $query->where('ca_id2', $banner_opt2);
+            })            
             ->select('idx', 'banner_url', 'link_type', 'view_count', 'banner_name', 'banner_img1', 'ca_id')
             ->orderBy('rank_order', 'asc')
             ->limit(1)

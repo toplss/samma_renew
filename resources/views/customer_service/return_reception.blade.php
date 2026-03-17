@@ -340,7 +340,7 @@ function select_item(key,returnYN,ctID) {
 function delete_item(key) {
 
   Swal.fire({
-    toast: true,
+    toast: false,
     icon: 'warning',
     title: '신청 취소',
     html: '선택하신 상품의 반품 접수를<br>취소하시겠습니까?<br>',
@@ -371,7 +371,7 @@ function delete_item(key) {
     }
 
     Swal.fire({
-      toast: true,
+      toast: false,
       icon: 'success',
       title: '신청이 취소되었습니다',
       timer: 1500,
@@ -410,7 +410,7 @@ function cancel_all_items() {
   }
 
   Swal.fire({
-    toast: true,
+    toast: false,
     icon: 'warning',
     title: '전체 취소',
     html: '접수한 반품 상품을 모두 취소할까요?',
@@ -429,7 +429,7 @@ function cancel_all_items() {
     $('.complete_list').addClass('hide');
 
     Swal.fire({
-      toast: true,
+      toast: false,
       icon: 'success',
       title: '모든 반품 접수가 취소되었습니다.',
       timer: 1500,
@@ -500,7 +500,7 @@ function chkform_return_reception() {
 
 function validationAlertMessage(message)  {
   Swal.fire({
-      toast: true,
+      toast: false,
       icon: 'warning',
       title: '알림',
       html: message,

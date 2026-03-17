@@ -455,6 +455,7 @@ function orderCancel(e) {
 
   if (e == 'all') {
     Swal.fire({
+      toast: false,
       title: '주문 취소',
       html: '주문을 취소하시겠습니까?',
       icon: 'question',
@@ -485,6 +486,7 @@ function orderCancel(e) {
         }
 
         Swal.fire({
+          toast: false,
           title: '주문 취소 후 처리 방법',
           html: message,
           icon: 'warning',
@@ -503,6 +505,7 @@ function orderCancel(e) {
             }).done(function(res) {
               if (res.status === 'success') {
                   Swal.fire({
+                      toast: false,
                       title: '알림',
                       icon: 'success',
                       html: '주문이 취소되었습니다.',
@@ -537,6 +540,7 @@ function orderCancel(e) {
             }).done(function(res) {
               if (res.status === 'success') {
                   Swal.fire({
+                      toast: false,
                       title: '알림',
                       icon: 'success',
                       html: '주문이 취소되었습니다.',
@@ -570,7 +574,7 @@ function orderCancel(e) {
 
 function validationAlertMessage(message)  {
   Swal.fire({
-      toast: true,
+      toast: false,
       icon: 'warning',
       title: '알림',
       html: message,

@@ -114,8 +114,8 @@ if (!rememberMe.checked) {
 @if(session('login'))
 <script>
 	Swal.fire({
-		toast: true,
-        title: '오류',
+		toast: false,
+        title: '알림',
         text: "{{ session('login') }}",
         confirmButtonText: '확인'
     });
@@ -125,8 +125,8 @@ if (!rememberMe.checked) {
 @if(session('error'))
 <script>
 	Swal.fire({
-		toast: true,
-        title: '오류',
+		toast: false,
+        title: '알림',
         text: "{{ session('error') }}",
         confirmButtonText: '확인'
     });
@@ -136,7 +136,7 @@ if (!rememberMe.checked) {
 @if(session('success'))
 <script>
 	Swal.fire({
-		toast: true,
+		toast: false,
         title: '성공',
         text: "{{ session('success') }}",
         confirmButtonText: '확인'

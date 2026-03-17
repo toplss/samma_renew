@@ -142,7 +142,7 @@
 				<button type="button" class="btn2" onclick="logoutBtn()">로그아웃</button>
 				<button type="button" class="btn3" onclick="location.href = '/mypage/cart';">
 					장바구니
-					<u class="top_cart_cnt">0</u>
+					<u class="top_cart_cnt">{{ $activeMyPageTop['cart_cnt'] ?? 0}}</u>
 				</button>
 				@else
 				<button type="button" class="btn2" onclick="location.href = '/customer_service/alliance?gubun=alliance';">제휴문의</button>
@@ -233,8 +233,8 @@
 		</div>
 		<div class="flex">
 			@if($activeMember['level_ca_id2_name'] == '선불')
-			<p>적립금: <b class="txt-blue">{{ number_format($activeMember['mb_point_reserve']) }}</b>원</p>
 			<p>충전금: <b class="txt-blue">{{ number_format($activeMember['mb_point']) }}</b>원</p>
+			<p>적립금: <b class="txt-blue">{{ number_format($activeMember['mb_point_reserve']) }}</b>원</p>
 			@endif
 			<!-- <p>채권: <b class="txt-blue">{{ number_format($activeMember['mb_point_balance']) }}</b>원</p> -->
 		</div>
@@ -407,9 +407,9 @@ function searchKeywordMobile() {
 	var frm = $('#seach_frm2')[0];
 	if (!$('#skeyword2').val().trim()) {
 		swal.fire({
-			toast: true,
-      icon: 'error',
-      title: '입력 오류',
+			toast : false,
+      icon: 'warning',
+      title: '알림',
       html: '검색 키워드를 입력하세요',
       confirmButtonText: '확인'
 		});

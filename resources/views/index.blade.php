@@ -20,9 +20,9 @@
   
   <div class="main-container" id="mc8">
     <ul class="sale-item-tab">
-      <li class="active" data-tab="si1">초특가상품<img src="{{ asset('images/icon/fire.svg') }}"></li>
-      <li data-tab="si2">비바쿡 할인상품<img src="{{ asset('images/icon/fire.svg') }}"></li>
-      <li data-tab="si3">마이그랑 할인상품<img src="{{ asset('images/icon/fire.svg') }}"></li>
+      <li class="active" data-tab="si1">초특가상품</li>
+      <li data-tab="si2">비바쿡 할인상품</li>
+      <li data-tab="si3">마이그랑 할인상품</li>
     </ul>
 
     <!-- 초특가상품 -->
@@ -105,9 +105,9 @@
   
   <div class="main-container" id="mc9">
     <ul class="sale-item-tab">
-      <li class="active" data-tab="si4">지난주 베스트<img src="{{ asset('images/icon/fire.svg') }}"></li>
-      <li data-tab="si5">이번주 추천상품<img src="{{ asset('images/icon/fire.svg') }}"></li>
-      <li data-tab="si6">출시 예정 상품<img src="{{ asset('images/icon/fire.svg') }}"></li>
+      <li class="active" data-tab="si4">지난주 베스트</li>
+      <li data-tab="si5">이번주 추천상품</li>
+      <li data-tab="si6">출시 예정 상품</li>
     </ul>
 
     <!-- 지난주 베스트 -->

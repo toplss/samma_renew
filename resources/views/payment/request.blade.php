@@ -86,9 +86,6 @@ if (isset($activeMember['mb_level_type'])) {
         <!-- 그외 처리후 금액 -->
         <input type="hidden" name="payable" id="payable" value="{{ $price }}">
 
-
-        
-
         <div class="pay-wrap">
             <h4>배송 정보</h4>
             <table class="pay-delivery-table">
@@ -198,11 +195,24 @@ if (isset($activeMember['mb_level_type'])) {
                     <tfoot>
                         <tr>
                             <th colspan="3">합계</th>
-                            <th>{{ collect($orderInfo['cart_items'][1])->sum('ct_qty') }}</th>
                             @php
-                            $storage_1_total = collect($orderInfo['cart_items'][1])->sum(function ($row) {
-                                return $row['ct_price'] * $row['ct_qty'];
-                            })
+                            $storage_1_total_cnt = collect($orderInfo['cart_items'][1])
+                                ->filter(function($row){
+                                    return $row['it_soldout'] != 1 && $row['it_force_soldout'] != '10';
+                                })
+                                ->sum(function ($row) {
+                                    return $row['ct_qty'];
+                                })                            
+                            @endphp
+                            <th>{{ $storage_1_total_cnt }}</th>
+                            @php
+                            $storage_1_total = collect($orderInfo['cart_items'][1])
+                                ->filter(function($row){
+                                    return $row['it_soldout'] != 1 && $row['it_force_soldout'] != '10';
+                                })
+                                ->sum(function ($row) {
+                                    return $row['ct_price'] * $row['ct_qty'];
+                                })
                             @endphp
                             <th>{{ number_format($storage_1_total) }}원</th>
                         </tr>
@@ -254,16 +264,31 @@ if (isset($activeMember['mb_level_type'])) {
                         @endforeach
                     </tbody>
                     <tfoot>
+
                         <tr>
                             <th colspan="3">합계</th>
-                            <th>{{ collect($orderInfo['cart_items'][2])->sum('ct_qty') }}</th>
                             @php
-                            $storage_2_total = collect($orderInfo['cart_items'][2])->sum(function ($row) {
-                                return $row['ct_price'] * $row['ct_qty'];
-                            })
+                            $storage_2_total_cnt = collect($orderInfo['cart_items'][2])
+                                ->filter(function($row){
+                                    return $row['it_soldout'] != 1 && $row['it_force_soldout'] != '10';
+                                })
+                                ->sum(function ($row) {
+                                    return $row['ct_qty'];
+                                })                            
+                            @endphp
+                            <th>{{ $storage_2_total_cnt }}</th>
+                            @php
+                            $storage_2_total = collect($orderInfo['cart_items'][2])
+                                ->filter(function($row){
+                                    return $row['it_soldout'] != 1 && $row['it_force_soldout'] != '10';
+                                })
+                                ->sum(function ($row) {
+                                    return $row['ct_price'] * $row['ct_qty'];
+                                })
                             @endphp
                             <th>{{ number_format($storage_2_total) }}원</th>
                         </tr>
+
                     </tfoot>
                 </table>
                 </div>
@@ -357,7 +382,6 @@ if (isset($activeMember['mb_level_type'])) {
                 </tr>
             </table>
             @endif
-
 
             <div class="payment_bot">
                 <div class="pay_how">
@@ -641,7 +665,9 @@ function readioBtnEvent() {
 @if (!$is_mobile)
 <script src="https://stdpay.inicis.com/stdjs/INIStdPay.js"></script>
 @endif
+
 <script>
+
 function requestPay() {
     let is_mobile   = `{{ $is_mobile }}`;
     let payment_type = $('input[name="payment_type"]').val().trim();
@@ -655,50 +681,66 @@ function requestPay() {
         btnTit  = '주문하기';
     }
 
+    const od_settle_case = $('input[name="od_settle_case"]:checked').val();
+    const payable = $('input[name="payable"]').val();
 
-    Swal.fire({
-        title: title,
-        text: message,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: btnTit,
-        cancelButtonText: '취소'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.get({
-                url  : '/payment/refresh',
-                data : {
-                    od_id : $('input[name="od_id"]').val(),
-                    price : $('input[name="payable"]').val(),
-                    is_mobile : is_mobile,
-                    timestamp : $('input[name="paytimestamp"]').val(),
-                },
-                dataType : 'JSON'
-            }).done(function(res) {
-                if (res.status == 'success') {
-                    if (is_mobile == '1') {
-                        $('input[name="P_CHKFAKE"]').val(res.hashData);
-                    } else {
-                        $('input[name="signature"]').val(res.signature);
-                    }
+    if (!payment_type) {
+        validationAlertMessage('결제유형이 존재하지 않는 회원 입니다. 관리자에게 문의 바랍니다.');
+        return false;
+    }
 
+    if (!od_settle_case) {
+        validationAlertMessage('원하시는 결제 방법을 선택해주세요.');
+        return false;
+    }
+
+    if (payment_type === '선불' && payable == 0 && (od_settle_case === '신용카드' || od_settle_case === '금융권가상계좌')) {
+            validationAlertMessage('결제할 금액이 없습니다. <br>다른 결제 수단을 선택해 주세요.');
+            return false;
+    }
+
+    $.get({
+        url  : '/payment/refresh',
+        data : {
+            od_id : $('input[name="od_id"]').val(),
+            price : $('input[name="payable"]').val(),
+            is_mobile : is_mobile,
+            timestamp : $('input[name="paytimestamp"]').val(),
+        },
+        dataType : 'JSON'
+    }).done(function(res) {
+        if (res.status == 'success') {
+            if (is_mobile == '1') {
+                $('input[name="P_CHKFAKE"]').val(res.hashData);
+            } else {
+                $('input[name="signature"]').val(res.signature);
+            }
+
+            Swal.fire({
+                title: title,
+                text: message,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: btnTit,
+                cancelButtonText: '취소'
+            }).then((result) => {
+                if (result.isConfirmed) {
                     payment_act()
-                } else {
-                    Swal.fire({
-                        title: '알림',
-                        html: res.message,
-                        icon: 'question',
-                        showCancelButton: false,
-                        confirmButtonText: '확인',
-                        cancelButtonText: '취소'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.href = '/mypage/cart';
-                        }
-                    }); 
                 }
-            });
-            
+            });            
+        } else {
+            Swal.fire({
+                title: res.swalTitle,
+                html: res.message,
+                icon: res.iconType,
+                showCancelButton: false,
+                confirmButtonText: '확인',
+                cancelButtonText: '취소'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    location.href = '/mypage/cart';
+                }
+            }); 
         }
     });
 }
@@ -784,7 +826,7 @@ function payment_act() {
 <script>
 function validationAlertMessage(message)  {
   Swal.fire({
-      toast: true,
+      toast: false,
       icon: 'warning',
       title: '알림',
       html: message,

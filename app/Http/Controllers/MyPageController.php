@@ -543,14 +543,14 @@ class MyPageController extends Controller
 
      /**
      * method Name : MyPoint
-     * Description : 충전금내역
+     * Description : 충전금내역 (로그테이블 join)
      * Author : Kim Hairyong 
      * Created Date : 2026-01-26
      * Params : Params
      * History :
      *   - 2026-01-26 : Initial creation
      */
-    public function MyPoint(Request $request)
+    public function MyPoint_old(Request $request)
     {
         $page    = $request->get('page', 1);
         $perPage = $request->get('scale', 20);
@@ -679,87 +679,91 @@ class MyPageController extends Controller
             ->orderByDesc('od_id')
             ->paginate($perPage, ['*'], 'page', $page);
 
-        /*
-        |--------------------------------------------------------------------------
-        | 4. 이월잔액 계산 (erp에서 데이터를 실시간으로 변경 하다보니 잔액이 안맞는 이유로 삭제함)
-        |--------------------------------------------------------------------------
-        */
-        // $carry_balance = 0;
-
-        // if ($rows->total() > $perPage) {
-
-        //     $currentLastIndex = $rows->lastItem();
-
-        //     $nextRow = DB::query()
-        //         ->fromSub($unionQuery, 'u')
-        //         ->orderByDesc('reg_date')
-        //         ->offset($currentLastIndex)
-        //         ->limit(1)
-        //         ->first();
-
-        //     if ($nextRow) {
-        //         $carry_balance = $nextRow->current_point ?? 0;
-        //     }
-        // }
-
-
-        // 날짜 조회일 경우 시작 날짜 이전에 데이터 1건의 current_point를 가져온다
-
-        // if ($start_date) {
-
-        //     $lastPage     = $rows->lastPage();
-        //     $currentPage  = $rows->currentPage();
-
-        //     if ($currentPage == $lastPage) {
-
-        //         $previousLogQuery = DB::table('tb_member_point_logs')
-        //             ->select([
-        //                 DB::raw('case when po_current_point > 0 then po_current_point end as current_point'),
-        //                 'created_at as reg_date',
-        //             ])
-        //             ->where('po_mb_code', $mb_code)
-        //             ->where('po_gubun', 'CHARGE');
-
-
-        //         $previousOrderQuery = DB::table('g5_shop_order')
-        //             ->select([
-        //                 DB::raw("
-        //                     case
-        //                         when pt_cur_charge > 0 then pt_cur_charge
-        //                     end as current_point
-        //                 "),
-        //                 'order_date as reg_date',
-        //             ])
-        //             ->where('mb_code', $mb_code)
-        //             ->where(function ($q) {
-        //                 $q->where('pt_charge', '>', 0)
-        //                 ->orWhere(function ($sub) {
-        //                     $sub->where('pt_buy_charge', '>', 0)
-        //                         ->where('od_delivery_step', 8);
-        //                 });
-        //             })
-        //             ->where('od_delivery_step', '>', 0);
-
-        //             $previousUnionQuery = $previousLogQuery->unionAll($previousOrderQuery);
-
-        //             // 조회 시작일 이전 가장 최근 1건
-        //             $previousRow = DB::query()
-        //                 ->fromSub($previousUnionQuery, 'u')
-        //                 ->where('reg_date', '<', $start_date)
-        //                 ->orderByDesc('reg_date')
-        //                 ->limit(1)
-        //                 ->first();
-
-        //             if ($previousRow) {
-        //                 $carry_balance = $previousRow->current_point ?? 0;
-        //             }
-        //     }
-        // }
-
-
         return view('mypage.my_point', [
-            'items'         => $rows,
-            // 'carry_balance' => $carry_balance,
+            'items' => $rows,
+        ]);
+    }
+
+
+     /**
+     * method Name : MyPoint
+     * Description : 충전금내역
+     * Author : Kim Hairyong 
+     * Created Date : 2026-01-26
+     * Params : Params
+     * History :
+     *   - 2026-01-26 : Initial creation
+     */
+    public function MyPoint(Request $request)
+    {
+        $page    = $request->get('page', 1);
+        $perPage = $request->get('scale', 20);
+
+        $mb_code = session('ss_mb_code');
+
+        if (!$mb_code) {
+            throw new \Exception('로그인 사용자가 아닙니다.');
+        }
+
+        $start_date = $request->input('start_date');
+        $end_date   = $request->input('end_date');
+
+        if (!$start_date || !$end_date) {
+            $end_date   = \Carbon\Carbon::today()->format('Y-m-d');
+            $start_date = \Carbon\Carbon::today()->subMonths(2)->format('Y-m-d');
+        }
+
+        $result = DB::table('g5_shop_order')
+            ->selectRaw("
+                od_idx,
+                od_id,
+                od_delivery_step,
+                case
+                    when pt_charge > 0 then 'decrease'
+                    when pt_buy_charge > 0 then 'increase'
+                end as po_point_type,
+                CONCAT_WS('#',
+                    IF(pt_charge > 0, 'pt_charge', NULL),
+                    IF(pt_buy_charge > 0 AND od_delivery_step <> 8, 'pt_buy_charge', NULL),
+                    IF(pt_buy_charge > 0 AND od_delivery_step = 8, 'modify', NULL)
+                ) as po_action,
+                pt_buy_charge,
+                pt_charge,
+                od_temp_point,
+                case
+                    when pt_buy_charge > 0 then pt_buy_charge
+                    when pt_charge > 0 then pt_charge
+                    when od_temp_point > 0 then od_temp_point
+                end as change_point,
+                pt_cur_charge,
+                case
+                    when pt_cur_charge > 0 then pt_cur_charge
+                end as current_point,
+                od_delivery_date
+            ")
+            ->where('mb_code', $mb_code)
+            ->where(function ($q) {
+                $q->where('pt_buy_charge', '>', 0)
+                ->orWhere('pt_charge', '>', 0);
+            })
+            ->orderByDesc('od_delivery_date')
+            ->orderByDesc('od_id')
+            ->paginate($perPage);
+
+        $items = new LengthAwarePaginator(
+            $result,
+            $result->total(),
+            $perPage,
+            $page,
+            [
+                'path'  => Paginator::resolveCurrentPath(),
+                'query' => $request->query(),
+            ]
+        );
+
+    
+        return view('mypage.my_point', [
+            'items' => $items,
         ]);
     }
 
@@ -767,14 +771,14 @@ class MyPageController extends Controller
 
     /**
      * method Name : MyPointReserve
-     * Description : 적립금내역
+     * Description : 적립금내역 (로그테이블 join)
      * Author : Kim Hairyong 
      * Created Date : 2026-02-14
      * Params : Params
      * History :
      *   - 2026-02-14 : Initial creation
      */
-    public function MyPointReserve(Request $request)
+    public function MyPointReserve_old(Request $request)
     {
         $page    = $request->get('page', 1);
         $perPage = $request->get('scale', 20);
@@ -958,87 +962,141 @@ class MyPageController extends Controller
             ->orderByDesc('od_id')
             ->paginate($perPage, ['*'], 'page', $page);
 
-        /*
-        |--------------------------------------------------------------------------
-        | 4. 이월잔액 계산 (erp에서 데이터를 실시간으로 변경 하다보니 잔액이 안맞는 이유로 삭제함)
-        |--------------------------------------------------------------------------
-        */
-        // $carry_balance = 0;
-
-        // if ($rows->total() > $perPage) {
-
-        //     $currentLastIndex = $rows->lastItem();
-
-        //     $nextRow = DB::query()
-        //         ->fromSub($unionQuery, 'u')
-        //         ->orderByDesc('reg_date')
-        //         ->offset($currentLastIndex)
-        //         ->limit(1)
-        //         ->first();
-
-        //     if ($nextRow) {
-        //         $carry_balance = $nextRow->current_point ?? 0;
-        //     }
-        // }
-
-
-        // // 날짜 조회일 경우 시작 날짜 이전에 데이터 1건의 current_point를 가져온다
-        // if ($start_date) {
-
-        //     $lastPage     = $rows->lastPage();
-        //     $currentPage  = $rows->currentPage();
-
-        //     if ($currentPage == $lastPage) {
-
-        //         $previousLogQuery = DB::table('tb_member_point_logs')
-        //             ->select([
-        //                 DB::raw('case when po_current_point > 0 then po_current_point end as current_point'),
-        //                 'created_at as reg_date',
-        //             ])
-        //             ->where('po_mb_code', $mb_code)
-        //             ->where('po_gubun', 'RESERVE');
-
-
-        //         $previousOrderQuery = DB::table('g5_shop_order')
-        //             ->select([
-        //                 DB::raw("
-        //                     case
-        //                         when pt_cur_reserve > 0 then pt_cur_reserve
-        //                     end as current_point
-        //                 "),
-        //                 'order_date as reg_date',
-        //             ])
-        //             ->where('mb_code', $mb_code)
-        //             ->where(function ($q) {
-        //                 $q->where('pt_reserve', '>', 0)
-        //                 ->orWhere(function ($sub) {
-        //                     $sub->where('pt_buy_reserve', '>', 0);
-        //                 });
-        //             })
-        //             ->where('od_delivery_step', '>', 0);
-
-        //             $previousUnionQuery = $previousLogQuery->unionAll($previousOrderQuery);
-
-        //             // 조회 시작일 이전 가장 최근 1건
-        //             $previousRow = DB::query()
-        //                 ->fromSub($previousUnionQuery, 'u')
-        //                 ->where('reg_date', '<', $start_date)
-        //                 ->orderByDesc('reg_date')
-        //                 ->limit(1)
-        //                 ->first();
-
-        //             if ($previousRow) {
-        //                 $carry_balance = $previousRow->current_point ?? 0;
-        //             }
-        //     }
-        // }
-
-
         return view('mypage.my_point_reserve', [
-            'items'         => $rows,
-            // 'carry_balance' => $carry_balance,
+            'items' => $rows,
         ]);
     }
+
+
+
+    /**
+     * method Name : MyPointReserve
+     * Description : 적립금내역
+     * Author : Kim Hairyong 
+     * Created Date : 2026-02-14
+     * Params : Params
+     * History :
+     *   - 2026-02-14 : Initial creation
+     */
+    public function MyPointReserve(Request $request)
+    {
+        $page    = $request->get('page', 1);
+        $perPage = $request->get('scale', 20);
+
+        $mb_code = session('ss_mb_code');
+
+        if (!$mb_code) {
+            throw new \Exception('로그인 사용자가 아닙니다.');
+        }
+
+        $start_date = $request->input('start_date');
+        $end_date   = $request->input('end_date');
+
+        if (!$start_date || !$end_date) {
+            $start_date = \Carbon\Carbon::today()->subMonths(2)->format('Y-m-d');
+            $end_date   = Carbon::now()->endOfMonth()->format('Y-m-d');
+        }
+
+        $result = DB::table('g5_shop_order')
+            ->selectRaw("
+                od_idx,
+                od_id,
+                od_delivery_step,
+                case
+                    when pt_reserve > 0 then 'decrease'
+                    when pt_buy_reserve > 0 then 'increase'
+                    when pt_cancel > 0 then 'increase'
+                    when pt_return > 0 then 'increase'
+                    when pt_return_receivable > 0 then 'bond'
+                    when pt_outofstock > 0 then 'increase'
+                    when pt_outofstock_deposit > 0 then 'bond'
+                    when pt_damage_staff > 0 then 'increase'
+                    when pt_damage_logistic > 0 then 'increase'
+                    when pt_incentive > 0 then 'increase'
+                    when pt_dc > 0 then 'increase'
+                    when pt_buy_reserve > 0 and od_delivery_step = 8 then 'increase'
+                end as po_point_type,
+
+                CONCAT_WS('#',
+                    IF(pt_reserve > 0, 'pt_reserve', NULL),
+                    IF(pt_buy_reserve > 0 AND od_delivery_step <> 8, 'pt_buy_reserve', NULL),
+                    IF(pt_cancel > 0, 'pt_cancel', NULL),
+                    IF(pt_return > 0, 'pt_return', NULL),
+                    IF(pt_return_receivable > 0, 'pt_return_receivable', NULL),
+                    IF(pt_outofstock > 0, 'pt_outofstock', NULL),
+                    IF(pt_outofstock_deposit > 0, 'pt_outofstock_deposit', NULL),
+                    IF(pt_damage_staff > 0, 'pt_damage_staff', NULL),
+                    IF(pt_damage_logistic > 0, 'pt_damage_logistic', NULL),
+                    IF(pt_incentive > 0, 'pt_incentive', NULL),
+                    IF(pt_dc > 0, 'pt_dc', NULL),
+                    IF(pt_buy_reserve > 0 AND od_delivery_step = 8, 'modify', NULL)
+                ) as po_action,
+
+                CASE
+                    WHEN pt_reserve > 0 THEN pt_reserve                        
+                    WHEN pt_buy_reserve > 0 THEN pt_buy_reserve
+                    WHEN pt_cancel > 0 THEN pt_cancel                        
+                    WHEN pt_incentive > 0 THEN pt_incentive
+                    WHEN pt_outofstock > 0 THEN pt_outofstock
+                    WHEN pt_dc > 0 THEN pt_dc
+                    WHEN ABS(pt_subtotal) > 0 THEN ABS(pt_subtotal)
+                END as change_point,    
+                
+                (pt_buy_reserve + pt_cancel + pt_return + pt_outofstock + pt_damage_staff + pt_damage_logistic + pt_incentive + pt_dc) as increase_point,
+                (pt_return_receivable + pt_outofstock_deposit) as bond_point,
+                pt_reserve as decrease_point,
+
+                pt_reserve,
+                pt_buy_reserve,
+                pt_cancel,
+                pt_return,
+                pt_return_receivable,
+                pt_outofstock,
+                pt_outofstock_deposit,
+                pt_damage_staff,
+                pt_damage_logistic,
+                pt_incentive,
+                pt_dc,
+                od_temp_point_reserve,
+                pt_subtotal,
+                pt_cur_reserve,
+                od_delivery_date
+            ")
+            ->where('mb_code', $mb_code)
+            ->where(function($q) {
+                $q->where('pt_reserve', '>', 0)
+                ->orWhere('pt_buy_reserve', '>', 0)
+                ->orWhere('pt_cancel', '>', 0)
+                ->orWhere('pt_return', '>', 0)
+                ->orWhere('pt_return_receivable', '>', 0)
+                ->orWhere('pt_outofstock', '>', 0)
+                ->orWhere('pt_outofstock_deposit', '>', 0)
+                ->orWhere('pt_damage_staff', '>', 0)
+                ->orWhere('pt_damage_logistic', '>', 0)
+                ->orWhere('pt_incentive', '>', 0)
+                ->orWhere('pt_dc', '>', 0);
+            })
+            ->orderByDesc('od_delivery_date')
+            ->orderByDesc('od_id')
+            ->paginate($perPage);
+
+        $items = new LengthAwarePaginator(
+            $result,
+            $result->total(),
+            $perPage,
+            $page,
+            [
+                'path'  => Paginator::resolveCurrentPath(),
+                'query' => $request->query(),
+            ]
+        );
+
+        return view('mypage.my_point_reserve', [
+            'items' => $items,
+        ]);
+    }
+
+
 
 
     /**
@@ -1064,6 +1122,8 @@ class MyPageController extends Controller
                 DB::raw("'$po_action' as po_action"),
                 'so.od_id',
                 'so.pt_reserve',
+                'so.pt_incentive',
+                'so.pt_dc',
                 'so.od_temp_point_reserve',
                 'sc.pt_sales',
                 'sc.it_id',
@@ -1099,7 +1159,7 @@ class MyPageController extends Controller
                     case 'increase':
                         return $rows->filter(function ($row) {
                             return ($row->po_action == 'pt_buy_reserve')
-                                || in_array($row->ct_cate, ['취소','반품','결품','기사파손','물류파손']);
+                                || in_array($row->ct_cate, ['','취소','반품','결품','기사파손','물류파손']);    //장려금, DC 등이 포함되면 ct_cate 값이 없음
                         });
 
 
@@ -1109,8 +1169,8 @@ class MyPageController extends Controller
                     case 'decrease':
                         
                         return $rows->filter(function ($row) {
-                            return ($row->po_action == 'od_use' || $row->po_action == 'pt_reserve')
-                                || in_array($row->ct_cate, ['납품']);
+                            return ($row->po_action == 'od_use' || $row->po_action == 'pt_reserve')     //장려금, DC 등이 포함되면 ct_cate 값이 없음
+                                || in_array($row->ct_cate, ['','납품']);
                         });
 
                     default:
@@ -1122,6 +1182,7 @@ class MyPageController extends Controller
 // dd($groups);
 
         return view('mypage.my_point_reserve_detail_pop', [
+            'mode' => $mode,
             'po_action' => $po_action,
             'od_id' => $od_id,
             'change_point' => $change_point,

@@ -69,13 +69,14 @@ function choiceItem() {
 
     if (checked.length == 0) {
         Swal.fire({
-            toast: true,
-            icon: 'error',
+            toast: false,
+            icon: 'warning',
             title: '선택된 상품이 존재하지 않습니다.',
             confirmButtonText: '확인'
         });
     } else {
         Swal.fire({
+            toast: false,
             title: '구매 확인',
             text: `상품을(를) 구매하시겠습니까?`,
             icon: 'question',

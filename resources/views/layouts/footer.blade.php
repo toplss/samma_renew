@@ -156,6 +156,7 @@
 			}
 
 			Swal.fire({
+				toast : false,
 				title: '문의하기',
 				text: '문의내용을 등록하시겠습니까?',
 				icon: 'question',
@@ -171,7 +172,7 @@
 
 			function validationAlertMessage(message, callback = null) {
 				Swal.fire({
-					toast: true,
+					toast: false,
 					icon: 'warning',
 					title: '알림',
 					html: message,
@@ -190,7 +191,7 @@
   <aside id="cartSidebar">
 
 		<ul id="cartQuickBtn">
-			<li class="cart_btn"><a href="javascript:;"><img src="{{ asset('images/icon/cart.svg') }}"><u id="reload_quick_cart_cnt" class="cart_cnt">0</u></a></li>
+			<li class="cart_btn"><a href="javascript:;"><img src="{{ asset('images/icon/cart.svg') }}"><u id="reload_quick_cart_cnt" class="cart_cnt">{{ $activeMyPageTop['cart_cnt'] ?? 0}}</u></a></li>
 			<li><a href="/customer_service/user_guide"><img src="{{ asset('images/icon/question.svg') }}"></a></li>
 			<li class="viva"><a href="https://vivacook.kr/" target="_blank"><img src="{{ asset('images/icon/viva_icon.png') }}"></a></li>
 			<li><a href="https://mygrang.kr/" target="_blank"><img src="{{ asset('images/icon/my_icon.svg') }}"></a></li>
@@ -208,7 +209,7 @@
 				</p>
 			</div>
 			<div class="m-quick-btn">
-				<button type="button" class="btn3">장바구니<i id="reload_quick_cart_cnt" class="cart_cnt">0</i><span class="total_amount"></span>원 </button>
+				<button type="button" class="btn3">장바구니<i id="reload_quick_cart_cnt" class="cart_cnt">{{ $activeMyPageTop['cart_cnt'] ?? 0}}</i><span class="total_amount"></span>원 </button>
 				<button type="button" class="btn2" onclick="location.href='/mypage/my_page'">마이페이지</button>				
 			</div>
 		</div>
@@ -403,6 +404,7 @@
 				// 모두삭제
 				$(document).off('click', '.all_delete_btn').on('click', '.all_delete_btn', function(){
 					Swal.fire({
+						toast : false,
 						title: '장바구니 비우기',
 						text: '장바구니를 모두 삭제하시겠습니까?',
 						icon: 'warning',
@@ -509,7 +511,7 @@
 
 					if (min_qty == qty) {
 						Swal.fire({
-							toast : true,
+							toast : false,
 							icon : 'info',
 							html: `최소 주문 수량은 <span style="color:red;">${min_qty}개</span>입니다. <br>해당 수량 미만은 주문할 수 없습니다.`
 						});
@@ -561,6 +563,7 @@
 
 
 			Swal.fire({
+				toast : false,
 				title: '구매 확인',
 				html: message,
 				icon: 'question',
@@ -686,6 +689,7 @@
 					// SweetAlert2 적용
 					if (level_ca_id2 == '20' && mb_credit_type == '1' && mb_credit_amount > 0 && total_amount > mb_credit_amount) {
 						Swal.fire({
+							toast : false,
 							title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
 							html: confirm_content,
 							icon: 'warning',
@@ -696,6 +700,7 @@
 						});
 					} else if (level_ca_id2 == '10' && wait_order_cnt > 0) {
 						Swal.fire({
+							toast : false,
 							title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
 							html: confirm_content,
 							icon: 'warning',
@@ -707,6 +712,7 @@
 					} else {
 						if (total_amount == 0) {
 							Swal.fire({
+								toast : false,
 								title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
 								text: '장바구니에 담긴 상품이 없습니다.',
 								icon: 'info',
@@ -714,23 +720,16 @@
 							});
 						} else if (wait_order_cnt > 0) {
 							Swal.fire({
+								toast : false,
 								title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
 								html: confirm_content,
 								icon: 'warning',
 								confirmButtonText: '닫기',
 								focusConfirm: false
 							});
-						// } else if (item_sold_out > 0) {
-						// 	Swal.fire({
-						// 		toast : true,
-						// 		title: '<i class="fas fa-solid fa-plus"></i> 품절 알림',
-						// 		html: confirm_content,
-						// 		icon: 'warning',
-						// 		confirmButtonText: '닫기',
-						// 		focusConfirm: false
-						// 	});
 						} else {
 							Swal.fire({
+								toast : false,
 								title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
 								html: confirm_content,
 								icon: 'question',
@@ -765,6 +764,7 @@
 <script>
 $('.Qua-call').on('click', function () {
 	Swal.fire({
+	toast : false,
 	title: '장비 구매',
 	html: '<b>고객센터에 문의하시겠습니까?',
 	icon: 'question',
@@ -783,7 +783,7 @@ $('.Qua-call').on('click', function () {
 			}, function(res) {
 				if (res.status == 'success') {
 					Swal.fire({
-						toast: true,
+						toast: false,
 						icon: 'info',
 						title: '알림',
 						html: res.message,
@@ -791,7 +791,7 @@ $('.Qua-call').on('click', function () {
 					});
 				} else {
 					Swal.fire({
-						toast: true,
+						toast: false,
 						icon: 'warning',
 						title: '알림',
 						html: res.message,
@@ -806,6 +806,7 @@ $('.Qua-call').on('click', function () {
 
 $('.qa_btn').on('click', function () {
 	Swal.fire({
+	toast : false,
 	title: '장비 구매',
 	html: '<b>고객센터에 문의하시겠습니까?',
 	icon: 'question',
@@ -824,7 +825,7 @@ $('.qa_btn').on('click', function () {
 			}, function(res) {
 				if (res.status == 'success') {
 					Swal.fire({
-						toast: true,
+						toast: false,
 						icon: 'info',
 						title: '알림',
 						html: res.message,
@@ -832,7 +833,7 @@ $('.qa_btn').on('click', function () {
 					});
 				} else {
 					Swal.fire({
-						toast: true,
+						toast: false,
 						icon: 'warning',
 						title: '알림',
 						html: res.message,

@@ -231,13 +231,18 @@ class ShopCartApi extends Controller
                 'si.it_type3',
                 'si.it_type4',
                 'si.it_type5',
+
                 DB::raw("
-                    CASE 
-                        WHEN si.it_type3 = '1' THEN '신상품'
-                        WHEN si.it_type4 = '1' THEN '베스트'
-                        WHEN si.it_type5 = '1' THEN '이달의행사'
-                    END AS it_type_label
+                    CONCAT_WS('#',
+                        IF(si.it_type1 = '1', '초특가', NULL),
+                        IF(si.it_type3 = '1', '신상품', NULL),
+                        IF(si.it_type4 = '1', '베스트', NULL),
+                        IF(si.it_type5 = '1', '이달의행사', NULL),
+                        IF(si.it_type8 = '1', '비바쿡', NULL),
+                        IF(si.it_type9 = '1', '마이그랑', NULL)
+                    ) as it_type_label
                 "),
+
                 'si.it_force_soldout',
                 'si.it_gubun',
                 'si.it_buy_max_qty',

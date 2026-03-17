@@ -21,7 +21,6 @@
         <col style="width:20%;">
         <col style="width:20%;">
         <col style="width:20%;">
-        {{-- <col style="width:auto;"> --}}
       </colgroup>
       <thead>
         <tr>
@@ -31,12 +30,11 @@
           <th>적립</th>
           <th>채권</th>
           <th>사용</th>
-          {{-- <th>적립금잔액</th> --}}
         </tr>
       </thead>
       <tbody>
 
-        @foreach($items as $index => $row)
+        @foreach($items['data'] as $index => $row)
 
           @php
             if ($row->od_delivery_step == 8) {  //잔액조정
@@ -54,15 +52,11 @@
             $actions = explode('#', $row->po_action);
             $action_cnt = !empty($actions) ? count($actions) : 0;
 
-// print_r($actions);
-
             foreach ($actions as $key => $action) {
               
               $str_po_action = [
-                "od_use"=>"주문",
                 "pt_reserve"=>"주문",
                 "pt_buy_reserve"=>"관리자 충전",
-                "od_cancel"=>"주문취소",
                 "pt_cancel"=>"주문취소",
                 "pt_return"=>"반품",
                 "pt_return_receivable"=>"반품입금",
@@ -76,8 +70,7 @@
               ];              
 
               $amount_po_action = [
-                "od_use"=>$row->po_point,
-                "od_cancel"=>$row->po_point,
+                "pt_reserve"=>$row->pt_reserve,
                 "pt_cancel"=>$row->pt_cancel,
                 "pt_return"=>$row->pt_return,
                 "pt_return_receivable"=>$row->pt_return_receivable,
@@ -86,8 +79,7 @@
                 "pt_damage_staff"=>$row->pt_damage_staff,
                 "pt_damage_logistic"=>$row->pt_damage_logistic,
                 "pt_incentive"=>$row->pt_incentive,
-                "pt_dc"=>$row->pt_dc,
-                "pt_reserve"=>$row->pt_reserve,
+                "pt_dc"=>$row->pt_dc,                
                 "pt_buy_reserve"=>$row->pt_buy_reserve,
                 "modify"=>$row->pt_buy_reserve, //잔액조정
               ];
@@ -112,11 +104,11 @@
           @endphp
         <tr>
           <td class="hide-820">{{ $items->firstItem() + $index }}</td>
-          <td>{{ \Carbon\Carbon::parse($row->reg_date)->format('y/m/d') }}</td>
+          <td>{{ \Carbon\Carbon::parse($row->od_delivery_date)->format('y/m/d') }}</td>
           
           <td>
             <span class="pt1" onclick="javascript:point_reserve_showDetail('all', '{{ $row->po_action }}', '{{ $row->od_id }}', '{{ $row->change_point }}');">
-              {{ ($po_action == '잔액') ? '' : $po_action }} {{ ($action_cnt > 1) ? '외 ' . ($action_cnt - 1) . '건' : '' }}
+              {{ $po_action }} {{ ($action_cnt > 1) ? '외 ' . ($action_cnt - 1) . '건' : '' }}
             </span>
           </td>
 
@@ -161,23 +153,6 @@
 
         </tr>
         @endforeach
-
-        <!-- 이월 -->
-        {{-- @if($items->total() > 0)
-        <tr class="txt-bold" style="background-color:#f5f5f5;">
-          <td class="hide-820"></td>
-          <td>이월</td>
-          <td colspan="3"></td>
-          <td>
-            @if($carry_balance > 0)
-                {{ number_format($carry_balance) }}원
-            @else
-                -
-            @endif            
-          </td>
-        </tr>
-        @endif --}}
-
 
         <!-- 없을때 -->
         @if($items->total() < 1)
@@ -231,6 +206,8 @@
   //구분 클릭 시 적립금 상세내역 
   function point_reserve_showDetail(mode, po_action, od_id, change_point) {
 
+    po_action = po_action.replace(/#/g, '|');
+
     console.log(po_action);
 
     $.ajax({
@@ -258,8 +235,6 @@
     });
 
   }
-
-
 
 </script>
 @endsection

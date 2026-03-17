@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Validation\Rule;
 use App\Facades\Sso;
 use App\Services\BannerService;
+use App\Services\RecipeService;
 use Debugbar;
 use Exception;
 use Illuminate\Support\Facades\Redirect;
@@ -326,7 +327,6 @@ class ShopController extends Controller
             $recipe_opt = $member['mb_launching'];
         }
 
-
         $idxList = TbRecipe::getRecipeItems($request, $recipe_opt);
         $total = count($idxList);
 
@@ -347,6 +347,8 @@ class ShopController extends Controller
 
         $result = TbRecipe::select([
             'id', 
+            'opt', 
+            'opt2', 
             'p_id', 
             'title', 
             'tag', 
@@ -383,7 +385,6 @@ class ShopController extends Controller
         })
         ->get();
 
-
         $items = new LengthAwarePaginator(
             $result,
             $total,
@@ -395,26 +396,29 @@ class ShopController extends Controller
             ]
         );
 
-        $redis_key_generate     = 'recipe:category';
-        $redis_key_generate_sub = 'recipe:sub_category';
+        // $redis_key_generate     = 'recipe:category';
+        // $redis_key_generate_sub = 'recipe:sub_category';
 
-        if (Redis::exists($redis_key_generate) || Redis::exists($redis_key_generate_sub)) {
-            $category = self::getReids($redis_key_generate);
-            $sub_category = self::getReids($redis_key_generate_sub);
-        } else {
-            $category     = TbRecipeCategory::getRecipeCategory()->toArray();
-            $sub_category = TbRecipeCategory::getSubRecipeCategory()->toArray();
+        // if (Redis::exists($redis_key_generate) || Redis::exists($redis_key_generate_sub)) {
+        //     $category = self::getReids($redis_key_generate);
+        //     $sub_category = self::getReids($redis_key_generate_sub);
+        // } else {
+        //     // $category     = TbRecipeCategory::getRecipeCategory()->toArray();
+        //     // $sub_category = TbRecipeCategory::getSubRecipeCategory()->toArray();
 
-            self::setRedis($redis_key_generate, $category);
-            self::setRedis($redis_key_generate_sub, $sub_category);
-        }
-        
+        //     $category = app(RecipeService::class)->getRecipeCategory($member, $request);
+        //     $sub_category = app(RecipeService::class)->getSubRecipeCategory($member, $request);            
+
+        //     self::setRedis($redis_key_generate, $category);
+        //     self::setRedis($redis_key_generate_sub, $sub_category);
+        // }
+
+
+        $category = app(RecipeService::class)->getRecipeCategory($member, $request);
+        $sub_category = app(RecipeService::class)->getSubRecipeCategory($member, $request);                    
 
         $data = [];
         foreach ($category as $row) {
-            if (substr($row['ca_id'], 0, 2) !== '20') {
-                continue;
-            }
 
             $item = [];
             $item['category'] = $row;
@@ -431,9 +435,7 @@ class ShopController extends Controller
             $data[] = $item;
         }
 
-        $subBanner = app(BannerService::class)->getRecipeSubBanner($member);
-
-// dd($items);
+        $subBanner = app(BannerService::class)->getRecipeSubBanner($member, $request);
 
         return view('mall.shop.list_gubun_recipe', [
             'items' => $items, 
@@ -761,6 +763,22 @@ class ShopController extends Controller
 
 
         // return view('mall.shop.cart_update', ['od_id' => $od_id]);
+
+
+        //품절상품 자동삭제
+        $soldOut = DB::table('g5_shop_cart as sc')
+            ->leftJoin('g5_shop_item as si', 'sc.it_id', '=', 'si.it_id')
+            ->where('sc.mb_code', session('ss_mb_code'))
+            ->where('sc.od_id', $od_id)
+            ->where(function ($q) {
+                $q->where('si.it_soldout', 1)
+                ->orWhere('si.it_force_soldout', 10);
+            })
+            ->pluck('sc.ct_id');
+
+        DB::table('g5_shop_cart')
+            ->whereIn('ct_id', $soldOut)
+            ->delete();        
 
         return redirect()->route('payment.request', ['od_id' => $od_id, 'order_type' => 'items']);
     }

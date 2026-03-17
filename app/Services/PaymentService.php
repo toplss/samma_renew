@@ -777,17 +777,23 @@ class PaymentService
 
         $gubunArr = ['box' => '박스', 'pack' => '팩', 'pcs' => '낱개'];
 
+        $isIssue = false;
+        $message = '';
         foreach ($cartItems as $key => $row) {
             if ($row['it_qty_system_stock'] <= 0 || $row['it_soldout'] == '1' || $row['it_force_soldout'] == '10') {
-                $message = '['.$row['it_name'].'] 상품은 현재 품절입니다.';
 
-                $ret = [
-                    'status'  => 'reject',
-                    'message' => $message
-                ];
-                return $ret;
+                $isIssue = true;
+                $swalTitle = '품절상품이 포함되어 있습니다.';
 
-            } else if ($row['ct_qty_tot'] > $row['it_qty_system_stock']) {
+                $message .= '<span class="txt-red">['.$row['it_name'].']</span> <br>';
+
+            } 
+            
+            if ($row['ct_qty_tot'] > $row['it_qty_system_stock']) {
+                
+                $isIssue = true;
+                $swalTitle = '알림';
+
                 $buyGroup = $this->ProductUnit($row['it_id'], $row['it_qty_'.$row['it_gubun']] * $row['ct_qty']);
                 $stockGroup = $this->ProductUnit($row['it_id'], $row['it_qty_system_stock']);
 
@@ -796,13 +802,18 @@ class PaymentService
                 $message .= '<br>재고 수량은 '.$stockGroup[$row['it_gubun']].$gubunArr[$row['it_gubun']].' 총 (<span style="color:red;">'.number_format($row['it_qty_system_stock']) .'</span>개)입니다. ';
                 $message .= '<br><br>구매 가능 수량으로 조정하신 후 다시 주문해 주시기 바랍니다.';
 
-                $ret = [
-                    'status'  => 'reject',
-                    'message' => $message
-                ];
-                return $ret;
-
             }
+            
+        }
+
+        if ($isIssue === true) {
+            $ret = [
+                'iconType' => 'warning',
+                'swalTitle' => $swalTitle,
+                'status'  => 'reject',
+                'message' => $message
+            ];
+            return $ret;            
         }
 
         return [
@@ -811,7 +822,7 @@ class PaymentService
         ];
     }
 
-
+    
 
     /**
      * 매출자료 입력 정합성시 잠금데이터 생성

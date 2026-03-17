@@ -19,7 +19,7 @@
         {!! $activeSubBanner['mobile'] !!}
       </div>
     </div>
-    
+    {{-- @dd($items); --}}
     <div class="recipe-list">
       @foreach ($items as $key => $row)
       @php

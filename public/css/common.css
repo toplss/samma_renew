@@ -64,10 +64,13 @@ section{max-width: 1280px; width: 96%; margin: auto; min-height: 40vh;}
 .search-box input{font-size: 0.9rem; width: 100%;}
 .search-box img{width: 1.4rem;}
 
-._new,.best,.event{font-size: 0.9rem; color: #fff; padding: 0.2rem 0.4rem; display: inline-block; border-radius: 0.2rem;}
+._new,.best,.event,.vivacook,.mygrang,.bargain{font-size: 0.9rem; color: #fff; padding: 0.2rem 0.4rem; display: inline-block; border-radius: 0.2rem;}
 ._new{background-color: #7997bc;}
 .best{background-color: #3f51b5;}
 .event{background-color: #8ec251;}
+.vivacook{background-color: #fab003;}
+.mygrang{background-color: #ec408a;}
+.bargain{background-color: #8556d1;}
 
 .room_temp,.low_temp,.frozen_temp,.return_o,.return_x{border-radius: 30px; padding: 0.2rem 0.4rem; color: #fff; display: inline-block; font-size: 0.9rem;}
 .room_temp{background-color: #ef8876;}
@@ -186,7 +189,7 @@ nav{background-color: #f9f9f9; border-top: 1px solid #8ec251; border-bottom: 1px
 .panel-inner ._vivacook{}
 .panel-inner ._mygrang{display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 2fr; gap: 10px;}
 .panel-inner ._chain{display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; align-items: start;}
-.panel-inner ._recipe{display: grid; grid-template-columns: repeat(5,1fr); gap: 1rem; margin-top: 1rem;}
+.panel-inner ._recipe{display: grid; grid-template-columns: repeat(6,1fr); gap: 1rem; margin-top: 1rem;}
 .panel-inner ._best{display: grid; grid-template-columns: repeat(4,1fr); gap: 10px;}
 .panel-inner ._new{display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; background-color: transparent !important; padding: 0 !important;}
 .panel-inner ._sale{display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;}
@@ -486,7 +489,7 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.show-820{display: block;}
 	.btn1,.btn2,.btn3{padding: 0.2rem 0.4rem;}
 	.big-btn{font-size: 1.1rem; padding: 0.5rem 1.5rem;}
-	._new, .best, .event{font-size: 0.8rem;}
+	._new, .best, .event,.mygrang,.vivacook,.bargain{font-size: 0.8rem;}
 	.f-box2{gap: 1rem;}
 	.f-box3 dl{ gap: 0.5rem; display: none;} 
 	.mf-toggle h6{font-size: 1.1rem; font-weight: 400; margin-bottom: 1rem;}

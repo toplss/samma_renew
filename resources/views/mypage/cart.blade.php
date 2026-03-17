@@ -26,13 +26,13 @@
         </tr>
       </thead>
       <tbody class="my_cart_tbody">
+
         @foreach ($items['cartAllItems'] as $key => $row)
         @php
         $image_url = 'images/item/'.$row['it_img1'];
 
         $min_cart_ct_qty = $box_min_qty = $max_cart_ct_qty = 0;
 
-// dd($items);
         if(isset($activeMember['mb_level']) && substr($activeMember['mb_level'], 0, 2) == '30' && $row['agency_it_buy_min_qty'] > 0) {
             $min_cart_ct_qty = $row['agency_it_buy_min_qty']; // 주문최소
             $box_min_qty     = ($row['it_gubun'] == 'pack') ? $row['it_box_sale_pack'] : $row['it_box_sale_tot']; // 박스구매
@@ -55,7 +55,14 @@
           @php
           $timpArr = ['1' => 'room_temp', '3' => 'low_temp', '2' => 'frozen_temp', '4' => ''];
           $it_id   = $row['it_id'];
-          $item_label = ['신상품' => '_new', '베스트' => 'best' , '이달의행사' => 'event'];
+
+          //상품이벤트 라벨
+          $item_label = ['초특가' => 'bargain', '이달의행사' => 'event', '신상품' => '_new', '베스트' => 'best', '비바쿡' => 'vivacook', '마이그랑' => 'mygrang'];
+          $arr_item_label = [];
+          if($row['it_type_label']){
+            $arr_item_label = explode('#', $row['it_type_label']);
+          }
+
           @endphp
 
           <td class="cart-table-title">
@@ -72,7 +79,12 @@
               <h6 class="my_cart_it_name">
                 <span class="my_cart_it_name_short">{{ $row['it_name'] }}</span>
                 <i>({{ $row['it_basic'] }})</i>
-                @if($row['it_type_label'])<span class="hide-820 {{ $item_label[$row['it_type_label']] }}">{{ $row['it_type_label'] }}</span>@endif
+
+                <!-- 상품이벤트 라벨 -->
+                @foreach($arr_item_label as $key => $label)
+                  @if($label)<span class="hide-820 {{ $item_label[$label] }}">{{ $label }}</span>@endif
+                @endforeach
+
                 <p class="show-820">
                   <span class="{{ $timpArr[$row['it_storage']] }}">{{ $row['it_storage_label'] }}</span>
                   <span class="{{ $row['it_return_label'] == '반품가능' ? 'return_o' : 'return_x' }}">{{ $row['it_return_label'] }}</span>
@@ -87,8 +99,13 @@
           <td class="cart-table-price hide-820">{{ number_format($row['ct_price']) }}원</td>
           <!-- 수량 (모바일 O) -->
           <td class="cart-table-ea">
-            <span class="show-820">{{ number_format($row['ct_price']) }}원</span>
-            <!-- <span class="show-820">총 0000원</span> -->
+            {{-- <span class="show-820">{{ number_format($row['ct_price']) }}원</span> --}}
+            <span class="show-820" id="mobile_pt_sales_{{ $it_id }}">
+            @if($row['it_soldout'] == '1' || $row['it_force_soldout'] == '10')
+            @else
+              {{ number_format($row['pt_sales']) }}원
+            @endif
+            </span>
               @if($row['it_soldout'] == '1' || $row['it_force_soldout'] == '10')
                 <div class="flex-center">
                   <span class="ct-soldout">품절</span>
@@ -183,6 +200,7 @@ $(document).ready(function() {
 	$(document).on('click', '.sit_delete_btn', function(){
 
     Swal.fire({
+        toast: false,
         title: '삭제 확인',
         text: '선택하신 상품을 삭제 하시겠습니까?',
         icon: 'question',
@@ -246,13 +264,14 @@ $(document).ready(function() {
 
               let item = Object.values(data.data.cart_items).flat().find(v => v.it_id == it_id);
               if(item){
-                  $('#pt_sales_'+it_id).text(item.pt_sales.toLocaleString()+'원');
+                  $('#pt_sales_'+it_id).html(item.pt_sales.toLocaleString()+'원');
+                  $('#mobile_pt_sales_'+it_id).html(item.pt_sales.toLocaleString()+'원');
               }
 
               $('#ct_qty_'+it_id).val(ct_qty);
             } else {
               Swal.fire({
-                toast: true,
+                toast: false,
                 icon: 'warning',
                 title: '알림',
                 html: JSON.parse(result).message,
@@ -299,7 +318,8 @@ $(document).ready(function() {
 
               let item = Object.values(data.data.cart_items).flat().find(v => v.it_id == it_id);
               if(item){
-                  $('#pt_sales_'+it_id).text(item.pt_sales.toLocaleString()+'원');
+                  $('#pt_sales_'+it_id).html(item.pt_sales.toLocaleString()+'원');
+                  $('#mobile_pt_sales_'+it_id).text(item.pt_sales.toLocaleString()+'원');
               }
 
               if ((ct_qty) >= 1) {
@@ -307,7 +327,7 @@ $(document).ready(function() {
               }
             } else {
               Swal.fire({
-                toast: true,
+                toast: false,
                 icon: 'warning',
                 title: '알림',
                 html: JSON.parse(result).message,
@@ -354,6 +374,7 @@ function cartbuy_box_qty(e) {
 
 
   Swal.fire({
+    toast: false,
     title: '구매 확인',
     // text: `${it_name}을(를) ${qty}개 구매하시겠습니까?`,
     html: message,
@@ -381,6 +402,7 @@ function cartbuy_box_qty(e) {
 
 function checked_del() {
     Swal.fire({
+        toast: false,
 				title: '삭제 확인',
 				text: `선택하신 상품을 삭제 하시겠습니까?`,
 				icon: 'question',
@@ -499,7 +521,17 @@ function setting_table(data) {
           </td>
           <td class="cart-table-price hide-820">${val.ct_price.toLocaleString()}원</td>
           <td class="cart-table-ea">
-            <span class="show-820">${val.ct_price.toLocaleString()}원</span>
+            <span class="show-820" id="mobile_pt_sales_${it_id}">
+          `;
+
+            if(val.it_soldout == '1' || val.it_force_soldout == '10') {
+              tbody_html += ``;
+            }else{
+              tbody_html += `${val.pt_sales.toLocaleString()}원`;
+            }
+
+          tbody_html += `
+            </span>
           `;
 
           if(val.it_soldout == '1' || val.it_force_soldout == '10') {
@@ -557,7 +589,6 @@ function setting_table(data) {
   }
 
 }
-
 
 </script>
 
