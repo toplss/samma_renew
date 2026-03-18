@@ -19,19 +19,26 @@
         <tr>
           <th>번호</th>
           <th>제목</th>
-          <th class="hide-680">작성자</th>
-          <th class="hide-680">작성일</th>
-          <th class="hide-680">조회수</th>
+          <th class="hide-820">작성자</th>
+          <th class="hide-820">작성일</th>
+          <th class="hide-820">조회수</th>
         </tr>
       </thead>
       <tbody>
         @foreach ($items as $key => $row)
         <tr onclick="location.href='/common_board/view?bd_num={{ $row->bd_num }}'">
           <td class="num">{!! $row->bd_notice == 1 ? '<span>공지</span>' : $row->row_num !!}</td>
-          <td class="tit"><span style="color:{{ $row->bd_ext1 }}; cursor:pointer;" >{{ $row->bd_subject }}</span></td>
-          <td class="writer hide-680">{{ $row->bd_name }}</td>
-          <td class="date hide-680">{{ $row->write_date }}</td>
-          <td class="hit hide-680">{{ $row->bd_view_count }}</td>
+          <td class="tit">
+            <span style="color:{{ $row->bd_ext1 }}; cursor:pointer;" >
+              {{ $row->bd_subject }}
+              @if(\Carbon\Carbon::parse($row->write_time)->diffInHours(now()) < 24)
+                  <b class="new-icon"><img src="/images/icon/ico_new.png"></b>
+              @endif       
+            </span>     
+          </td>
+          <td class="writer hide-820">{{ $row->bd_name }}</td>
+          <td class="date hide-820">{{ $row->write_date }}</td>
+          <td class="hit hide-820">{{ $row->bd_view_count }}</td>
         </tr>
         @endforeach
         @if ($items->total() == 0)

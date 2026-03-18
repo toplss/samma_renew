@@ -451,10 +451,10 @@ class PaymentService
             
             // 사용안하는 필드
             'od_cart_count' => 0,
-            'od_cart_price' => (integer) $request->payment,
-            'od_cart_price_change' => (integer) $request->payment,
+            'od_cart_price' => (integer) $pt_sale,
+            'od_cart_price_change' => (integer) $pt_sale,
             'od_cart_coupon' => 0,
-            'od_send_cost'  => 0,
+            'od_send_cost'  => $request->deilivery_cost,
             'od_send_cost2' => 0,
             'od_send_coupon'=> 0,
             'od_coupon'     => 0,

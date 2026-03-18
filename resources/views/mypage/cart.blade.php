@@ -544,7 +544,7 @@ function setting_table(data) {
                   <button type="button" class="sit_qty_minus cart_qty_minus" data-it_id="${it_id}">
                     <img src="/images/icon/minus.svg">
                   </button> 
-                  <input type="text" name="" id="ct_qty_${it_id}" value="${val.ct_qty}" class="cart_ct_qty" >
+                  <input type="text" name="" id="ct_qty_${it_id}" value="${val.ct_qty}" class="cart_ct_qty" readonly>
                   <button type="button" class="sit_qty_plus cart_qty_plus" data-it_id="${it_id}">
                     <img src="/images/icon/plus.svg">
                   </button>

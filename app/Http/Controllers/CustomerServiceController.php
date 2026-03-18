@@ -190,6 +190,7 @@ class CustomerServiceController extends Controller
             'bd_name',
             'bd_ext1',
             'bd_view_count',
+            DB::raw("FROM_UNIXTIME(bd_write_date) as write_time"),
             DB::raw("DATE_FORMAT(FROM_UNIXTIME(bd_write_date), '%Y-%m-%d') as write_date")
         )
         ->orderBy('bd_notice', 'desc')
@@ -1229,6 +1230,11 @@ class CustomerServiceController extends Controller
         if ($request->filled('check_bot')) {
             return redirect()->route('/');
         }        
+
+        //구글봇 자동 등록 방지
+        if ($request->input('contact_company') == 'google') {
+            return redirect()->route('/');
+        }                
 
         $service = app(MallShopService::class);
         $member = $service->getMemberInfo(session('ss_mb_code'));

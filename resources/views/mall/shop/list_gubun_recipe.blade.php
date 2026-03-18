@@ -19,7 +19,8 @@
         {!! $activeSubBanner['mobile'] !!}
       </div>
     </div>
-    {{-- @dd($items['total']); --}}
+    {{-- @dd($items); --}}
+    {{-- @dd($items->total()); --}}
     <div class="recipe-list">
       @foreach ($items as $key => $row)
       @php
@@ -48,7 +49,10 @@
         </li>
       </ul>
       @endforeach
-      ##
+
+      @if($items->total() < 1 )
+      <p class="empty">내역이 없습니다</p>
+      @endif
     </div>
     
     {{ $items->links() }}

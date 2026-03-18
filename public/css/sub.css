@@ -190,6 +190,7 @@
 .recipe-pin{margin-top: auto;}
 .recipe-pin span{border-radius: 0.3rem; padding: 0.2rem 0.3rem; border: 1px solid #ddd; color: #999; font-size: 0.9rem;}
 .recipe-btn input[type=checkbox]{margin-right: 5px;}
+.empty{grid-column: 1 / -1; padding: 40px 0; font-size: 1rem;}
 
 /* 레시피 뷰 */
 .recipe-view-wrap{width: 96%; margin: auto;}
@@ -506,6 +507,7 @@
 .board-list tbody tr:hover{background-color: #f6faf1;}
 .board-list .tit{text-align: left;}
 .board-list .num span{background-color: #f05f5f; color: #fff; border-radius: 0.3rem; padding: 0.15rem 0.3rem;}
+.board-list .new-icon{display: inline-block; width: 15px; vertical-align: bottom;}
 .board-wrap #search_form{margin-top: 2rem;}
 #search_form select{border: 1px solid #eee; padding: 0.3rem;}
 #search_kw{border: 1px solid #eee; padding: 0.4rem;}
@@ -815,6 +817,7 @@
   .qa-table .qa2>div{flex-direction: column;}
   .return-item-table.done tbody{display: block;}
   .board-list .tit span{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 78vw;}
+  .board-list .new-icon{width: 14px;}
 
 }
 

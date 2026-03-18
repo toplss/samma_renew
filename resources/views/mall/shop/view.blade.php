@@ -333,7 +333,7 @@ function buy_box_qty_view(e) {
 
     Swal.fire({
       title: '구매 확인',
-      text: `상품 ${it_name}을(를) ${qty}개 구매하시겠습니까?`,
+      html: `상품 ${it_name}을(를)<br> ${qty}개 구매하시겠습니까?`,
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: '구매',
