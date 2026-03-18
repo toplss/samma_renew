@@ -24,6 +24,7 @@ use Illuminate\Pagination\Paginator;
 use App\Services\ShopCartService;
 use App\Traits\RedisTrait;
 use App\Traits\CommonTrait;
+use DebugBar\DebugBar as DebugBarDebugBar;
 use Illuminate\Support\Facades\DB;
 
 
@@ -36,21 +37,32 @@ class MallShopService
     {
         $arr_member = [];
 
+        /**
+         * Author : Lee Sangseung
+         * Description : 회원정보 캐시제거 (중복 로그인 후 결제시 기존 채권액을 가지고 있어 a 유저 결제후 채권 또는 금액변동 , b 결제금액 변동 감지안됨 ? )
+         * Created Date : 2026-03-18
+         */
+
+        // if ($mb_code) {
+            
+        //     $redis_member_key_generate = $mb_code.':member';
+
+        //     if (Redis::exists($redis_member_key_generate)) {
+            
+        //         $arr_member = $this->getReids($redis_member_key_generate);
+
+        //     } else {
+                
+        //         $arr_member = TbMember::where('mb_code', $mb_code)->get()->toArray()[0];
+
+
+        //         $this->setRedis($redis_member_key_generate, $arr_member);
+        //     }
+        // }
+
         if ($mb_code) {
             
-            $redis_member_key_generate = $mb_code.':member';
-
-            if (Redis::exists($redis_member_key_generate)) {
-            
-                $arr_member = $this->getReids($redis_member_key_generate);
-
-            } else {
-                
-                $arr_member = TbMember::where('mb_code', $mb_code)->get()->toArray()[0];
-
-
-                $this->setRedis($redis_member_key_generate, $arr_member);
-            }
+            $arr_member = TbMember::where('mb_code', $mb_code)->get()->first();
         }
 
 

@@ -279,11 +279,11 @@ $(".sale-item-tab li").click(function () {
   });
 
   // // 상품리스트
-  // if ($(window).width() <= 680) {
-  //   $(".prd-info #buy_box_btn").text("박스");
-  // } else {
-  //   $("#buy_box_btn").text("박스구매");
-  // };
+  if ($(window).width() <= 680) {
+    $(".prd-info #buy_box_btn").text("박스");
+  } else {
+    $("#buy_box_btn").text("박스구매");
+  };
 
   // // 장바구니
   // if ($(window).width() <= 680) {

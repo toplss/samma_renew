@@ -29,7 +29,7 @@
         <tr onclick="location.href='/common_board/view?bd_num={{ $row->bd_num }}'">
           <td class="num">{!! $row->bd_notice == 1 ? '<span>공지</span>' : $row->row_num !!}</td>
           <td class="tit">
-            <span style="color:{{ $row->bd_ext1 }}; cursor:pointer;" >
+            <span style="color:{{ $row->bd_ext1 }};" >
               {{ $row->bd_subject }}
               @if(\Carbon\Carbon::parse($row->write_time)->diffInHours(now()) < 24)
                   <b class="new-icon"><img src="/images/icon/ico_new.png"></b>

@@ -136,6 +136,7 @@ nav{background-color: #f9f9f9; border-top: 1px solid #8ec251; border-bottom: 1px
 .menu{display: flex; max-width: 1280px; width: 96%; margin: auto;  align-items: center; justify-content: space-between; gap: 1rem;}
 .menu>li>a{padding: 10px 0 8px 0; border-bottom: 2px solid transparent;}
 .menu>li.active a{color: #8ec251; border-bottom: 2px solid #8ec251; font-weight: 500;}
+.menu>li>a u{text-decoration: none; background-color: #fab003; color: #fff; padding: 0.2rem 0.3rem; border-radius: 0.3rem;}
 
 .allmenu_box{position: relative;}
 
@@ -360,9 +361,9 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 }
 @media screen and (max-width: 1500px){
 	html{font-size: 13px;}
-	.top-btns{display: grid; grid-template-columns: repeat(2,80px); justify-content: end;}
-	.top-btns>div{width: 80px;}
-	.top-btns button{width: 80px;}
+	.top-btns{display: grid; grid-template-columns: repeat(2,82px); justify-content: end;}
+	.top-btns>div{width: 82px;}
+	.top-btns button{width: 82px;}
 	.top-money{flex-wrap: wrap; gap: 0.3rem;}
 	.top-money li{width: 47%; text-align: left;}
 	.cs_delivery{padding: 0.1rem 0.2rem;}
@@ -388,9 +389,9 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.hide-1280{display: none;}
 	.show-1280{display: block;}
 	/* header */
-	.top-btns{grid-template-columns:repeat(2,70px); gap: 0.3rem;}
-	.top-btns>div{width: 70px;}
-	.top-btns button{width: 70px;}
+	.top-btns{grid-template-columns:repeat(2,75px); gap: 0.3rem;}
+	.top-btns>div{width: 75px;}
+	.top-btns button{width: 75px; padding: 0.3rem;}
 	.top-btns ul{min-width: 75px;}
 	.top-btns ul li{padding: 0.4rem;}
 	.lf-banner{display: none !important;}
@@ -472,7 +473,7 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.item-div .tit_div{flex-basis: auto; order: 2;}
 	.item-div .plate{order: 3; margin-left: auto;}
 	.item-div .plate button img{width: 14px;}
-	.item-div .del{order: 4; margin-left: 3px;}
+	.item-div .del{order: 4; margin-left: 10px;}
 	
 	.pg1{display: none;}
 	.pg2 button{width: 100%;}
@@ -528,6 +529,10 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.cs_delivery{font-size: 0.9rem; padding: 0.1rem;}
 	.cs_delivery_on{font-size: 0.9rem; padding: 0.1rem;}
 	.menu>li>a{padding: 11px 2px 9px 2px;}
+
+	.item-div .plate{padding: 0;}
+	.item-div .plate button img{width: 16px;}
+	.item-div .del{margin-left: 15px;}
 
 
 	/* footer */

@@ -892,8 +892,9 @@
   .cart-table .sit_delete_btn img{width: 2rem; padding: 0 0.25rem;}
   .cart-table-ea .show-820{font-weight: 500; font-size: 0.9rem;}
   .cart-table-ea .flex{gap: 0.3rem;}
-  .cart-table-ea .flex-between{gap: 0.3rem;}
+  .cart-table-ea .flex-between{gap: 0.3rem; flex-direction: column;}
   .cart-table-title div img{width: 38px;}
+  .cart-table .ct-soldout{font-size: 0.9rem;}
 
   .odr-table1 td .btn1{font-size: 0.8rem;}
   .odr-table2 img{width: 35px;}

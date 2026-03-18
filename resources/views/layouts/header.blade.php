@@ -209,7 +209,7 @@
 				<a href="/mall/shop/list_gubun_recipe">레시피보기</a>
 			</li>
 			<li class="{{ request()->is('mall/shop/list_charge') ? 'active' : '' }}">
-				<a href="/mall/shop/list_charge">충전금구매</a>
+				<a href="/mall/shop/list_charge"><u>충전금구매</u></a>
 			</li>
 			<li class="{{ request()->is('public/sub/*') ? 'active' : '' }}">
 				<a href="/public/sub/kitchen_system_01">키친시스템</a>
@@ -287,7 +287,7 @@
 			</tr>
 			<tr>
 				<td><a href="/mall/shop/list_gubun_recipe">레시피보기</a></td>
-				<td><a href="/mall/shop/list_charge">충전금 구매</a></td>
+				<td><a href="/mall/shop/list_charge">충전금구매</a></td>
 				<td><a href="/public/sub/kitchen_system_01">키친시스템</a></td>
 				<td></td>
 			</tr>
