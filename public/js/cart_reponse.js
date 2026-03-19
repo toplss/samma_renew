@@ -206,14 +206,14 @@ function cart_res(data) {
             confirmButtonText: '확인'
         });
     }
-
-    const collapsed = window.innerWidth <= 1500 ? 13 : 15;
-    $('.readmore1').readmore({
-        collapsedHeight: collapsed,
-        moreLink: '<a href="#" class="readmore-btn1"><img src="/images/icon/square-down.svg" alt="더보기"></a>',
-        lessLink: '<a href="#" class="readmore-btn1"><img src="/images/icon/square-up.svg" alt="접기"></a>'
-    });
-    
+    if (window.innerWidth > 820) {
+        const collapsed = window.innerWidth <= 1500 ? 13 : 15;
+        $('.readmore1').readmore({
+            collapsedHeight: collapsed,
+            moreLink: '<a href="#" class="readmore-btn1"><img src="/images/icon/square-down.svg" alt="더보기"></a>',
+            lessLink: '<a href="#" class="readmore-btn1"><img src="/images/icon/square-up.svg" alt="접기"></a>'
+        });
+    }
 }
 
 

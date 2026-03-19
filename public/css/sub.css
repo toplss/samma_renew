@@ -49,8 +49,8 @@
 .prd-img{border: 1px solid #f5f5f5; border-radius: 0.5rem; overflow: hidden; position: relative; aspect-ratio: 1 / 1;}
 .prd-img img{height: 100%; object-fit: contain}
 .prd-img.sold-out::after{content: "SOLD OUT"; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 2rem; text-align: center;}
-.prd-img ._new,.prd-img .best,.prd-img .event , .prd-img .mygrang, .prd-img .vivacook, .prd-img .bargain{position: absolute; top: 0; right: 7px; border-radius: 0 0 7px 7px; padding: 0.3rem;}
-
+.prd-img ._new,.prd-img .best,.prd-img .event , .prd-img .mygrang, .prd-img .vivacook, .prd-img .bargain{position: absolute; top: 0; left: 6px; border-radius: 0 0 7px 7px; padding: 0.3rem;}
+.prd-img .room_temp,.prd-img .low_temp,.prd-img .frozen_temp{position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; color: #fff; width: 42px; height: 42px; border-radius: 40px; font-size: 0.8rem;}
 
 
 .Qua{border: 1px solid #f5f5f5; display: flex; justify-content: space-around; align-items: center; border-radius: 0.5rem; position:relative; overflow: hidden;}
@@ -71,6 +71,7 @@
 #buy_box_btn{padding: 0.2rem 0.5rem; font-size: 0.9rem;}
 .prd-info .pin{margin-left: auto;}
 .prd-info .pin span{border-radius: 30px; padding: 0.2rem 0.4rem; color: #fff; display: inline-block; font-size: 0.9rem;}
+.prd-info .low_temp,.prd-info .frozen_temp{display: none !important;}
 .prd-check{display: none;}  /* 리스트 형식일때만 보임 */
 
 .prd-name{font-size: 1.1rem; font-weight: 500; line-height: 1.4rem; word-break: break-word; overflow-wrap: anywhere; /* safari 깨짐 방어 */}
@@ -102,7 +103,9 @@
 .prd-list.type-row .Qua .add-to-cart{background-color: #8ec251; color: #fff; padding: 0.5rem; border-radius: 0.3rem;}
 .prd-list.type-row .Qua-equip{order: 5;}
 .prd-list.type-row .prd-img.sold-out::after{font-size: 1.5rem;}
-.prd-list.type-row .prd-img ._new,.prd-list.type-row .prd-img .best,.prd-list.type-row .prd-img .event,.prd-list.type-row .prd-img .mygrang,.prd-list.type-row .prd-img .vivacook,.prd-list.type-row .prd-img .bargain{font-size: 0.8rem; padding: 0.2rem; right: 2px;}
+.prd-list.type-row .prd-img ._new,.prd-list.type-row .prd-img .best,.prd-list.type-row .prd-img .event,.prd-list.type-row .prd-img .mygrang,.prd-list.type-row .prd-img .vivacook,.prd-list.type-row .prd-img .bargain{font-size: 0.8rem; padding: 0.2rem; left: 2px;}
+.prd-list.type-row .low_temp,.prd-list.type-row .frozen_temp{display: none;}
+.prd-list.type-row .prd-info .low_temp,.prd-list.type-row .prd-info .frozen_temp{display: inline-block !important;}
 
 
 
@@ -113,16 +116,17 @@
 .prd-view-title h3{font-size: 1.5rem;}
 .prd-view-title p{color: #777; font-size: 1.1rem; margin: 0.5rem auto;}
 .prd-view-img{border-radius: 1rem; overflow: hidden; border: 1px solid #f5f5f5;}
-.pv-img{padding: 3rem; aspect-ratio: 1 / 1; overflow: hidden;}
+.pv-img{padding: 3rem; aspect-ratio: 1 / 1; overflow: hidden; position: relative;}
 .pv-img img{height: 100%; object-fit: contain;}
-.prd-view-img .sold-out{position: relative;}
-.prd-view-img .sold-out:after{content: "SOLD OUT"; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 5rem; text-align: center;}
+.pv-img .room_temp,.pv-img .low_temp,.pv-img .frozen_temp{position: absolute; top: 12px; right: 12px; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; color: #fff; width: 80px; height: 80px; border-radius: 80px; font-size: 1rem;}
+.pv-img .room_temp>img,.pv-img .low_temp>img,.pv-img .frozen_temp>img{width: 45px;}
+.pv-img.sold-out:after{content: "SOLD OUT"; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 5rem; text-align: center;}
 
 .prd-view-price{border-bottom: 1px solid #ddd; padding-bottom: 1rem; margin:2rem auto;}
 .view-discount{font-size: 1.5rem; font-weight: 600;}
 .view-discount b{font-weight: 600; color: #da2727; margin-right: 5px;}
 .view-price{font-size: 1.5rem; font-weight: 600;}
-.view-price.dis{text-decoration: line-through; color: #999; font-size: 1.3rem; font-weight: 500;}
+.view-price-dis{text-decoration: line-through; color: #999; font-size: 1.3rem; font-weight: 500; margin-bottom: 2px;}
 
 .prd-view-price table{width: 100%; margin-top: 2rem;}
 .prd-view-price table th{font-weight: 400; width: 30%; padding: 0.5rem 0;}
@@ -148,6 +152,7 @@
 
 .price-view-detail p{color: #999; line-height: 1.6rem;}
 .price-view-detail span{padding: 0.2rem 0.6rem; border-radius: 30px; color: #fff; margin-right: 5px;}
+.price-view-detail table .room_temp{display: inline-block !important;}
 
 
 /* 추천상품 슬라이드 */
@@ -516,7 +521,7 @@
 .board-title{border-top: 2px solid #333; border-bottom: 1px solid #ddd; padding: 1.5rem 1rem;}
 .board-title h6{font-size: 1.3rem; margin-bottom: 0.5rem;}
 .board-title ul{display: flex; gap: 1.5rem;}
-.board-content{padding: 2rem 1rem; border-bottom: 1px solid #ddd;}
+.board-content{padding: 2rem 1rem; border-bottom: 1px solid #ddd; overflow-x: auto;}
 .board-content img{width: auto; max-width: 100%;}
 .board-attachment{padding: 1rem 0.8rem; border-bottom: 1px solid #ddd;}
 .board-attachment li{border: 1px solid #ddd; margin-bottom: 0.5rem; padding: 0.5rem; border-radius: 0.5rem;}
@@ -622,6 +627,10 @@
   .pay-item-table td img{width: 36px;}
   .recom-wrap h3{font-size: 1.3rem; margin-bottom: 1rem;}
   .Qua-equip>p>img{width: 16px;}
+  .prd-img .room_temp,.prd-img .low_temp,.prd-img .frozen_temp{top: 6px; right: 6px;width: 40px; height: 40px;}
+	.room_temp>img,.low_temp>img,.frozen_temp>img{width: 20px;}
+  .pv-img .room_temp,.pv-img .low_temp,.pv-img .frozen_temp{top: 9px; right: 9px; width: 70px; height: 70px;}
+  .pv-img .room_temp>img,.pv-img .low_temp>img,.pv-img .frozen_temp>img{width: 38px;}
 }
 @media screen and (max-width: 1280px){
   .sub-title-wrap h4{font-size: 1.2rem;}
@@ -716,7 +725,7 @@
   .prd-list.type-row .prd-img.sold-out::after{font-size: 1.1rem;}
   .prd-view-title h3{font-size: 1.3rem;}
   .prd-list.type-row .prd-img ._new,.prd-list.type-row .prd-img .best,.prd-list.type-row .prd-img .event,.prd-list.type-row .prd-img .mygrang,.prd-list.type-row .prd-img .vivacook,.prd-list.type-row .prd-img .bargain{display: none;}
-  .prd-img ._new,.prd-img .best,.prd-img .event,.prd-img .mygrang,.prd-img .vivacook,.prd-img .bargain{right: 4px;}
+  .prd-img ._new,.prd-img .best,.prd-img .event,.prd-img .mygrang,.prd-img .vivacook,.prd-img .bargain{left: 4px;}
   .prd-view-img .sold-out:after{font-size: 3rem;}
 
   .login-wrap ul{margin: 2rem auto;}
@@ -759,6 +768,7 @@
   .prd-view-img .sold-out:after{font-size: 6rem;}
   .charge-list{gap: 0.5rem;}
   .Qua-login{font-size: 0.9rem;}
+  #buy_box_btn{padding: 0.1rem 0.3rem;}
 
   .recipe-search form{width: auto;}
   .recipe-list{grid-template-columns: repeat(4,1fr); gap: 1rem 0.5rem;}
@@ -816,8 +826,9 @@
   .qa-wrap .qbtns button{padding: 0.3rem 0.6rem;}
   .qa-table .qa2>div{flex-direction: column;}
   .return-item-table.done tbody{display: block;}
-  .board-list .tit span{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 78vw;}
-  .board-list .new-icon{width: 14px;}
+  .board-list .tit span{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 78vw;}
+  .board-list .new-icon{width: 14px; vertical-align: unset;}
+
 
 }
 
@@ -837,6 +848,8 @@
   .prd-name{font-size: 0.95rem;}
   .prd-name .ea{font-weight: 400; font-size: 0.85rem;}
   .prd-check input[type=checkbox]{accent-color: #8ec251;}
+	.prd-img .room_temp,.prd-img .low_temp,.prd-img .frozen_temp{top: 4px; right: 4px; width: 34px; height: 34px; font-size: 0.7rem;}
+	.room_temp>img,.low_temp>img,.frozen_temp>img{width: 17px;} 
 
   .Qua-equip>p{font-size: 0.9rem; padding: 0.3rem 0; gap: 1px;}
   .Qua-equip>p>img{width: 14px;}

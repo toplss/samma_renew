@@ -89,6 +89,8 @@ main{margin: 0.5rem auto;}
 #mc1 ul li:nth-child(-n+3) b{background-color: #8ec251;}
 #mc3 ul li{margin-bottom: 1rem;}
 #mc3 ul li:last-child{margin-bottom: 0;}
+#mc3 li .new-icon{display: inline-block; width: 15px;}
+#mc3 li a span{overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 23.5vw;}
 #mc5 h2{margin-bottom: 1rem;}
 
 .sale-item-tab{display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; position: relative; text-align: center;}
@@ -165,7 +167,9 @@ main{margin: 0.5rem auto;}
   #mc7{order: 7;}
 
   #mc1 ul b{width: 13px;}
+  #mc3 li a span{max-width: 29.6vw;}
   .review-slide p{line-clamp: 3; -webkit-line-clamp: 3;}
+  
 }
 
 @media screen and (max-width: 1024px){
@@ -174,6 +178,7 @@ main{margin: 0.5rem auto;}
   .right-box{order: 1;}
   .m-pop-slide{display: block; width: 300px;}
   #mc4{height: 35vw;}
+  #mc3 li a span{max-width: 40vw;}
   .m-pop-btn{margin-top: 0;}
 }
 
@@ -201,8 +206,12 @@ main{margin: 0.5rem auto;}
   #mc8,#mc9{grid-column: 1 / span 10; padding: 0.6rem;}
   #mc1 ul li:nth-of-type(n+4){display: none;}
   #mc3 ul li:nth-of-type(n+5){display: none;}
+  #mc3 li a span{max-width: 84vw;}
+  #mc5 h2{margin-bottom: 0.7rem;}
+  #mc5 h2,#mc6 h2{margin-top: 0.6rem;}
 
-  .sale-item-tab li{padding: 0.5rem 0.1rem; min-height: auto;}
+ 
+  .sale-item-tab li{padding: 0.5rem 0.1rem; min-height: auto; font-size: 0.95rem;}
 
   .sale-item-list{padding: 0.4rem;}
   .sale-item-list ul{gap: 0.1rem;}

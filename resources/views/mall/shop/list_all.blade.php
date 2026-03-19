@@ -48,8 +48,14 @@
         $image_url = 'images/item/'.$row['it_img1'];
         @endphp
             <ul class="prd-box" data-item="{{ $it_id }}">
+                @php
+                    $timpArr = ['1' => 'room_temp', '3' => 'low_temp', '2' => 'frozen_temp'];
+                @endphp
                 @if(!empty($row['it_img1']) && file_exists(public_path($image_url)))
-                <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset($image_url) }}"></li>
+                <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; ">
+                    <img src="{{ asset($image_url) }}">
+                    <span class="{{ isset($timpArr[$row['it_storage']]) ? $timpArr[$row['it_storage']] : '' }}"><img src="{{ asset('images/icon/snow.svg') }}">{{ $row['it_storage_label'] }}</span>
+                </li>
                 @else
                 <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset('images/common/no_image.gif') }}"></li>
                 @endif
@@ -81,10 +87,7 @@
                         @endif
                     @endif
                     <p class="pin">
-                        @php
-                        $timpArr = ['1' => 'room_temp', '3' => 'low_temp', '2' => 'frozen_temp'];
-                        @endphp
-                        <span class="{{ isset($timpArr[$row['it_storage']]) ? $timpArr[$row['it_storage']] : '' }}">{{ $row['it_storage_label'] }}</span><!-- 상온:room_temp, 냉장:low_temp 냉동:frozen-temp  -->
+                        <span class="{{ isset($timpArr[$row['it_storage']]) ? $timpArr[$row['it_storage']] : '' }}">{{ $row['it_storage_label'] }}</span>
                         <span class="{{ $row['it_return_label'] == '반품가능' ? 'return_o' : 'return_x' }}">{{ $row['it_return_label'] }}</span>
                     </p>
                 </li>

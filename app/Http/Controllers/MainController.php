@@ -66,7 +66,7 @@ class MainController extends Controller
 
             $resArr = [
                 'rank_order'  => ShopCart::rankOrderList(), # 자주 주문한 상품
-                'notice'      => TbBbsBody::getMainNoticeList(),  # 공지사항
+                // 'notice'      => TbBbsBody::getMainNoticeList(),  # 공지사항
                 'vivacook'    => $vivacook, # 베스트 리뷰,
                 'popular_product' => app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'hit', 'scale' => '50']))->items(), # 인기상품
                 'event_product' => app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'event', 'scale' => '50']))->items(), # 이달의행사
@@ -139,6 +139,7 @@ class MainController extends Controller
                 }
             }
 
+            $resArr['notice']      = TbBbsBody::getMainNoticeList();  # 공지사항
             $resArr['main_top']    = $banner_service->makeBannerDiv($main_top, 'grid-item');
             $resArr['m_main_top']  = $banner_service->makeBannerDiv($m_main_top, 'grid-item');
             $resArr['main_middle'] = $banner_service->makeBannerDiv($main_middle, 'N');

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TbErpFile;
+use Illuminate\Support\Facades\DB;
 
 class TbBbsBody extends Model
 {
@@ -34,7 +35,13 @@ class TbBbsBody extends Model
      */
     public static function getMainNoticeList()
     {
-        return self::select(['bd_num', 'bd_ext1', 'bd_subject'])
+        // return self::select(['bd_num', 'bd_ext1', 'bd_subject'])
+        return self::select([
+            'bd_num',
+            'bd_ext1',
+            'bd_subject',
+            DB::raw('FROM_UNIXTIME(bd_write_date) as write_time')
+        ])        
         ->where('bbs_code', 'notice')
         ->where('bd_delete', '0')
         ->where('bd_notice', '1')

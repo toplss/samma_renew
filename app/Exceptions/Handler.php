@@ -5,6 +5,8 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Illuminate\Session\TokenMismatchException;
+
 
 use Throwable;
 
@@ -60,10 +62,15 @@ class Handler extends ExceptionHandler
             return parent::render($request, $exception);
         }
 
-        $url = url()->previous() ?? '/';
 
-        return redirect($url)
-            ->with('error', $exception->getMessage());
+        // ============================
+        // 419 (CSRF)
+        // ============================
+        if ($exception instanceof TokenMismatchException) {
+            return redirect('/')
+                ->with('message', '세션이 만료되었습니다.');
+        }
+
 
         // ============================
         // Validation Exception
@@ -74,6 +81,7 @@ class Handler extends ExceptionHandler
                 ->withErrors($exception->errors())
                 ->withInput();
         }
+        
 
         // ============================
         // abort(), 404, 403 예외는 view 유지
@@ -83,10 +91,13 @@ class Handler extends ExceptionHandler
             return parent::render($request, $exception);
         }
 
+
         // ============================
         // 일반 WEB Exception → error-alert
         // ============================
+        $url = url()->previous() ?? '/';
         return redirect($url)
             ->with('error', $exception->getMessage());
+            
     }
 }

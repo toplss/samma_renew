@@ -193,8 +193,19 @@
   <div class="main-container" id="mc3">
     <h2>공지사항<small onclick="location.href = '/common_board/list?bbs_code=notice';" style="cursor: pointer;">더보기+</small></h2>
     <ul>
+{{-- @dd($notice); --}}
+
       @foreach($notice as $key => $row)
-      <li><a href="/common_board/view?bbs_code=notice&bd_num={!! $row['bd_num'] !!}"><span style="color:{!! $row['bd_ext1'] !!}">{{ $row['bd_subject'] }}</span></a></li>
+      <li>
+        <a href="/common_board/view?bbs_code=notice&bd_num={!! $row['bd_num'] !!}">
+          <span style="color:{!! $row['bd_ext1'] !!}">
+            {{ $row['bd_subject'] }}
+          </span>
+          @if(\Carbon\Carbon::parse($row['write_time'])->diffInHours(now()) < 24)
+            <b class="new-icon"><img src="/images/icon/ico_new.png"></b>
+          @endif  
+        </a>
+      </li>
       @endforeach
     </ul>
 

@@ -27,10 +27,20 @@
       $image_url = 'images/item/'.$items['it_img1'];
       $images_visiable = file_exists($image_url);
       @endphp
+
+      @php
+      $timpArr = ['1' => 'room_temp', '3' => 'low_temp', '2' => 'frozen_temp', '4' => ''];
+      @endphp
+
       @if(file_exists(public_path($image_url)) && $items['it_img1'])
-      <div class="pv-img {{ $sold_out ? 'sold-out' : '' }}"><img src="{{ asset($image_url) }}"></div>
+      <div class="pv-img {{ $sold_out ? 'sold-out' : '' }}">
+        <img src="{{ asset($image_url) }}">
+        <span class="{{ $timpArr[$items['it_storage']] }}"><img src="{{ asset('images/icon/snow.svg') }}">{{ $items['it_storage_label'] }}</span>
+      </div>
       @else
-      <div class="pv-img {{ $sold_out ? 'sold-out' : '' }}"><img src="{{ asset('images/common/no_image.gif') }}"></div>
+      <div class="pv-img {{ $sold_out ? 'sold-out' : '' }}">
+        <img src="{{ asset('images/common/no_image.gif') }}">
+      </div>
       @endif
     </div>
 
@@ -57,7 +67,7 @@
         @if ($cust_price > 0)
         <input type="hidden" class="it_price" value="{{ $price }}" />
         <input type="hidden" class="org_it_price" value="{{ $row_list_cust_it_price }}" />
-        <p class="view-price dis">{{ number_format($row_list_cust_it_price) }}원</p>
+        <p class="view-price-dis">{{ number_format($row_list_cust_it_price) }}원</p>
         <p class="view-discount"><b class="d-rate">{{ $items['it_cust_rate'] }}%</b><span class="field_it_price_">{{ number_format($row_list_field_it_price) }}원</span></p>
         @else
         <input type="hidden" class="it_price" value="{{ $price }}" />
@@ -132,9 +142,7 @@
       </div>
       @endif
 
-      @php
-      $timpArr = ['1' => 'room_temp', '3' => 'low_temp', '2' => 'frozen_temp', '4' => ''];
-      @endphp
+
       <div class="price-view-detail">
         <table>
           <tr>
@@ -147,7 +155,10 @@
           </tr>
           <tr>
             <th>보관/반품유형</th>
-            <td><span class="{{ $timpArr[$items['it_storage']] }}">{{ $items['it_storage_label'] }}</span><span class="{{ $items['it_return_label'] == '반품가능' ? 'return_o' : 'return_x' }}">{{ $items['it_return_label'] }}</span></td>
+            <td>
+              <span class="{{ $timpArr[$items['it_storage']] }}">{{ $items['it_storage_label'] }}</span>
+              <span class="{{ $items['it_return_label'] == '반품가능' ? 'return_o' : 'return_x' }}">{{ $items['it_return_label'] }}</span>
+            </td>
           </tr>
           <tr>
             <th>낱개바코드</th>

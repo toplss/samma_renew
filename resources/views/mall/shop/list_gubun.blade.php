@@ -50,6 +50,9 @@
 
         @endphp
             <ul class="prd-box" data-item="{{ $it_id }}">
+                @php
+                    $timpArr = ['1' => 'room_temp', '3' => 'low_temp', '2' => 'frozen_temp', '4' => ''];
+                @endphp
                 @if(file_exists(public_path($image_url)) && $row['it_img1'])
                 <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; ">
                     <img src="{{ asset($image_url) }}">
@@ -58,6 +61,7 @@
                         @case('best') <span class="best">베스트</span> @break;
                         @case('sale') <span class="event">이달의행사</span> @break;
                     @endswitch
+                    <span class="{{ $timpArr[$row['it_storage']] }}"><img src="{{ asset('images/icon/snow.svg') }}">{{ $row['it_storage_label'] }}</span>
                 </li>
                 @else
                 <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; ">
@@ -94,10 +98,7 @@
                         @endif
                     @endif
                     <p class="pin">
-                        @php
-                        $timpArr = ['1' => 'room_temp', '3' => 'low_temp', '2' => 'frozen_temp', '4' => ''];
-                        @endphp
-                        <span class="{{ $timpArr[$row['it_storage']] }}">{{ $row['it_storage_label'] }}</span><!-- 상온:room_temp, 냉장:low_temp 냉동:frozen_temp  -->
+                        <span class="{{ $timpArr[$row['it_storage']] }}">{{ $row['it_storage_label'] }}</span>
                         <span class="{{ $row['it_return_label'] == '반품가능' ? 'return_o' : 'return_x' }}">{{ $row['it_return_label'] }}</span>
                     </p>
                 </li>
