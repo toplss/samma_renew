@@ -103,6 +103,7 @@ class ShopCartService
                 END AS it_gubun_label
             "),
             'g5_shop_item.it_return',
+            'g5_shop_item.it_return_use',
             DB::raw("
                 CASE 
                     WHEN g5_shop_item.it_return = '1' THEN '반품가능'
@@ -334,6 +335,7 @@ class ShopCartService
                 END AS it_gubun_label
             "),
             'g5_shop_item.it_return',
+            'g5_shop_item.it_return_use',
             DB::raw("
                 CASE 
                     WHEN g5_shop_item.it_return = '1' THEN '반품가능'
@@ -622,6 +624,7 @@ class ShopCartService
             'g5_shop_item.it_img1',
             'g5_shop_item.it_img1_url',
             'g5_shop_item.it_explan',
+            'g5_shop_item.it_return_use',
 
             'g5_shop_item_cust_log.it_price1 as cust_price1',
             'g5_shop_item_cust_log.it_price2 as cust_price2',

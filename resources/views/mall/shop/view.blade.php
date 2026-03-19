@@ -154,10 +154,17 @@
             <td><span class="{{ $timpArr[$items['it_storage']] }}">{{ $items['it_storage_label'] }}제품</span></td>
           </tr>
           <tr>
+            @if($items['it_return_use'] == '1')
             <th>보관/반품유형</th>
+            @else
+            <th>보관</th>
+            @endif
             <td>
               <span class="{{ $timpArr[$items['it_storage']] }}">{{ $items['it_storage_label'] }}</span>
+              
+              @if($items['it_return_use'] == '1')
               <span class="{{ $items['it_return_label'] == '반품가능' ? 'return_o' : 'return_x' }}">{{ $items['it_return_label'] }}</span>
+              @endif
             </td>
           </tr>
           <tr>

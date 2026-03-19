@@ -91,9 +91,12 @@
                         <button type="button" class="btn2" id="buy_box_btn" onclick="buy_box_qty(this)">박스구매</button>
                         @endif
                     @endif
+
                     <p class="pin">
                         <span class="{{ $timpArr[$row['it_storage']] }}">{{ $row['it_storage_label'] }}</span>
+                        @if($row['it_return_use'] == '1')
                         <span class="{{ $row['it_return_label'] == '반품가능' ? 'return_o' : 'return_x' }}">{{ $row['it_return_label'] }}</span>
+                        @endif
                     </p>
                 </li>
                 <li class="prd-name">

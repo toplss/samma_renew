@@ -26,6 +26,7 @@ class ShopItemService
                 END AS it_gubun_label
             "),
             'g5_shop_item.it_return',
+            'g5_shop_item.it_return_use',
             DB::raw("
                 CASE 
                     WHEN g5_shop_item.it_return = '1' THEN '반품가능'

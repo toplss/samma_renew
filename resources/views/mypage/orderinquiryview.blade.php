@@ -213,10 +213,20 @@
                 "3"=>"<span class='low_temp'>냉장</span>",
                 "4"=>""
               );
-              $it_return_str = array(
-                "1"=>"<span class='return_o'>반품가능</span>",
-                "2"=>"<span class='return_x'>반품불가</span>"
-              );
+
+              if ($row->it_return_use == '1') {
+                $it_return_str = array(
+                  "1"=>"<span class='return_o'>반품가능</span>",
+                  "2"=>"<span class='return_x'>반품불가</span>"
+                );
+
+              } else {
+                $it_return_str = array(
+                  "1"=>"",
+                  "2"=>""
+                );
+              }
+              
             @endphp
             {!! $it_storage_str[$row->it_storage] !!}{!! $it_return_str[$row->it_return] !!}
           </td>

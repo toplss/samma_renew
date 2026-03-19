@@ -87,15 +87,21 @@
 
                 <p class="show-820">
                   <span class="{{ $timpArr[$row['it_storage']] }}">{{ $row['it_storage_label'] }}</span>
+                  @if($row['it_return_use'] == '1')
                   <span class="{{ $row['it_return_label'] == '반품가능' ? 'return_o' : 'return_x' }}">{{ $row['it_return_label'] }}</span>
+                  @endif
                 </p> 
               </h6>           
             </div>  
           </td>
+
           <td class="cart-table-type hide-820">
             <span class="{{ $timpArr[$row['it_storage']] }}">{{ $row['it_storage_label'] }}</span>
+            @if($row['it_return_use'] == '1')
             <span class="{{ $row['it_return_label'] == '반품가능' ? 'return_o' : 'return_x' }}">{{ $row['it_return_label'] }}</span>
+            @endif
           </td>
+
           <td class="cart-table-price hide-820">{{ number_format($row['ct_price']) }}원</td>
           <!-- 수량 (모바일 O) -->
           <td class="cart-table-ea">
@@ -487,42 +493,85 @@ function setting_table(data) {
           var tempArr = {'1' : 'room_temp', '3' : 'low_temp', '2' : 'frozen_temp', '4' : ''};
           var it_id   = val.it_id;
           var tempClass = (val.it_return_label == '반품가능') ? 'return_o' : 'return_x';
+          var it_return_use = val.it_return_use;
 
-          tbody_html += `
-          <td class="cart-table-check">
-            <label for="ct_chk_0">
-              <input type="checkbox" name="ct_chk[]" value="${val.it_id}" class="ct_chk">
-            </label>
-          </td>
-          <td class="cart-table-num hide-820">${index}</td>
-          <td class="cart-table-title">
-            <input type="hidden" class="it_gubun" value="${val.it_gubun}" />
-            <input type="hidden" class="it_box_sale_pcs" value="${val.it_box_sale_pcs}" />
-            <input type="hidden" class="it_box_sale_pack" value="${val.it_box_sale_pack}" />
-            <input type="hidden" class="it_box_sale_tot" value="${val.it_box_sale_tot}" />                
+          if (it_return_use == '1') {
+              tbody_html += `
+            <td class="cart-table-check">
+              <label for="ct_chk_0">
+                <input type="checkbox" name="ct_chk[]" value="${val.it_id}" class="ct_chk">
+              </label>
+            </td>
+            <td class="cart-table-num hide-820">${index}</td>
+            <td class="cart-table-title">
+              <input type="hidden" class="it_gubun" value="${val.it_gubun}" />
+              <input type="hidden" class="it_box_sale_pcs" value="${val.it_box_sale_pcs}" />
+              <input type="hidden" class="it_box_sale_pack" value="${val.it_box_sale_pack}" />
+              <input type="hidden" class="it_box_sale_tot" value="${val.it_box_sale_tot}" />                
 
-            <div>
-                <img src="${image_url}">
-                <h6>
-                  <span class="my_cart_it_name_short">${val.it_name}</span>
-                  <p class="show-820">
-                    <span class="${tempArr[val.it_storage]}">${val.it_storage_label}</span>
-                    <span class="${tempClass}">${val.it_return_label}</span>
-                  </p>
-                </h6>              
-            </div>
-          </td>
-          `;
+              <div>
+                  <img src="${image_url}">
+                  <h6>
+                    <span class="my_cart_it_name_short">${val.it_name}</span>
+                    <p class="show-820">
+                      <span class="${tempArr[val.it_storage]}">${val.it_storage_label}</span>
+                      <span class="${tempClass}">${val.it_return_label}</span>
+                    </p>
+                  </h6>              
+              </div>
+            </td>
+            `;
+
+          } else {
+            tbody_html += `
+            <td class="cart-table-check">
+              <label for="ct_chk_0">
+                <input type="checkbox" name="ct_chk[]" value="${val.it_id}" class="ct_chk">
+              </label>
+            </td>
+            <td class="cart-table-num hide-820">${index}</td>
+            <td class="cart-table-title">
+              <input type="hidden" class="it_gubun" value="${val.it_gubun}" />
+              <input type="hidden" class="it_box_sale_pcs" value="${val.it_box_sale_pcs}" />
+              <input type="hidden" class="it_box_sale_pack" value="${val.it_box_sale_pack}" />
+              <input type="hidden" class="it_box_sale_tot" value="${val.it_box_sale_tot}" />                
+
+              <div>
+                  <img src="${image_url}">
+                  <h6>
+                    <span class="my_cart_it_name_short">${val.it_name}</span>
+                    <p class="show-820">
+                      <span class="${tempArr[val.it_storage]}">${val.it_storage_label}</span>
+                    </p>
+                  </h6>              
+              </div>
+            </td>
+            `;
+          }
+          
         
-          tbody_html += `
-          <td class="cart-table-type hide-820">
-            <span class="${tempArr[val.it_storage]}">${val.it_storage_label}</span>
-            <span class="${tempClass}">${val.it_return_label}</span>
-          </td>
-          <td class="cart-table-price hide-820">${val.ct_price.toLocaleString()}원</td>
-          <td class="cart-table-ea">
-            <span class="show-820" id="mobile_pt_sales_${it_id}">
-          `;
+          if (it_return_use == '1') {
+            tbody_html += `
+            <td class="cart-table-type hide-820">
+              <span class="${tempArr[val.it_storage]}">${val.it_storage_label}</span>
+              <span class="${tempClass}">${val.it_return_label}</span>
+            </td>
+            <td class="cart-table-price hide-820">${val.ct_price.toLocaleString()}원</td>
+            <td class="cart-table-ea">
+              <span class="show-820" id="mobile_pt_sales_${it_id}">
+            `;
+
+          } else {
+            tbody_html += `
+            <td class="cart-table-type hide-820">
+              <span class="${tempArr[val.it_storage]}">${val.it_storage_label}</span>
+            </td>
+            <td class="cart-table-price hide-820">${val.ct_price.toLocaleString()}원</td>
+            <td class="cart-table-ea">
+              <span class="show-820" id="mobile_pt_sales_${it_id}">
+            `;
+          }
+          
 
             if(val.it_soldout == '1' || val.it_force_soldout == '10') {
               tbody_html += ``;

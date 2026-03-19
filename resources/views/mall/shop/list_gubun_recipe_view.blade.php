@@ -172,7 +172,9 @@
                     $timpArr = ['1' => 'room_temp', '3' => 'low_temp', '2' => 'frozen_temp', '4' => ''];
                     @endphp
                     <span class="{{ $timpArr[$row['it_storage']] }}">{{ $row['it_storage_label'] }}</span><!-- 상온:room_temp, 냉장:low_temp 냉동:frozen-temp  -->
+                    @if($row['it_return_use'] == '1')
                     <span class="return_o">{{ $row['it_return_label'] }}</span>
+                    @endif
                 </p>
             </li>
             <li class="prd-name">

@@ -458,6 +458,7 @@ class MyPageController extends Controller
                     'si.it_img1',
                     'si.it_storage',
                     'si.it_return',
+                    'si.it_return_use',
                     'si.it_basic'
                 )
                 ->where('sc.od_id', $oid)

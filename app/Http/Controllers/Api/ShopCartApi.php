@@ -250,6 +250,7 @@ class ShopCartApi extends Controller
                 'si.it_box_sale_pcs',
                 'si.it_box_sale_pack',
                 'si.it_box_sale_tot',
+                'si.it_return_use',
                 DB::raw("CONCAT('') as it_price_piece_use"),
                 DB::raw("CONCAT('') as it_cust_price"),
                 DB::raw("

@@ -37,7 +37,9 @@ if ($activeMember) {
         @endif
         <li class="recom-pin">
         <span class="{{ $timpArr[$row['it_storage']] }}">{{ $row['it_storage_label'] }}</span>
+        @if($row['it_return_use'] == '1')
         <span class="{{ $row['it_return_label'] == '반품가능' ? 'return_o' : 'return_x' }}">{{ $row['it_return_label'] }}</span>
+        @endif
         </li>
         <li class="recom-name">{{ $row['it_name'] }}</li>
         <li class="recom-ea">{{ $row['it_basic'] }}</li>
