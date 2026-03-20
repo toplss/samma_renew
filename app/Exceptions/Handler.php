@@ -55,13 +55,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        // ============================
-        // 개발환경은 기본 에러 유지
-        // ============================
-        if (!app()->isProduction()) {
-            return parent::render($request, $exception);
-        }
-
 
         // ============================
         // 419 (CSRF)
@@ -69,6 +62,14 @@ class Handler extends ExceptionHandler
         if ($exception instanceof TokenMismatchException) {
             return redirect('/')
                 ->with('message', '세션이 만료되었습니다.');
+        }
+
+
+        // ============================
+        // 개발환경은 기본 에러 유지
+        // ============================
+        if (!app()->isProduction()) {
+            return parent::render($request, $exception);
         }
 
 

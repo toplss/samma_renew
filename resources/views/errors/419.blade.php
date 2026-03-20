@@ -2,6 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0;url={{ url('/') }}">
+
     <title>페이지 만료</title>
     <style>
         @font-face {

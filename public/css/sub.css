@@ -172,8 +172,9 @@
 .recom-item-list li:last-of-type button{width: 39%;}
 .recom-item-list .qa_btn{width: 80% !important;}
 .recom-item-list .Qua-login{background-color: #f9f9f9; border-radius: 0.3rem; margin-top: 0.2rem;}
-.recom-img{aspect-ratio: 1 / 1; overflow: hidden; cursor: pointer;}
+.recom-img{aspect-ratio: 1 / 1; overflow: hidden; cursor: pointer; position: relative;}
 .recom-img img{height: 100%; object-fit: contain;}
+.recom-img .room_temp,.recom-img .low_temp,.recom-img .frozen_temp{position: absolute; top: 0; right: 0; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; color: #fff; width: 42px; height: 42px; border-radius: 40px; font-size: 0.8rem;}
 .recom-pin span{margin-right: 3px; color: #fff; border-radius: 30px; padding: 0.2rem 0.4rem; font-size: 0.8rem; display: inline-block;}
 .recom-name{font-weight: 500; margin-top: 0.5rem; min-height: 40px; word-break: break-word; overflow-wrap: anywhere;}
 .recom-ea{color: #777; font-size: 0.9rem; margin-top: 0.2rem;}
@@ -631,6 +632,7 @@
 	.room_temp>img,.low_temp>img,.frozen_temp>img{width: 20px;}
   .pv-img .room_temp,.pv-img .low_temp,.pv-img .frozen_temp{top: 9px; right: 9px; width: 70px; height: 70px;}
   .pv-img .room_temp>img,.pv-img .low_temp>img,.pv-img .frozen_temp>img{width: 38px;}
+  .recom-img .room_temp,.recom-img .low_temp,.recom-img .frozen_temp{width: 38px; height: 38px;}
 }
 @media screen and (max-width: 1280px){
   .sub-title-wrap h4{font-size: 1.2rem;}
@@ -880,6 +882,7 @@
 
   .recom-item-slide1,.recom-item-slide2{margin: 0 -0.3rem;}
   .recom-item-list{margin: 0 0.3rem;}
+  .recom-img .room_temp, .recom-img .low_temp, .recom-img .frozen_temp{width: 33px; height: 33px; font-size: 0.7rem;}
 
   .recipe-search form input{width: 150px;}
   .recipe-btn{display: none;}

@@ -145,7 +145,7 @@ main{margin: 0.5rem auto;}
 /* 메인 팝업 */
 .main-popup{position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.3); overflow: hidden; z-index: 40;}
 .m-pop-content{display: flex;  align-items: center; justify-content: center;  flex-direction: column; height: 100%; width: fit-content; margin: auto;}
-.m-pop-slide{display: flex; max-width: 1200px;}
+.m-pop-slide{display: flex; max-width: 95vw;}
 .m-pop-btn{display: flex; justify-content: space-between; align-items: center; background-color: #333; width: 100%; padding: 0.5rem 1rem; color: #fff; margin-top: -4px;}
 .m-pop-btn .close-btn{background-color: #111; padding: 0.5rem 0.7rem; border-radius: 0.3rem;}
 #main_popup{margin-right: 5px;}
@@ -176,7 +176,7 @@ main{margin: 0.5rem auto;}
   .intro{grid-template-columns: 1fr; min-width: auto; width: 90%; height: auto; margin: 2rem auto;}
   .left-box{order: 2;}
   .right-box{order: 1;}
-  .m-pop-slide{display: block; width: 300px;}
+  .m-pop-slide{display: block; width: 400px;}
   #mc4{height: 35vw;}
   #mc3 li a span{max-width: 40vw;}
   .m-pop-btn{margin-top: 0;}
@@ -225,6 +225,4 @@ main{margin: 0.5rem auto;}
   /* 6개일때 */
   .event-banner-wrap:has(> :nth-child(6)){grid-template-columns: repeat(3,1fr);}
   .review-slide p{line-clamp: 2; -webkit-line-clamp: 2;}
-  
-
 }
