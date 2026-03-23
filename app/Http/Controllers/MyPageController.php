@@ -103,6 +103,7 @@ class MyPageController extends Controller
                 ->select([
                     'so.od_id',
                     'so.od_gubun',
+                    'so.mb_code',
                     DB::raw("
                         COALESCE(
                             NULLIF(
@@ -169,6 +170,7 @@ class MyPageController extends Controller
                 ->paginate($perPage);
 
 
+
         $items = new LengthAwarePaginator(
             $result,
             $result->total(),
@@ -210,6 +212,7 @@ class MyPageController extends Controller
                 ->select([
                     'so.od_id',
                     'so.od_gubun',
+                    'so.mb_code',
                     DB::raw("
                         COALESCE(
                             NULLIF(

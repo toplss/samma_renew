@@ -1,4 +1,5 @@
 @php
+  use App\Models\ShopOrderModel;
 
   $image_url = 'images/item/'.$items->it_img1;
 
@@ -6,6 +7,21 @@
   $str_date = date("Y/m/d", strtotime($items->od_delivery_date));
   $days = ['일', '월', '화', '수', '목', '금', '토'];
   $str_week = $days[date("w", strtotime($items->od_delivery_date))];
+
+
+      $point = ShopOrderModel::realTimeOrderPoints(
+          $items->mb_code,
+          $items->od_group_code
+      );
+
+      
+      $items->pt_cur_balance = $point->put_balance ?? 0;
+      $items->pt_cur_reserve = $point->put_reserve ?? 0;
+      $items->pt_cur_charge  = $point->put_charge ?? 0;
+
+      $items->pt_prev_balance = $point->prev_balance ?? 0;
+      $items->pt_prev_reserve = $point->prev_reserve ?? 0;
+      $items->pt_prev_charge = $point->prev_charge ?? 0;
 
       /*
       |--------------------------------------------

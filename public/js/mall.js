@@ -295,6 +295,9 @@ $(".sale-item-tab li").click(function () {
     $(this).find('span').text(isOpen ? '상세정보 접기' : '상세정보 펼쳐보기');
   });
 
+  $('.low_temp img').attr('src', '/images/icon/snow_low.svg');
+  $('.frozen_temp img').attr('src', '/images/icon/snow_frozen.svg');
+
   // 품절일때 (상품리스트)
   $('.prd-box').each(function () {
     if ($(this).find('.prd-img').hasClass('sold-out')) {

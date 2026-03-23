@@ -75,8 +75,8 @@ section{max-width: 1280px; width: 96%; margin: auto; min-height: 40vh;}
 .room_temp,.low_temp,.frozen_temp,.return_o,.return_x{border-radius: 30px; padding: 0.2rem 0.4rem; color: #fff; display: inline-block; font-size: 0.9rem;}
 .room_temp>img,.low_temp>img,.frozen_temp>img{width: 22px; height: auto !important;}
 .room_temp{background-color: rgba(239, 136, 118, 0.9); display: none !important;}
-.low_temp{background-color: rgba(89, 209, 209, 0.9);}
-.frozen_temp{background-color: rgba(84, 148, 222, 0.9);}
+.low_temp{background-color: #59d1d1;}
+.frozen_temp{background-color: #5494de;}
 .return_o{background-color: #999;}
 .return_x{background-color: #da2727;}
 

@@ -176,7 +176,7 @@ main{margin: 0.5rem auto;}
   .intro{grid-template-columns: 1fr; min-width: auto; width: 90%; height: auto; margin: 2rem auto;}
   .left-box{order: 2;}
   .right-box{order: 1;}
-  .m-pop-slide{display: block; width: 400px;}
+  .m-pop-slide{display: block; width: 400px; max-width: 90vw;}
   #mc4{height: 35vw;}
   #mc3 li a span{max-width: 40vw;}
   .m-pop-btn{margin-top: 0;}

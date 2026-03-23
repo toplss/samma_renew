@@ -257,7 +257,11 @@
       </tbody>
       <tfoot>
         <tr>
+        @if ( count($items['cart_list']) > 0)        
           <th colspan="8">주문총액 <strong>{{ number_format($items['order_info']->od_cart_price + $items['order_info']->pt_delivery) }}</strong></th>
+        @else
+          <td colspan="8" height="50">상품 정보가 없습니다.</td>
+        @endif
         </tr>
       </tfoot>
 		</table>

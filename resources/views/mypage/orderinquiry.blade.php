@@ -4,6 +4,11 @@
 
 @section('content')
 
+@php
+    use App\Models\ShopOrderModel;
+@endphp
+
+
 <div class="sub-container">
   <div class="sub-title-wrap">
     <h4>주문내역</h4>  
@@ -21,6 +26,22 @@
       $str_date = date("Y/m/d", strtotime($row->od_delivery_date));
       $days = ['일', '월', '화', '수', '목', '금', '토'];
       $str_week = $days[date("w", strtotime($row->od_delivery_date))];
+
+
+      $point = ShopOrderModel::realTimeOrderPoints(
+          $row->mb_code,
+          $row->od_group_code
+      );
+
+      
+      $row->pt_cur_balance = $point->put_balance ?? 0;
+      $row->pt_cur_reserve = $point->put_reserve ?? 0;
+      $row->pt_cur_charge  = $point->put_charge ?? 0;
+
+      $row->pt_prev_balance = $point->prev_balance ?? 0;
+      $row->pt_prev_reserve = $point->prev_reserve ?? 0;
+      $row->pt_prev_charge = $point->prev_charge ?? 0;
+
 
       /*
       |--------------------------------------------

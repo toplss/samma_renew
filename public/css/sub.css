@@ -50,8 +50,9 @@
 .prd-img img{height: 100%; object-fit: contain}
 .prd-img.sold-out::after{content: "SOLD OUT"; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 2rem; text-align: center;}
 .prd-img ._new,.prd-img .best,.prd-img .event , .prd-img .mygrang, .prd-img .vivacook, .prd-img .bargain{position: absolute; top: 0; left: 6px; border-radius: 0 0 7px 7px; padding: 0.3rem;}
-.prd-img .room_temp,.prd-img .low_temp,.prd-img .frozen_temp{position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; color: #fff; width: 42px; height: 42px; border-radius: 40px; font-size: 0.8rem;}
-
+.prd-img .room_temp,.prd-img .low_temp,.prd-img .frozen_temp{position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; width: 42px; height: 42px; border-radius: 40px; font-size: 0.8rem; background-color: #fff;}
+.prd-img .low_temp{border: 1px solid #21c1c1; color: #21c1c1;}
+.prd-img .frozen_temp{border: 1px solid #5494de; color: #5494de;}
 
 .Qua{border: 1px solid #f5f5f5; display: flex; justify-content: space-around; align-items: center; border-radius: 0.5rem; position:relative; overflow: hidden;}
 .Qua.sold-out{opacity: 0.3;}
@@ -118,7 +119,9 @@
 .prd-view-img{border-radius: 1rem; overflow: hidden; border: 1px solid #f5f5f5;}
 .pv-img{padding: 3rem; aspect-ratio: 1 / 1; overflow: hidden; position: relative;}
 .pv-img img{height: 100%; object-fit: contain;}
-.pv-img .room_temp,.pv-img .low_temp,.pv-img .frozen_temp{position: absolute; top: 12px; right: 12px; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; color: #fff; width: 80px; height: 80px; border-radius: 80px; font-size: 1rem;}
+.pv-img .room_temp,.pv-img .low_temp,.pv-img .frozen_temp{position: absolute; top: 12px; right: 12px; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; background-color: #fff; width: 80px; height: 80px; border-radius: 80px; font-size: 1rem;}
+.pv-img .low_temp{border: 1px solid #21c1c1; color: #21c1c1;}
+.pv-img .frozen_temp{border: 1px solid #5494de; color: #5494de;}
 .pv-img .room_temp>img,.pv-img .low_temp>img,.pv-img .frozen_temp>img{width: 45px;}
 .pv-img.sold-out:after{content: "SOLD OUT"; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 5rem; text-align: center;}
 
@@ -174,7 +177,9 @@
 .recom-item-list .Qua-login{background-color: #f9f9f9; border-radius: 0.3rem; margin-top: 0.2rem;}
 .recom-img{aspect-ratio: 1 / 1; overflow: hidden; cursor: pointer; position: relative;}
 .recom-img img{height: 100%; object-fit: contain;}
-.recom-img .room_temp,.recom-img .low_temp,.recom-img .frozen_temp{position: absolute; top: 0; right: 0; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; color: #fff; width: 42px; height: 42px; border-radius: 40px; font-size: 0.8rem;}
+.recom-img .room_temp,.recom-img .low_temp,.recom-img .frozen_temp{position: absolute; top: 0; right: 0; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; width: 42px; height: 42px; border-radius: 40px; font-size: 0.8rem; background-color: #fff;}
+.recom-img .low_temp{border: 1px solid #21c1c1; color: #21c1c1;}
+.recom-img .frozen_temp{border: 1px solid #5494de; color: #5494de;}
 .recom-pin span{margin-right: 3px; color: #fff; border-radius: 30px; padding: 0.2rem 0.4rem; font-size: 0.8rem; display: inline-block;}
 .recom-name{font-weight: 500; margin-top: 0.5rem; min-height: 40px; word-break: break-word; overflow-wrap: anywhere;}
 .recom-ea{color: #777; font-size: 0.9rem; margin-top: 0.2rem;}

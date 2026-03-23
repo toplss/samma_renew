@@ -73,5 +73,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'refresh.limit' => \App\Http\Middleware\RefreshLimit::class,
         'no-back-history' => \App\Http\Middleware\NoBackHistory::class,
+        'block.ip' => \App\Http\Middleware\BlockIp::class,
     ];
 }
