@@ -608,6 +608,10 @@ class ShopController extends Controller
             $chain_ca_id2 = '';
         };
 
+        if (!$chain_ca_id2 || !$member['mb_buy']) {
+            return redirect()->back()->with('info', '체인점 회원만 이용 가능합니다.');
+        }
+
         
         $it_price = 'it_price';
         if (session('ss_mb_code')) {
@@ -622,14 +626,21 @@ class ShopController extends Controller
             $saleJoin = ShopCart::selectRaw('COUNT(*) as cnt, it_id')->where('ct_status', '완료')->groupBy('it_id');
         }
 
+        // tb_tmp_selection_chain_product <--- 체인점별 상품 신규등록 테이블 ?
         $items = ShopItem::stockLeftJoinSub()
+        ->leftJoin('tb_tmp_selection_chain_product as tcp', function ($join) {
+            $join->on('g5_shop_item.it_id', '=', 'tcp.it_id');
+        })
         ->when($request->filled('desc') && $request->desc == '4' && $saleJoin, function($query) use ($saleJoin) {
             $query->leftJoinSub($saleJoin, 'shop_sales', function($join) {
                 $join->on('g5_shop_item.it_id', '=', 'shop_sales.it_id');
             });
         })
         ->when($chain_ca_id2, function($query) use ($chain_ca_id2) {
-            $query->where('it_multi_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%');
+            $query->where(function ($q) use ($chain_ca_id2) {
+                $q->where('it_multi_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                  ->orWhere('tcp.chain_ca_id2', 'LIKE', '%'.$chain_ca_id2.'%');
+            });
         }, function($query) {
             $query->whereRaw('0 = 1');
         })

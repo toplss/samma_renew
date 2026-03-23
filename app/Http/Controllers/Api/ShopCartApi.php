@@ -399,6 +399,7 @@ class ShopCartApi extends Controller
                         'si.it_qty_system_stock',
                         'si.agency_it_buy_min_qty',
                         'si.it_buy_min_qty',
+                        'si.it_buy_max_qty',
                     ])
                     ->join('g5_shop_item as si', 'g5_shop_cart.it_id', '=', 'si.it_id')
                     ->where('g5_shop_cart.mb_code', $mb_code)
@@ -444,7 +445,7 @@ class ShopCartApi extends Controller
                             'it_sc_price', 'it_sc_minimum', 'it_sc_qty',  'it_qty_system_stock',
                             'it_product_location1', 'it_product_location2', 'it_product_location3', 'it_product_location4', 'it_product_location5',
                             'it_qty_box', 'it_qty_pack', 'it_qty_pcs', 'it_point',
-                            'it_notax', 'agency_it_buy_min_qty', 'it_buy_min_qty',
+                            'it_notax', 'agency_it_buy_min_qty', 'it_buy_min_qty', 'it_buy_max_qty',
                             'it_price_piece',
                             
 
@@ -833,6 +834,7 @@ class ShopCartApi extends Controller
                 'si.it_qty_system_stock',
                 'si.agency_it_buy_min_qty',
                 'si.it_buy_min_qty',
+                'si.it_buy_max_qty',
             )
             // ->lockForUpdate()
             ->first();
