@@ -61,7 +61,7 @@ class MyCartController extends Controller
             'od_id.required' => '주문번호가 필요합니다.',
             'od_id.exists' => '유효하지 않은 주문번호입니다.',
 
-            'move_type.required' => '취소유형이 옳바르지 않습니다.',
+            'move_type.required' => '취소유형이 올바르지 않습니다.',
         ]);
 
         try {

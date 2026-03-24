@@ -1008,7 +1008,7 @@ class CustomerServiceController extends Controller
             'iq_question' => 'required',
         ], [
             'iq_gubun.required' => '분류값을 선택해주세요.',
-            'iq_gubun.in' => '구분값 항목이 옳바르지 않습니다.',
+            'iq_gubun.in' => '구분값 항목이 올바르지 않습니다.',
             'iq_subject.required' => '제목을 입력하세요.',
             'iq_question.required' => '내용을 선택해주세요.',
         ]);

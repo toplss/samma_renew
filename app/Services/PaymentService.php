@@ -73,7 +73,7 @@ class PaymentService
                 }
 
                 if (!$request->filled('od_settle_case')) {
-                    throw new \Exception('주문 데이터가 옳바르지 않습니다. 다시 시도해 주세요.');
+                    throw new \Exception('주문 데이터가 올바르지 않습니다. 다시 시도해 주세요.');
                 }
 
                 // 충전금 사용액이 존재하면 기록

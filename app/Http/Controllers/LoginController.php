@@ -71,7 +71,7 @@ class LoginController extends Controller
         
 
         if (!$user || $user->mb_password !== md5($request->mb_password)) {
-            return redirect()->route('login_intro')->with('login', '아이디 또는 비밀번호가 옳바르지 않습니다.');
+            return redirect()->route('login_intro')->with('login', '아이디 또는 비밀번호가 올바르지 않습니다.');
         }
 
 

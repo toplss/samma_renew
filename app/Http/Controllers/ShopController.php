@@ -121,7 +121,7 @@ class ShopController extends Controller
             ],
         ], [
             'it_id.exists' => '현재 판매가능한 상품이 아닙니다.',
-            'it_id.required' => '상품코드가 옳바르지 않습니다.',
+            'it_id.required' => '상품코드가 올바르지 않습니다.',
         ]);
 
         $service = app(ShopCartService::class);
