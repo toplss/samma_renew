@@ -327,6 +327,36 @@
 </div>
 
 
+<!-- 프로모션 장바구니 -->
+<div class="si-cart-modal">
+  <img src="{{ asset('images/icon/close.svg') }}" class="scm-close">
+  <ul>
+    <li class="scm1"><img src="https://sammamall.com/images/item/C00278/7J6Q66q97ZeI64uI67iU656Z7Yuwremovebgpreview1.png" alt=""></li>
+    <li class="scm2">[마이그랑]자몽허니블랙티-캡슐<s>490ml*24입</s></li>
+    <li class="scm3">
+      <p class="Qua">
+        <button type="button" class="sit_qty_minus cart_qty_minus">
+          <img src="{{ asset('images/icon/minus.svg') }}">
+        </button> 
+        <input type="text" value="1" class="cart_ct_qty" readonly="">
+        <button type="button" class="sit_qty_plus cart_qty_plus">
+          <img src="{{ asset('images/icon/plus.svg') }}">
+        </button>
+      </p>
+    </li>
+    <li class="scm4">
+      <!-- 할인x -->
+      <!-- <span class="price">12,000원</span> -->
+      <!-- 할인o -->
+      <del>22,000원</del>
+      <span class="discount"><b>20%</b>12,000원</span>
+      
+    </li>
+  </ul>
+  <p>총 금액<b>40,000원</b></p>
+  <button type="button" class="scm-cart">장바구니 담기</button>
+</div>
+
 
 <script type="text/javascript">
 // 유튜브 호출

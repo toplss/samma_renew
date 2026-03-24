@@ -65,16 +65,10 @@ class MainController extends Controller
             /******* 비바쿡 *******/
 
             $resArr = [
-                'rank_order'  => ShopCart::rankOrderList(), # 자주 주문한 상품
-                // 'notice'      => TbBbsBody::getMainNoticeList(),  # 공지사항
+                'rank_order'  => ShopCart::rankOrderList(), # 자주 주문한 상품                
                 'vivacook'    => $vivacook, # 베스트 리뷰,
                 'popular_product' => app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'hit', 'scale' => '50']))->items(), # 인기상품
-                'event_product' => app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'event', 'scale' => '50']))->items(), # 이달의행사
-                'MainSlideSuperSale_product' => app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideSuperSale', 'scale' => '50']))->items(), # 메인 슬라이드 - 초특가상품
-                'MainSlideVivacook_product' => app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideVivacook', 'scale' => '50']))->items(), # 메인 슬라이드 - 비바쿡 할인상품
-                'MainSlideMygrang_product' => app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideMygrang', 'scale' => '50']))->items(), # 메인 슬라이드 - 마이그랑 할인상품
-                'MainSlideBest_product' => app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideBest', 'scale' => '50']))->items(), # 메인 슬라이드 - 지난주 베스트
-                'MainSlideNew_product' => app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideNew', 'scale' => '50']))->items(), # 메인 슬라이드 - 이번주 추천상품
+                'event_product' => app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'event', 'scale' => '50']))->items(), # 이달의행사                
             ];
 
             // 하루 = 24시간 = 24 * 60 * 60 = 86400초
@@ -139,13 +133,17 @@ class MainController extends Controller
                 }
             }
 
+            $resArr['MainSlideSuperSale_product'] = app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideSuperSale', 'scale' => '50']))->items(); # 메인 슬라이드 - 초특가상품
+            $resArr['MainSlideVivacook_product'] = app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideVivacook', 'scale' => '50']))->items(); # 메인 슬라이드 - 비바쿡 할인상품
+            $resArr['MainSlideMygrang_product'] = app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideMygrang', 'scale' => '50']))->items(); # 메인 슬라이드 - 마이그랑 할인상품
+            $resArr['MainSlideBest_product'] = app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideBest', 'scale' => '50']))->items(); # 메인 슬라이드 - 지난주 베스트
+            $resArr['MainSlideNew_product'] = app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideNew', 'scale' => '50']))->items(); # 메인 슬라이드 - 이번주 추천상품
             $resArr['notice']      = TbBbsBody::getMainNoticeList();  # 공지사항
             $resArr['main_top']    = $banner_service->makeBannerDiv($main_top, 'grid-item');
             $resArr['m_main_top']  = $banner_service->makeBannerDiv($m_main_top, 'grid-item');
             $resArr['main_middle'] = $banner_service->makeBannerDiv($main_middle, 'N');
             $resArr['main_center'] = $banner_service->makeBannerDiv($main_center, 'N');
             $resArr['main_bottom'] = $main_bottom;
-
 
             return view('index', $resArr);
         } else {

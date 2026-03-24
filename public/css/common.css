@@ -164,39 +164,41 @@ nav{background-color: #f9f9f9; border-top: 1px solid #8ec251; border-bottom: 1px
 .nav-slide-panel {position: absolute; width: 100%; background-color: #fff; max-height: 0;transition: max-height 0.4s ease; box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1); overflow: hidden;}
 /* 처음엔 보이는 상태 */
 .nav-slide-panel.on {max-height: 350px;}
-.panel-inner{width: 1280px; margin: 10px auto; display: grid; overflow: hidden; gap: 10px;}
+.panel-inner{width: 1280px; margin: 10px auto; display: flex; overflow: hidden; gap: 10px; justify-content: center;}
 .panel-close-btn{position: absolute; bottom:-350px; left: 50%; transform: translate(-50%,50%); width: 2rem; height: 2rem; cursor: pointer; display: none;}
 
-#pi1{grid-template-columns: 2fr 1fr;} /* 전체 */
-#pi2{grid-template-columns: 2fr 1fr;} /* 체인 */
-#pi3{grid-template-columns: 2fr 1fr;} /* 레시피 */
-#pi4{grid-template-columns: 2fr 1fr;} /* 저온 */
+#pi1{display: grid; grid-template-columns: 2fr 1fr; justify-content: space-between;} /* 전체 */
+#pi2{} /* 체인 */
+#pi3{display: grid; grid-template-columns: 2fr 1fr; justify-content: space-between;} /* 레시피 */
+#pi4{} /* 저온 */
 #pi5{} /* 비바쿡 */
 #pi6{} /* 마이그랑 */
-#pi7{grid-template-columns: 2fr 1fr;} /* 베스트 */
-#pi8{grid-template-columns: 2fr 1fr;} /* 신상품 */
-#pi9{grid-template-columns: 2fr 1fr;} /* 행사 */
+#pi7{} /* 베스트 */
+#pi8{} /* 신상품 */
+#pi9{} /* 행사 */
 
 .panel-inner>div{overflow: hidden;}
 .panel-inner>div>a{overflow: hidden; border-radius: 0.6rem;}
 .panel-inner>div img{ border-radius: 0.6rem;}
 .panel-inner ._right img{border-radius: 0.6rem;}
 .panel-inner ._right>div:last-of-type{display: none;}
-.panel-inner ._all{display: grid; grid-template-columns: repeat(7,1fr); gap: 10px; width: 100%; text-align: left; margin-top: 1rem;}
-.panel-inner ._all dl{font-size: 0.9rem;}
-.panel-inner ._all dt{font-weight: 500; color: #8ec251; margin-bottom: 0.5rem;}
-.panel-inner ._all dd{color: #999; margin-bottom: 0.3rem;}
-.panel-inner ._all dd:hover{color: #333;}
-.panel-inner ._lowtemp{display: grid; grid-template-columns: repeat(2,1fr); gap: 10px;}
-.panel-inner ._vivacook{}
-.panel-inner ._mygrang{display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 2fr; gap: 10px;}
-.panel-inner ._chain{display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; align-items: start;}
-.panel-inner ._recipe{display: grid; grid-template-columns: repeat(6,1fr); gap: 1rem; margin-top: 1rem;}
-.panel-inner ._best{display: grid; grid-template-columns: repeat(4,1fr); gap: 10px;}
-.panel-inner ._new{display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; background-color: transparent !important; padding: 0 !important;}
-.panel-inner ._sale{display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;}
-._chain .c-card{border: 1px solid #f5f5f5; border-radius: 0.5rem; padding: 1rem; cursor: pointer;}
-._chain .c-card span{height: 100px; display: flex; align-items: center; justify-content: center;}
+#pi1 ._all{display: grid; grid-template-columns: repeat(7,1fr); gap: 10px; width: 100%; text-align: left; margin-top: 1rem;}
+#pi1 ._all dl{font-size: 0.9rem;}
+#pi1 ._all dt{font-weight: 500; color: #8ec251; margin-bottom: 0.5rem;}
+#pi1 ._all dd{color: #999; margin-bottom: 0.3rem;}
+#pi1 ._all dd:hover{color: #333;}
+#pi4 ._lowtemp{display: flex; gap: 10px;}
+#pi5 ._vivacook{display: flex; gap: 10px;}
+#pi6 ._mygrang{display: flex; gap: 10px;}
+#pi2 ._chain{display: flex; gap: 10px;}
+#pi3 ._recipe{display: grid; grid-template-columns: repeat(6,1fr); gap: 1rem; margin-top: 1rem;}
+#pi7 ._best{display: flex; gap: 10px;}
+#pi8 ._new{display: flex; gap: 10px; background-color: transparent !important; padding: 0 !important;}
+#pi9 ._sale{display: flex; gap: 10px;}
+
+
+/* ._chain .c-card{border: 1px solid #f5f5f5; border-radius: 0.5rem; padding: 1rem; cursor: pointer;}
+._chain .c-card span{height: 100px; display: flex; align-items: center; justify-content: center;} */
 ._recipe .r-card p{margin-top: 1rem;}
 
 
@@ -456,8 +458,10 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.m-quick-txt{text-align: left; display: flex; align-items: center; gap: 0.4rem;}
 	.mqt1{width: 2.2rem;}
 	.mqt2 span{margin-bottom: 0.2rem;}
-	.m-quick-btn{display: grid; grid-template-columns: 3fr 2fr; gap: 0.5rem; margin-top: 0.5rem;}
+	.m-quick-btn{display: grid; grid-template-columns: 3.8fr 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;}
 	.m-quick-btn button{padding: 0.6rem;}	
+	.m-quick-btn .btn1 img{width: 1.6rem; margin: auto;}
+	.m-quick-btn .btn2 img{width: 1.8rem; margin: auto;}
 	.m-quick-btn .btn3 i{font-style: normal; background-color: #fff; color: #333; padding: 0.1rem 0.3rem; border-radius: 0.3rem; font-size: 0.9rem; margin: 0 0.5rem;}
 	#mCartCloseBtn{display: block; margin-left: auto; cursor: pointer;}
 	#mCartCloseBtn img{width: 2.2rem;}
@@ -526,7 +530,7 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.mm-table td{font-size: 0.95rem;}
 	.m-menu-banner{grid-template-columns: repeat(2,1fr); gap: 0.5rem;}
 	.m-quick-txt{font-size: 0.9rem; align-items: start;}
-	.m-quick-btn{width: 93%; gap: 0.3rem; margin-top: 0;}
+	.m-quick-btn{width: 92%; gap: 0.3rem; margin-top: 0;}
 	.qp3{font-size: 0.9rem;}
 
 	.cs_delivery{font-size: 0.9rem; padding: 0.1rem;}

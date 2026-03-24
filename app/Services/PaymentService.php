@@ -33,9 +33,10 @@ class PaymentService
     {
         try {
             $data = DB::transaction(function() use ($request) {
-                $od_id   = $request->oid ?? $request->od_id;
+                $od_id    = $request->oid ?? $request->od_id;
                 $od_receipt_point   = $request->input('input_od_temp_point', 0) + $request->input('input_od_temp_point_reserve', 0);
-                $payment = $request->input('payment', 0);
+                $payment  = (integer) $request->input('payment', 0);
+                $od_price = (integer) $payment - $request->input('deilivery_cost', 0); // 결제금액 에서 배송비 차감(상품금액 만 추출)
 
                 if ($od_receipt_point > $payment) {
                     throw new \Exception('충전금 또는 적립금 사용 금액은 결제 예정 금액을 초과할 수 없습니다.');
@@ -59,6 +60,11 @@ class PaymentService
 
                 if ($request->input('payable', 0) < 0) {
                     throw new \Exception('결제 금액이 0원 이하일 수 없습니다.');
+                }
+
+
+                if ($od_price != $this->validate_cart_price($od_id)) {
+                    throw new \Exception('결제 금액과 상품 금액이 일치하지 않습니다. 다시 확인해 주세요.');
                 }
 
 
@@ -837,5 +843,17 @@ class PaymentService
             'pt_balance'    => 0,
             'created_at'    => now(),
         ]);
+    }
+
+
+
+    // 결제금액 = 카트상품 금액 비교
+    private function validate_cart_price($oid)
+    {
+        return DB::table('g5_shop_cart')
+        ->where('ct_status', '쇼핑')
+        ->where('od_id', $oid)
+        ->selectRaw('SUM(ct_price * ct_qty) as total_price')
+        ->value('total_price');
     }
 }

@@ -17,21 +17,11 @@
 		</div>
 	@elseif (request()->is('mall/shop/list_gubun_chain')) <!-- 체인점전용상품 -->
 		<div class="nav-slide-panel {{ request()->path() === 'mall/shop/list_gubun_chain' && empty(request()->query()) ? 'on' : '' }}">
-			<!-- <div class="panel-inner" id="pi2">
-				<div class="_chain">
-					@foreach($activeMenuBanner['chain_menu'] as $key => $row)
-						{!! $row !!}
-					@endforeach
-				</div>
-				<div class="_right">
-					{!! $activeMenuBanner['all'] !!}
-				</div>
-			</div> -->
-      <div class="panel-inner" id="pi6">
-        <div class="_mygrang">
+			<div class="panel-inner" id="pi2">
+        <div class="_chain">
           {!! $activeMenuBanner['renew_menu_mygrang'] !!}
         </div>
-      </div>
+			</div>
 		</div>
     
 

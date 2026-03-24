@@ -186,8 +186,8 @@ $(".sale-item-tab li").click(function () {
     slidesToShow: 6,
     speed: 300,
     autoplaySpeed: 3000,
-    pauseOnHover : false,
-    pauseOnFocus: false,
+    pauseOnHover : true,
+    pauseOnFocus: true,
     responsive: [
       {
         breakpoint: 1280,
@@ -211,8 +211,8 @@ $(".sale-item-tab li").click(function () {
     slidesToShow: 6,
     speed: 300,
     autoplaySpeed: 3000,
-    pauseOnHover : false,
-    pauseOnFocus: false,
+    pauseOnHover : true,
+    pauseOnFocus: true,
     responsive: [
       {
         breakpoint: 1280,
@@ -339,6 +339,14 @@ $(".sale-item-tab li").click(function () {
 
     $note.slideToggle(200);
     $btn.text(isOpen ? '보기' : '접기');
+  });
+
+  // si 모달
+  $('.si-cart-btn').click(function(){
+    $('.si-cart-modal').show();
+  });
+  $('.scm-close').click(function(){
+    $('.si-cart-modal').hide();
   });
 
 
