@@ -608,7 +608,8 @@ class ShopController extends Controller
             $chain_ca_id2 = '';
         };
 
-        if (!$chain_ca_id2 || !$member['mb_buy']) {
+        // if (!$chain_ca_id2 || !$member['mb_buy']) {
+        if (!$chain_ca_id2) {
             return redirect()->back()->with('info', '체인점 회원만 이용 가능합니다.');
         }
 
@@ -662,6 +663,15 @@ class ShopController extends Controller
             }
         })
         ->paginate($perPage);
+
+
+        $mall    = app(MallMainServices::class);
+
+        $banner = $mall->getBanner('renew_menu_chain', 1);
+        $other['banner']   = $mall->makeBannerDiv($banner, 'N');
+        $items->other = $other;        
+
+        // dd($items);
 
         return view('mall.shop.list_gubun_chain', compact('items'));
     }

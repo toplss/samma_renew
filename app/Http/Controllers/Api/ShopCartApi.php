@@ -327,7 +327,7 @@ class ShopCartApi extends Controller
         ->selectRaw("
             COUNT(*) AS cnt,
             MAX(order_date) AS order_date,
-            SUM(pt_subtotal) AS pt_subtotal,
+            SUM(od_cart_price) AS pt_subtotal,
             CASE DAYOFWEEK(MAX(order_date))
                 WHEN 1 THEN '일요일'
                 WHEN 2 THEN '월요일'

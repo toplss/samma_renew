@@ -318,15 +318,12 @@ class PaymentService
         }
 
         // 직원인 경우 입금처리
-        $make_lock_date = true;
         if (isset($member['mb_level_type'])) {
             if (trim($member['mb_level_type']) == '2' && trim($member['mb_gubun_type']) == 'employee') {
                 $member['level_ca_id'] = '10';
                 $od_status        = '입금'; 
                 $od_delivery_step = '90';
                 $od_group_code = $this->make_group_code();
-
-                $make_lock_date = false;
             }
         } 
 
@@ -457,7 +454,7 @@ class PaymentService
             
             // 사용안하는 필드
             'od_cart_count' => 0,
-            'od_cart_price' => (integer) $pt_sale,
+            'od_cart_price' => $od_gubun == '충전금구매' ? $od_misu : (integer) $pt_sale,
             'od_cart_price_change' => (integer) $pt_sale,
             'od_cart_coupon' => 0,
             'od_send_cost'  => $request->deilivery_cost,
@@ -510,6 +507,7 @@ class PaymentService
             'pt_prev_charge'  => $member['mb_point'],
             'pt_prev_reserve' => $member['mb_point_reserve'],
             'pt_prev_balance' => $member['mb_point_balance'],
+            'pt_buy_charge'   => $od_gubun == '충전금구매' ? $od_misu : 0,
             'pt_sales'    => $pt_sale,
             'pt_delivery' => (integer) $request->deilivery_cost,
             'pt_sales_delivery' => $pt_sales_delivery,
@@ -523,9 +521,9 @@ class PaymentService
         ];
 
 
-        if ($make_lock_date) {
-            $this->make_lock_date(['od_group_code' => $od_group_code, 'mb_code' => $member['mb_code']]);
-        }
+        // if ($make_lock_date) {
+        //     $this->make_lock_date(['od_group_code' => $od_group_code, 'mb_code' => $member['mb_code']]);
+        // }
 
 
         return ShopOrderModel::create($add_data);

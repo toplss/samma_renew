@@ -130,6 +130,7 @@ class MallShopApi extends Controller
 
     public function delete_cach(Request $request)
     {
+
         try {
             Log::info($request->all());
             Log::info(__METHOD__. ' <<== 실행');

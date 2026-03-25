@@ -1,4 +1,7 @@
-	<!-- 헤더 슬라이드 패널 -->
+
+{{-- @dd($activeMenuBanner); --}}
+
+<!-- 헤더 슬라이드 패널 -->
 	@if (request()->is('mall/shop/list') && request()->get('type') !== 'low_temp') <!-- 전체상품 -->
     @php
     $all_on = $_REQUEST['ca_id'] == '20' && !request()->has('page') ? 'on' : '';
@@ -19,7 +22,7 @@
 		<div class="nav-slide-panel {{ request()->path() === 'mall/shop/list_gubun_chain' && empty(request()->query()) ? 'on' : '' }}">
 			<div class="panel-inner" id="pi2">
         <div class="_chain">
-          {!! $activeMenuBanner['renew_menu_mygrang'] !!}
+          {!! $activeMenuBanner['renew_menu_chain'] !!}
         </div>
 			</div>
 		</div>

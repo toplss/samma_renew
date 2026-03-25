@@ -21,9 +21,15 @@ $image_url = 'images/item/'.$row['it_img1'];
 <div class="sale-item-list">
     <ul onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; ">
         @if(file_exists(public_path($image_url)) && $row['it_img1'])
-        <li class="si-img  {{ $sold_out ? 'sold-out' : '' }}"><img src="{{ asset($image_url) }}"></li>
+        <li class="si-img  {{ $sold_out ? 'sold-out' : '' }}">
+            <img src="{{ asset($image_url) }}">
+            <button type="button" class="si-cart-btn" onclick="event.stopPropagation();"><img src="{{ asset('images/icon/cart-w.svg') }}"></button>
+        </li>
         @else
-        <li class="si-img  {{ $sold_out ? 'sold-out' : '' }}"><img src="{{ asset('images/common/no_image.gif') }}"></li>
+        <li class="si-img  {{ $sold_out ? 'sold-out' : '' }}">
+            <img src="{{ asset('images/common/no_image.gif') }}">
+            <button type="button" class="si-cart-btn" onclick="event.stopPropagation();"><img src="{{ asset('images/icon/cart-w.svg') }}"></button>
+        </li>
         @endif
         <li class="si-name">{{ $row['it_name'] }}</li>
         <li class="si-ea">({{ $row['it_basic'] }}*{{ $row['it_gubun_label'] }})</li>

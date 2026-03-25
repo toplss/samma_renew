@@ -154,6 +154,13 @@ class BannerService
                 'grid-item',
                 'renew_menu_event'
             );
+
+
+            $menu_banners['renew_menu_chain'] = $service->getBannerFactory(
+                $service->getBanner('renew_menu_chain', 1),
+                'grid-item',
+                'renew_menu_event'
+            );
             
 
             $menu_banners['all_menu_sub_category'] = $this->getAllMenuSubCategory();

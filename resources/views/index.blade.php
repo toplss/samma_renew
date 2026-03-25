@@ -328,6 +328,7 @@
 
 
 <!-- 프로모션 장바구니 -->
+<div class="si-bg"></div>
 <div class="si-cart-modal">
   <img src="{{ asset('images/icon/close.svg') }}" class="scm-close">
   <ul>

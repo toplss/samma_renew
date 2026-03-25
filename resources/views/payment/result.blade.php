@@ -68,11 +68,11 @@ if (isset($activeMember['level_ca_id2'])) {
         <table>
             <tr>
                 <th>주문금액</th>
-                <td>{{ number_format($resultData->pt_sales) }}원</td>
+                <td>{{ number_format($resultData->od_cart_price) }}원</td>
             </tr>
             <tr>
                 <th>배송비</th>
-                <td>{{ number_format($resultData->pt_delivery) }}원</td>
+                <td>{{ number_format($resultData->od_send_cost) }}원</td>
             </tr>
             <!-- <tr>
                 <th>개별상품 할인쿠폰</th>

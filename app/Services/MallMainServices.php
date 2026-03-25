@@ -157,6 +157,11 @@ class MallMainServices
             case 'renew_menu_mygrang' :
                 return BannerFactory::{$options}($data, $class);
                 break;
+
+            case 'renew_menu_chain' :
+                return BannerFactory::{$options}($data, $class);
+                break;
+
         }
     }
 }

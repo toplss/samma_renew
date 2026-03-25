@@ -78,7 +78,7 @@
               @endif
               <h6 class="my_cart_it_name">
                 <span class="my_cart_it_name_short">{{ $row['it_name'] }}</span>
-                <i>({{ $row['it_basic'] }})</i>
+                <i>({{ $row['it_basic'] }})<s>/ 개당 2,300원</s></i>
 
                 <!-- 상품이벤트 라벨 -->
                 @foreach($arr_item_label as $key => $label)

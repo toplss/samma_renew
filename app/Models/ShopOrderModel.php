@@ -147,6 +147,7 @@ class ShopOrderModel extends Model
         'pt_prev_charge',
         'pt_prev_reserve',
         'pt_prev_balance',
+        'pt_buy_charge',
         'pt_sales',
         'pt_delivery',
         'pt_sales_delivery',

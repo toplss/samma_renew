@@ -77,12 +77,15 @@
 
 .prd-name{font-size: 1.1rem; font-weight: 500; line-height: 1.4rem; word-break: break-word; overflow-wrap: anywhere; /* safari 깨짐 방어 */}
 .prd-name .ea{color: #999;font-size: 0.95rem;}
+.prd-name .ea>i{display: none; font-style: normal;white-space: nowrap; margin-left: 0.3rem;}
 
 .prd-price{margin-bottom: 0.5rem; margin-top: auto;}
-.prd-price .price{font-size: 1.3rem; font-weight: 600;}
-.prd-price .price-dis{text-decoration: line-through; color: #999; font-size: 1.1rem; font-weight: 500;}
-.prd-price .discount{font-size: 1.3rem; font-weight: 600; margin-top: 2px;}
-.prd-price .d-rate{font-weight: 600; color: #da2727; padding-right: 5px;}
+.prd-price h5{font-size: 1.3rem; font-weight: 600; display: flex; align-items: center; gap: 5px;}
+.prd-price h5 u{font-size: 0.9rem; font-weight: 400; text-decoration: none; letter-spacing: -0.5px; background-color: #eee; color: #777; padding: 0.1rem 0.3rem; border-radius: 0.3rem; white-space: nowrap;}
+.prd-price .price-dis{color: #999; font-size: 1.1rem; font-weight: 500; margin-bottom: 2px;}
+.prd-price .price-dis b{font-weight: 700; color: #da2727; padding-left: 0.5rem;}
+
+
 
 /* 리스트형식일때 */
 .prd-row-head ul{display: grid; grid-template-columns: 5fr 2fr 2fr 3fr; border-top: 1px solid #8ec251; border-bottom: 1px solid #8ec251; margin: 1rem auto;}
@@ -96,6 +99,7 @@
 .prd-list.type-row .prd-img{order:1;}
 .prd-list.type-row .prd-name{order:2; width: 100%; margin: auto; min-height: auto;}
 .prd-list.type-row .prd-price{order:3; text-align: center; margin: auto;}
+.prd-list.type-row .prd-price h5{flex-direction: column; gap: 8px;}
 .prd-list.type-row .prd-info{order:4;}
 .prd-list.type-row .prd-info #buy_box_btn{order: 1; font-size: 1rem; margin-left: auto;}
 .prd-list.type-row .prd-info .pin{margin-left: 0;}
@@ -340,6 +344,7 @@
 .cart-table-title div img{width: 60px;}
 .cart-table-title h6{font-size: 1rem; font-weight: 400; text-align: left; line-height: 1.4rem;}
 .cart-table-title i{color: #999; font-style: normal; display: block; font-size: 0.9rem; margin-bottom: 0.1rem;}
+.cart-table-title i>s{text-decoration: none; margin-left: 0.3rem;}
 .cart-table-title h6 p{margin-top: 0.3rem;}
 .cart-table-title h6 p span{padding: 0 0.4rem;}
 .cart-table-cost p{background-color: #f5f5f5; padding: 0.2rem; border-radius: 0.3rem; margin-bottom: 0.4rem; width: fit-content; font-size: 0.9rem;}
@@ -606,9 +611,8 @@
 @media screen and (max-width: 1760px){
   .prd-name{font-size: 1rem;}
   .prd-name .ea{font-size: 0.9rem;}
-  .prd-price .price{font-size: 1.2rem;}
+  .prd-price h5{font-size: 1.2rem;}
   .prd-price .price-dis{font-size: 1rem;}
-  .prd-price .discount{font-size: 1.2rem;}
   .prd-view-wrap{grid-template-columns: 1fr 1.2fr;}
   .prd-view-title h3{font-size: 1.4rem;}
   .recipe-name{font-size: 1rem; word-break: normal;}
@@ -645,9 +649,6 @@
 
   .prd-list{grid-template-columns: repeat(5,1fr);}
   .prd-list.type-row .prd-box{grid-template-columns: 1fr 3fr 2fr 2.5fr 2fr;}
-  .prd-price .price{font-size: 1.2rem;}
-  .prd-price .discount{font-size: 1.2rem;}
-  .prd-price .price-dis{font-size: 1rem;}
   .prd-name .ea{font-size: 0.9rem;}
   .prd-view-img .sold-out:after{font-size: 3.5rem;}
   .recipe-list{grid-template-columns: repeat(5,1fr);}
@@ -725,8 +726,7 @@
   .cate-r-ul2 li a{padding: 0.4rem 0.6rem; width: 100px;}
   .prd-list.type-row{gap: 0.6rem;}
   .prd-list.type-row .prd-box{padding-bottom: 0.6rem; grid-template-columns: 1fr 3.2fr 2fr 2fr 2fr;}
-  .prd-price .price{font-size: 1.1rem;}
-  .prd-price .discount{font-size: 1.1rem;}
+  .prd-price h5{font-size: 1.1rem;}
   .prd-list.type-row .prd-info{flex-direction: column; gap: 0.7rem;}
   .prd-list.type-row .prd-info #buy_box_btn{margin-left: 0;}
   .prd-list.type-row .prd-img.sold-out::after{font-size: 1.1rem;}
@@ -766,8 +766,7 @@
   .prd-list.type-row .Qua .pm-wrap{margin-right: 0; padding: 0.3rem 0.5rem;}
   .prd-list.type-row .Qua .add-to-cart{width: 100%; padding: 0.3rem;}
   .prd-info .pin span{font-size: 0.8rem; padding: 0.2rem 0.3rem;}
-  .prd-list.type-row .prd-price .price{font-size: 1rem;}
-  .prd-list.type-row .prd-price .discount{font-size: 1rem;}
+  .prd-list.type-row .prd-price h5{font-size: 1rem;}
   .prd-list.type-row .prd-price .price-dis{font-size: 0.9rem;}
   
   .prd-view-wrap{grid-template-columns: 1fr; gap: 1rem;}
@@ -854,6 +853,7 @@
 
   .prd-name{font-size: 0.95rem;}
   .prd-name .ea{font-weight: 400; font-size: 0.85rem;}
+  .prd-price h5{flex-direction: column; align-items: start;}
   .prd-check input[type=checkbox]{accent-color: #8ec251;}
 	.prd-img .room_temp,.prd-img .low_temp,.prd-img .frozen_temp{top: 4px; right: 4px; width: 34px; height: 34px; font-size: 0.7rem;}
 	.room_temp>img,.low_temp>img,.frozen_temp>img{width: 17px;} 
@@ -870,8 +870,11 @@
   .prd-list.type-row .prd-box.simple{grid-template-columns: 13px 1fr 4fr 2fr;}
   .prd-list.type-row .prd-img{grid-row: 1 / span 2;}
   .prd-list.type-row .prd-name{font-size: 0.9rem; line-height: 1.2rem;}
+  .prd-list.type-row .prd-name .ea>i{display: inline-block;}
   .prd-list.type-row .prd-info{grid-column: 2 / span 1; flex-direction:row;}
-  .prd-list.type-row .prd-price{font-size: 1rem; text-align: right;}
+  .prd-list.type-row .prd-price{font-size: 1rem;}
+  .prd-list.type-row .prd-price h5{align-items: center;}
+  .prd-list.type-row .prd-price h5 u{display: none;}
   .prd-list.type-row .Qua{flex-direction: row; margin-right: 10px;}
   .prd-list.type-row .Qua .pm-wrap{padding: 0.2rem; gap: 0.2rem;}
   .prd-list.type-row .Qua #numberUpDown input{font-size: 0.9rem; width: 1.6rem;}

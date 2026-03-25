@@ -15,10 +15,10 @@ $row_list_cust_it_price  = $cust_price * $qty;
 @if($cust_price > 0)
 <input type="hidden" class="it_price" value="{{ $price }}" />
 <input type="hidden" class="org_it_price" value="{{ $row_list_cust_it_price }}" />
-<p class="price-dis">{{ number_format($row_list_cust_it_price) }}원</p>
-<p class="discount"><b class="d-rate">{{ $row['it_cust_rate'] }}%</b><span class="field_it_price_">{{ number_format($row_list_field_it_price) }}원</span></p>
+<p class="price-dis"><del>{{ number_format($row_list_cust_it_price) }}원</del><b>{{ $row['it_cust_rate'] }}%</b></p>
+<h5 class="discount"><span class="field_it_price_">{{ number_format($row_list_field_it_price) }}원</span><u>개당 2,300원</u></h5>
 @else
 
 <input type="hidden" class="it_price" value="{{ $price }}" />
-<p class="price field_it_price_">{{ number_format($row_list_field_it_price) }}원</p>
+<h5 class="price"><span class="field_it_price_">{{ number_format($row_list_field_it_price) }}원</span><u>개당 2,300원</u></h5>
 @endif

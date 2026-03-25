@@ -146,7 +146,7 @@ if (request()->has('page'))  $isDown = false;
                 </li>
                 <li class="prd-name">
                     {{ $row['it_name'] }}
-                    <p class="ea">({{ $row['it_basic'] }}*{{ $row['it_gubun_label'] }})</p>
+                    <p class="ea">({{ $row['it_basic'] }}*{{ $row['it_gubun_label'] }})<i>/ 개당 2,300원</i></p>
                 </li>
 
                 @if($activeMember)
