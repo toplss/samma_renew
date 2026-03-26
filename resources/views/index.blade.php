@@ -30,7 +30,6 @@
       //초특가상품 순서 램덤
       shuffle($MainSlideSuperSale_product);
 
-      // $MainSlideSuperSale_product = [];
     @endphp
     @if(count($MainSlideSuperSale_product) > 0)
       <div class="sale-item-slide active" id="si1">
@@ -56,7 +55,6 @@
       //비바쿡 할인상품 순서 램덤
       shuffle($MainSlideVivacook_product);
 
-      // $MainSlideVivacook_product = [];
     @endphp    
     @if(count($MainSlideVivacook_product) > 0)
       <div class="sale-item-slide" id="si2">
@@ -80,8 +78,7 @@
     @php 
       //마이그랑 할인상품 순서 램덤
       shuffle($MainSlideMygrang_product);
-
-      // $MainSlideMygrang_product = [];
+      
     @endphp        
     @if(count($MainSlideMygrang_product) > 0)
       <div class="sale-item-slide" id="si3">
@@ -162,14 +159,6 @@
 <!-- 메인 중간 배너 renew_main_middle -->
   <div class="main-container" id="mc10">
     <div class="event-banner-wrap">
-
-      {{-- <a href=""><img src="https://samma-erp.com/common_data/banner/4ee8e7da9a60b7734a0511745cfba5bc.jpg" alt=""></a>
-      <a href=""><img src="https://samma-erp.com/common_data/banner/7a42f84057b32d7c70bab44f0ca917c4.jpg" alt=""></a>
-      <a href=""><img src="https://samma-erp.com/common_data/banner/b708b06e0e986ed560efc29191407b00.jpg" alt=""></a>
-      <a href=""><img src="https://samma-erp.com/common_data/banner/4ee8e7da9a60b7734a0511745cfba5bc.jpg" alt=""></a>
-      <a href=""><img src="https://samma-erp.com/common_data/banner/7a42f84057b32d7c70bab44f0ca917c4.jpg" alt=""></a>
-      <a href=""><img src="https://samma-erp.com/common_data/banner/b708b06e0e986ed560efc29191407b00.jpg" alt=""></a> --}}
-
       {!! $main_middle !!}
     </div>
   </div>
@@ -193,8 +182,6 @@
   <div class="main-container" id="mc3">
     <h2>공지사항<small onclick="location.href = '/common_board/list?bbs_code=notice';" style="cursor: pointer;">더보기+</small></h2>
     <ul>
-{{-- @dd($notice); --}}
-
       @foreach($notice as $key => $row)
       <li>
         <a href="/common_board/view?bbs_code=notice&bd_num={!! $row['bd_num'] !!}">
@@ -332,13 +319,14 @@
 <div class="si-cart-modal">
   <img src="{{ asset('images/icon/close.svg') }}" class="scm-close">
   <ul>
-    <li class="scm1"><img src="https://sammamall.com/images/item/C00278/7J6Q66q97ZeI64uI67iU656Z7Yuwremovebgpreview1.png" alt=""></li>
-    <li class="scm2">[마이그랑]자몽허니블랙티-캡슐<s>490ml*24입</s></li>
+    <li class="scm1"><img src="" alt=""><span class="frozen_temp"><img src="{{ asset('images/icon/snow.svg') }}">냉동</span></li>
+    <li class="scm2"></li>
     <li class="scm3">
       <p class="Qua">
         <button type="button" class="sit_qty_minus cart_qty_minus">
           <img src="{{ asset('images/icon/minus.svg') }}">
         </button> 
+        <input type="hidden" name="min_ct_qty" class="min_ct_qty"  value="" />
         <input type="text" value="1" class="cart_ct_qty" readonly="">
         <button type="button" class="sit_qty_plus cart_qty_plus">
           <img src="{{ asset('images/icon/plus.svg') }}">
@@ -354,7 +342,7 @@
       
     </li>
   </ul>
-  <p>총 금액<b>40,000원</b></p>
+  <p>총 금액<b class="total_price">40,000원</b></p>
   <button type="button" class="scm-cart">장바구니 담기</button>
 </div>
 

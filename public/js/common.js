@@ -62,18 +62,21 @@ $(document).ready(function(){
       $('.panel-close-btn').hide();
     }
 	});
+  $('.panel-inner').click(function(e){
+    e.stopPropagation();
+  });
   $('html').click(function(e){ //배너 밖 영역을 클릭한 경우
-    if(!$(e.target).hasClass('.nav-slide-panel')){
+    if(!$(e.target).hasClass('nav-slide-panel')){
       $(".nav-slide-panel").removeClass("on");
       $(".sub-container").removeClass("down");
       $('.panel-close-btn').hide();
     }
 	});
-  $('.panel-close-btn').click(function(){ //닫기 버튼을 클릭할 경우
-    $(".nav-slide-panel").removeClass("on");
-    $(".sub-container").removeClass("down");
-    $(this).hide();
-  })
+  // $('.panel-close-btn').click(function(){ //닫기 버튼을 클릭할 경우
+  //   $(".nav-slide-panel").removeClass("on");
+  //   $(".sub-container").removeClass("down");
+  //   $(this).hide();
+  // })
   $(".nav-slide-panel").on("mouseleave", function(e) { //마우스가 영역을 벗어날 경우
 
     // 마우스가 이동한 대상이 닫기 버튼이면 무시

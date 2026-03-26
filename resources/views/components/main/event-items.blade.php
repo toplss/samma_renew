@@ -20,6 +20,7 @@ $image_url = 'images/item/'.$row['it_img1'];
 
 <div class="sale-item-list">
     <ul onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; ">
+        <input type="hidden" class="main_show_item" value="{{ $it_id }}" />
         @if(file_exists(public_path($image_url)) && $row['it_img1'])
         <li class="si-img  {{ $sold_out ? 'sold-out' : '' }}">
             <img src="{{ asset($image_url) }}">

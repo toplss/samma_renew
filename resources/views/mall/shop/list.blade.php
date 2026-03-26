@@ -146,7 +146,21 @@ if (request()->has('page'))  $isDown = false;
                 </li>
                 <li class="prd-name">
                     {{ $row['it_name'] }}
-                    <p class="ea">({{ $row['it_basic'] }}*{{ $row['it_gubun_label'] }})<i>/ 개당 2,300원</i></p>
+
+                    @if($activeMember)
+                    @php
+                    if ($row['it_price_piece_use']) {
+                        $it_price_piece = $row[$activeMember['field_it_price_unit']];
+                    } else {
+                        $it_price_piece = 0;
+                    }
+                    @endphp
+                    <p class="ea">({{ $row['it_basic'] }}*{{ $row['it_gubun_label'] }})
+                        @if($it_price_piece > 0 && $row['it_price_piece_use'])
+                        <i>/ 개당 {{ number_format($it_price_piece) }}원</i>
+                        @endif
+                    </p>
+                    @endif
                 </li>
 
                 @if($activeMember)

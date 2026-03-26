@@ -179,7 +179,7 @@ nav{background-color: #f9f9f9; border-top: 1px solid #8ec251; border-bottom: 1px
 
 .panel-inner>div{overflow: hidden;}
 .panel-inner>div>a{overflow: hidden; border-radius: 0.6rem;}
-.panel-inner>div img{ border-radius: 0.6rem;}
+.panel-inner>div img{ border-radius: 0.6rem; max-height: 330px;}
 .panel-inner ._right img{border-radius: 0.6rem;}
 .panel-inner ._right>div:last-of-type{display: none;}
 #pi1 ._all{display: grid; grid-template-columns: repeat(7,1fr); gap: 10px; width: 100%; text-align: left; margin-top: 1rem;}

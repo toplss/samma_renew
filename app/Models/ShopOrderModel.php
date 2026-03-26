@@ -258,6 +258,7 @@ class ShopOrderModel extends Model
                 ) AS delta_charge
             ")
             ->where('mb_code', $mb_code)
+            ->whereIn('od_delivery_step', [8, 90, 99])
             ->groupBy('od_group_code');
 
         $c = self::query()

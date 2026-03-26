@@ -116,7 +116,7 @@ class ShopController extends Controller
                 'required',
                 Rule::exists('g5_shop_item', 'it_id')
                     ->where(function ($query) {
-                        $query->where('it_use', '!=', 0);
+                        $query->where('it_use', '1');
                     }),
             ],
         ], [
@@ -632,6 +632,8 @@ class ShopController extends Controller
         ->leftJoin('tb_tmp_selection_chain_product as tcp', function ($join) {
             $join->on('g5_shop_item.it_id', '=', 'tcp.it_id');
         })
+        ->where('g5_shop_item.it_use', '1')
+        ->where('tcp.t_state', '2')
         ->when($request->filled('desc') && $request->desc == '4' && $saleJoin, function($query) use ($saleJoin) {
             $query->leftJoinSub($saleJoin, 'shop_sales', function($join) {
                 $join->on('g5_shop_item.it_id', '=', 'shop_sales.it_id');

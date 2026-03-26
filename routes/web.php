@@ -14,6 +14,7 @@ use App\Http\Controllers\MyPageController;
 use App\Http\Controllers\MyCartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserGuideController;
+use App\Http\Controllers\MainProductItemController;
 use App\Http\Controllers\Api\MallShopApi;
 
 /*
@@ -461,6 +462,10 @@ Route::middleware(['block.ip'])->group(function () {
 
     # 장바구니 기능
     Route::post('/mall/proc_query_cart', [ShopCartApi::class, 'execute'])->middleware('auth.session');
+
+
+    # 메인상품 팝업용
+    Route::post('/mall/item/show', [MainProductItemController::class, 'show']);
 
 
     # 주문취소 기능

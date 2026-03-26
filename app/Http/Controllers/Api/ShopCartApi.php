@@ -56,11 +56,18 @@ class ShopCartApi extends Controller
                             ->orWhere('it_force_soldout', 10);
                     })
                     ->exists();
-
                     if ($cnt_exists) {
                         throw new \Exception("품절된 상품 입니다.");
                     }
-                    
+
+
+                    $cnt_exists = ShopItem::where('it_id', $it_id)
+                    ->where('it_use', '1')
+                    ->exists();
+                    if ($cnt_exists == 0) {
+                        throw new \Exception("현재 판매가능한 상품이 아닙니다.");
+                    }
+
 
                     $it_price = ShopItem::where('it_id', $it_id)
                     ->value('it_price1');
@@ -286,6 +293,56 @@ class ShopCartApi extends Controller
         }
 
         if ($mb_code) {
+
+            $selected = array_merge($selected, [
+                'si.it_price_piece_use',
+                'si.it_price1',
+                'si.it_price_rate1',
+                'si.it_price_unit1',
+                'si.it_price2',
+                'si.it_price_rate2',
+                'si.it_price_unit2',
+                'si.it_price3',
+                'si.it_price_rate3',
+                'si.it_price_unit3',
+                'si.it_price4',
+                'si.it_price_rate4',
+                'si.it_price_unit4',
+                'si.it_price5',
+                'si.it_price_rate5',
+                'si.it_price_unit5',
+                'si.it_price6',
+                'si.it_price_rate6',
+                'si.it_price_unit6',
+                'si.it_price7',
+                'si.it_price_rate7',
+                'si.it_price_unit7',
+                'si.it_price8',
+                'si.it_price_rate8',
+                'si.it_price_unit8',
+                'si.it_price9',
+                'si.it_price_rate9',
+                'si.it_price_unit9',
+                'si.it_price10',
+                'si.it_price_rate10',
+                'si.it_price_unit10',
+                'si.agency_it_price1',
+                'si.agency_it_price_rate1',
+                'si.agency_it_price_unit1',
+                'si.agency_it_price2',
+                'si.agency_it_price_rate2',
+                'si.agency_it_price_unit2',
+                'si.agency_it_price3',
+                'si.agency_it_price_rate3',
+                'si.agency_it_price_unit3',
+                'si.agency_it_price4',
+                'si.agency_it_price_rate4',
+                'si.agency_it_price_unit4',
+                'si.agency_it_price5',
+                'si.agency_it_price_rate5',
+                'si.agency_it_price_unit5',
+            ]);
+
             return ShopCart::join('g5_shop_item AS si', 'g5_shop_cart.it_id', '=', 'si.it_id')
             ->where('mb_code', $mb_code)
             ->when($request->input('order_type'), function($query) use($request) {
@@ -309,9 +366,19 @@ class ShopCartApi extends Controller
             // ->orderByRaw('it_soldout = 1 DESC ')
             // ->orderByRaw('ct_id DESC ')
 
-            ->get()->toArray();
+            ->get()
+            ->map(function($row) use ($member) {
+
+                $field = $member['field_it_price_unit'];
+        
+                $row->it_price_piece = $row->it_price_piece_use
+                    ? $row->$field
+                    : 0;
+        
+                return $row;
+            })
+            ->toArray();
             
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } else {
             return [];
         }
@@ -932,4 +999,5 @@ class ShopCartApi extends Controller
             return false;
         }
     }
+
 }

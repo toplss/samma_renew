@@ -341,17 +341,6 @@ $(".sale-item-tab li").click(function () {
     $btn.text(isOpen ? '보기' : '접기');
   });
 
-  // si 모달
-  $('.si-cart-btn').click(function(){
-    $('.si-cart-modal').show();
-    $('.si-bg').show();
-  });
-  $('.scm-close').click(function(){
-    $('.si-cart-modal').hide();
-    $('.si-bg').hide();
-  });
-
-
 
 
   // 찾아오시는길  

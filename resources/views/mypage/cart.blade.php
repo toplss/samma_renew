@@ -65,11 +65,21 @@
 
           @endphp
 
+          @php
+          if ($row['it_price_piece_use']) {
+              $it_price_piece = $row[$activeMember['field_it_price_unit']];
+          } else {
+              $it_price_piece = 0;
+          }
+          @endphp
+
           <td class="cart-table-title">
             <input type="hidden" class="it_gubun" value="{{ $row['it_gubun'] }}" />
             <input type="hidden" class="it_box_sale_pcs" value="{{ $row['it_box_sale_pcs'] }}" />
             <input type="hidden" class="it_box_sale_pack" value="{{ $row['it_box_sale_pack'] }}" />
             <input type="hidden" class="it_box_sale_tot" value="{{ $row['it_box_sale_tot'] }}" />
+            <input type="hidden" class="it_price_piece" value="{{ $it_price_piece }}" />
+
             <div>
               @if(file_exists(public_path($image_url)) && $row['it_img1'])
               <img src="{{ asset($image_url) }}">
@@ -78,7 +88,11 @@
               @endif
               <h6 class="my_cart_it_name">
                 <span class="my_cart_it_name_short">{{ $row['it_name'] }}</span>
-                <i>({{ $row['it_basic'] }})<s>/ 개당 2,300원</s></i>
+                <i>({{ $row['it_basic'] }})
+                  @if($it_price_piece > 0 && $row['it_price_piece_use'])
+                  <s>/ 개당 {{ number_format($it_price_piece) }}원</s>
+                  @endif
+                </i>
 
                 <!-- 상품이벤트 라벨 -->
                 @foreach($arr_item_label as $key => $label)
@@ -447,22 +461,36 @@ function checked_del() {
 function setting_table(data) {
   var items = JSON.parse(JSON.stringify(data));
 
+  var item_label = {
+    '초특가': 'bargain',
+    '이달의행사': 'event',
+    '신상품': '_new',
+    '베스트': 'best',
+    '비바쿡': 'vivacook',
+    '마이그랑': 'mygrang'
+  };
+
   if (Object.keys(items.cartList).length > 0) {
 
       let tbody_html = '';
       let img_root   = '/images/item/';
+      let no_img_path = '/images/common/no_image.gif';
       const activeMember = <?= json_encode($activeMember) ?>;
 
       let index = 0;
       var cartList = items.cartList;
 
       $.each(cartList, function(i, val) {
+          arr_item_label = [];
+          if (val.it_type_label) {
+              arr_item_label = val.it_type_label.split('#');
+          }
         
           // tbody_html += '<tr>';
-            tbody_html += `<tr data-it_id="${val.it_id}">`;
+          tbody_html += `<tr data-it_id="${val.it_id}">`;
 
           index++;
-          let image_url = img_root + val.it_img1;
+          let image_url = val.it_img1 ? img_root + val.it_img1 : no_img_path;
           let min_cart_ct_qty = 0;
           let box_min_qty = 0;
           let max_cart_ct_qty = 0;
@@ -494,6 +522,20 @@ function setting_table(data) {
           var it_id   = val.it_id;
           var tempClass = (val.it_return_label == '반품가능') ? 'return_o' : 'return_x';
           var it_return_use = val.it_return_use;
+          var unit_price_html = extra_item_label = '';
+
+          if (val.it_price_piece > 0) {
+            var it_price_piece = val.it_price_piece * 1;
+            unit_price_html = `<s>/ 개당 ${it_price_piece.toLocaleString()}원</s>`;
+          }
+
+          arr_item_label.forEach(label => {
+              if (label) {
+                extra_item_label += `<span class="hide-820 ${item_label[label]}">${label}</span>`;
+              }
+          });
+
+
 
           if (it_return_use == '1') {
               tbody_html += `
@@ -508,11 +550,18 @@ function setting_table(data) {
               <input type="hidden" class="it_box_sale_pcs" value="${val.it_box_sale_pcs}" />
               <input type="hidden" class="it_box_sale_pack" value="${val.it_box_sale_pack}" />
               <input type="hidden" class="it_box_sale_tot" value="${val.it_box_sale_tot}" />                
+              <input type="hidden" class="it_price_piece" value="${val.it_price_piece}" />                
 
               <div>
                   <img src="${image_url}">
                   <h6>
                     <span class="my_cart_it_name_short">${val.it_name}</span>
+                    <i>(${val.it_basic})
+                    ${unit_price_html}
+                    </i>
+                    
+                    ${extra_item_label}
+
                     <p class="show-820">
                       <span class="${tempArr[val.it_storage]}">${val.it_storage_label}</span>
                       <span class="${tempClass}">${val.it_return_label}</span>
@@ -540,6 +589,12 @@ function setting_table(data) {
                   <img src="${image_url}">
                   <h6>
                     <span class="my_cart_it_name_short">${val.it_name}</span>
+                    <i>(${val.it_basic})
+                    ${unit_price_html}
+                    </i>
+
+                    ${extra_item_label}
+
                     <p class="show-820">
                       <span class="${tempArr[val.it_storage]}">${val.it_storage_label}</span>
                     </p>

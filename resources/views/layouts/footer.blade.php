@@ -845,6 +845,178 @@ $('.qa_btn').on('click', function () {
 		}
 	});
 });
+
+
+
+// 메인상품 장바구니 팝업
+$('.si-cart-btn').click(function(){
+	var it_id = $(this).closest('ul').find('.main_show_item').val();
+
+	$.post("/mall/item/show", {
+		it_id  : it_id,
+	},function(res){
+		
+		if (res.status == 'success') {
+			var result = res.data;
+			$('.scm1').find('img').attr('src', result.img_url);
+			$('.scm2').html(result.it_name + result.it_basic);
+			$('.scm3').find('.cart_ct_qty').val(result.min_ct_qty);
+			$('.scm3').find('.min_ct_qty').val(result.min_ct_qty);
+
+			var scm4 = `<input type="hidden" class="main_show_item" value="${it_id}" />`;
+
+			if (result.cust_price > 0) {
+				scm4 += `
+				<input type="hidden" class="it_price" value="${result.price}" />
+				<input type="hidden" class="org_it_price" value="${result.row_list_cust_it_price}" />
+
+				<del>${parseInt(result.row_list_cust_it_price).toLocaleString()}원</del>
+				<span class="discount"><b>${result.it_cust_rate}%</b>${parseInt(result.row_list_field_it_price).toLocaleString()}원</span>
+				`;
+			} else {
+				scm4 += `
+				<input type="hidden" class="it_price" value="${result.price}" />
+				<span class="price">${parseInt(result.row_list_field_it_price).toLocaleString()}원</span>
+				`;
+			}
+
+			$('.scm4').html(scm4);
+			$('.si-cart-modal').find('.total_price').text(parseInt(result.row_list_field_it_price).toLocaleString() + '원');
+
+			$('.si-cart-modal').show();
+			$('.si-bg').show();
+
+		} else {
+			var message = res.message;
+
+			Swal.fire({
+				toast: false,
+				icon: 'warning',
+				title: '알림',
+				html: message,
+				confirmButtonText: '확인'
+			});
+		}
+
+	}, 'json');
+});
+
+
+$(document).off('click', '.scm3 .sit_qty_plus').on('click', '.scm3 .sit_qty_plus', function(){
+	var scm3 = $(this).closest('.scm3');
+	var scm4 = $(this).closest('.scm3').next('.scm4');
+
+	var it_id = scm4.find('.main_show_item').val();
+	var qty = scm3.find('.cart_ct_qty').val() * 1;
+	var min_qty = scm3.find('.min_ct_qty').val() * 1;
+	var it_price = scm4.find('.it_price').val() * 1;
+	var isDiscount = scm4.find('.price-dis').length > 0;
+
+	// 묶음판매 수량
+	if (min_qty) {
+		qty += min_qty;
+	} else {
+		qty += 1;
+	}
+
+	it_price = it_price * qty;
+
+	if (isDiscount) {
+		let org_it_price = scm4.find('.org_it_price').val() * 1;
+		let org_price = org_it_price * qty;
+		scm4.find('.price-dis').text(org_price.toLocaleString() + '원');
+	}
+
+	scm3.find('.cart_ct_qty').val(qty);
+	scm4.closest('div').find('.total_price').text(it_price.toLocaleString() + '원');
+});
+
+
+
+// 수량차감
+$(document).off('click', '.scm3 .sit_qty_minus').on('click', '.scm3 .sit_qty_minus', function(){
+	var scm3 = $(this).closest('.scm3');
+	var scm4 = $(this).closest('.scm3').next('.scm4');
+
+	var it_id = scm4.find('.main_show_item').val();
+	var qty = scm3.find('.cart_ct_qty').val() * 1;
+	var min_qty = scm3.find('.min_ct_qty').val() * 1;
+	var it_price = scm4.find('.it_price').val() * 1;
+	var isDiscount = scm4.find('.price-dis').length > 0;
+
+	if (min_qty == qty) {
+		Swal.fire({
+			toast : false,
+			icon : 'info',
+			html: `최소 주문 수량은 <span style="color:red;">${min_qty}개</span>입니다. <br>해당 수량 미만은 주문할 수 없습니다.`
+		});
+		return false;
+	}
+
+	if (qty < 2) return false;
+	
+	// 묶음판매 수량
+	if (min_qty) {
+		qty -= min_qty;
+	} else {
+		qty -= 1;
+	}
+
+	it_price = it_price * qty;
+
+	if (isDiscount) {
+		let org_it_price = scm4.find('.org_it_price').val() * 1;
+		let org_price = org_it_price * qty;
+		scm4.find('.price-dis').text(org_price.toLocaleString() + '원');
+	}
+
+	scm3.find('.cart_ct_qty').val(qty);
+	scm4.closest('div').find('.total_price').text(it_price.toLocaleString() + '원');
+});
+
+$(document).off('click', '.si-cart-modal .scm-cart').on('click', '.si-cart-modal .scm-cart', function(){
+	var scm3 = $(this).closest('.si-cart-modal').find('.scm3');
+	var scm4 = $(this).closest('.si-cart-modal').find('.scm3').next('.scm4');
+
+	var it_id = scm4.find('.main_show_item').val();
+	var qty = scm3.find('.cart_ct_qty').val() * 1;
+	var min_qty = scm3.find('.min_ct_qty').val() * 1;
+	var it_price = scm4.find('.it_price').val() * 1;
+	var isDiscount = scm4.find('.price-dis').length > 0;
+
+	$.post('/mall/proc_query_cart', {
+		mode: 'cart_insert',
+		it_id: it_id,
+		ct_qty: qty,
+		path : window.location.pathname
+	}, function(res) {
+		basket_count();
+		cart_res(res); 
+		
+		$('.scm-close').trigger('click');
+
+	
+		// it_price = it_price * min_qty;
+		
+		// scm3.find('.cart_ct_qty').val(min_qty);
+		// scm4.closest('div').find('.total_price').text(it_price.toLocaleString() + '원');
+
+		// var isDiscount = ul.find('.price-dis').length > 0;
+		// if (isDiscount) {
+		// 	let org_it_price = scm4.find('.org_it_price').val() * 1;
+		// 	let org_price = org_it_price * min_qty;
+		// 	scm4.find('.price-dis').text(org_price.toLocaleString() + '원');
+		// }
+	}, 'json');
+
+});
+
+$('.scm-close').click(function(){
+	$('.scm1').find('img').attr('src', '');
+
+	$('.si-cart-modal').hide();
+	$('.si-bg').hide();
+});
 </script>
 
 </body>
