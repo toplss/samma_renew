@@ -859,7 +859,7 @@ $('.si-cart-btn').click(function(){
 		if (res.status == 'success') {
 			var result = res.data;
 			$('.scm1').find('img').attr('src', result.img_url);
-			$('.scm2').html(result.it_name + result.it_basic);
+			$('.scm2').html(result.it_name + result.it_basic + ' <p><span class="return_x">반품불가</span><u>개당 2,000원</u></p>');
 			$('.scm3').find('.cart_ct_qty').val(result.min_ct_qty);
 			$('.scm3').find('.min_ct_qty').val(result.min_ct_qty);
 
