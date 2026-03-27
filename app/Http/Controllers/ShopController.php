@@ -732,7 +732,18 @@ class ShopController extends Controller
                 ->orderBy('g5_shop_item.it_time', 'desc')
                 ->orderBy('g5_shop_item.idx', 'desc');
         })
-        ->paginate($perPage);
+        ->take(120)->get();
+
+        $items = new LengthAwarePaginator(
+            $items->forPage($page, $perPage),
+            $items->count(),
+            $perPage,
+            $page,
+            [
+                'path' => request()->url(),   
+                'query' => request()->query() 
+            ]
+        );
 
         
         $redis_key_generate = 'mall:items:20';

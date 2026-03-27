@@ -83,6 +83,7 @@ class MainController extends Controller
             $resArr['main_center'] = $banner_service->makeBannerDiv($main_center, 'N');
             $resArr['main_bottom'] = $main_bottom;
 
+            
             // 하루 = 24시간 = 24 * 60 * 60 = 86400초
             self::setRedis($redis_member_key_generate, $resArr);
         }
@@ -145,8 +146,6 @@ class MainController extends Controller
             }
 
             $resArr['notice'] = TbBbsBody::getMainNoticeList();  # 공지사항
-
-// dd($resArr);
 
             return view('index', $resArr);
         } else {

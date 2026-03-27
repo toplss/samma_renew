@@ -171,8 +171,6 @@ class MallShopApi extends Controller
                 Redis::del('main_banner');
                 Redis::del('menu_banner');
 
-// dd('success');
-
                 $cursor = null;
 
                 do {
@@ -195,11 +193,16 @@ class MallShopApi extends Controller
 
             // 상품정보 삭제
             if ($request->input('del_cach') === 'items') {
-                $cursor = null;
+                $cursor = 1;
 
                 do {
                     $result = Redis::scan($cursor, [
-                        'match' => 'laravel_cache:shop:items:*',
+                        'match' => 'shop:items:*',
+                        'count' => 100
+                    ]);
+
+                    $result = Redis::scan($cursor, [
+                        'match' => 'lock:items:*',
                         'count' => 100
                     ]);
                 

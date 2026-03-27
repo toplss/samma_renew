@@ -133,10 +133,6 @@ class ShopItem extends Model
                 //메인 슬라이드 - 비바쿡 할인상품
                 ->when($ca_id == 'MainSlideVivacook' ,function($query) {
                     $query->where('ca_id', '!=', '10')->where('it_type8', '1')->where('it_display_use', '1');
-
-// dd($query);
-
-
                 })
 
                 //메인 슬라이드 - 마이그랑 할인상품
