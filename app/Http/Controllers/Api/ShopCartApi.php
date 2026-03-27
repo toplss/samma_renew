@@ -295,6 +295,7 @@ class ShopCartApi extends Controller
         if ($mb_code) {
 
             $selected = array_merge($selected, [
+                'si.it_cust_rate',
                 'si.it_price_piece_use',
                 'si.it_price1',
                 'si.it_price_rate1',

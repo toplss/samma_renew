@@ -94,7 +94,9 @@
                   @endif
                 </i>
                 <!-- 할인표시 -->
-                <b class="dc_pin">30%↓</b>
+                @if($row['it_cust_rate'])
+                <b class="dc_pin">{{ $row['it_cust_rate'] }}%↓</b>
+                @endif
                 <!-- 상품이벤트 라벨 -->
                 @foreach($arr_item_label as $key => $label)
                   @if($label)<span class="hide-820 {{ $item_label[$label] }}">{{ $label }}</span>@endif
