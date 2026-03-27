@@ -75,6 +75,11 @@ class LoginController extends Controller
         }
 
 
+        if ($user->mb_login_type != 'both' && $user->mb_login_type != 'mall') {
+            return redirect()->route('login_intro')->with('login', '로그인 권한이 없습니다.');
+        }
+
+
         /**
          * Author : Lee Sangseung
          * Description : 아이디 저장

@@ -352,7 +352,7 @@
 .cart-table-ea .Qua input{text-align: center; width: 50px;}
 .cart-table .sit_delete_btn img{width: 1.5rem;}
 .cart-table .ct-soldout{background-color: #da2727; color: #fff !important; border-radius: 0.3rem; padding: 0.2rem 0.8rem; font-size: 1rem;}
-.cart-table ._new,.cart-table .best,.cart-table .event,.cart-table .mygrang, .cart-table .vivacook,.cart-table .bargain{padding: 0 0.2rem; margin-right: 4px;}
+.cart-table ._new,.cart-table .best,.cart-table .event,.cart-table .mygrang, .cart-table .vivacook,.cart-table .bargain{padding: 0 0.2rem; margin-right: 3px;}
 
 
 .odr-cart{border: 1px solid #eee; border-radius: 1rem; display: grid; grid-template-columns: 1fr 5fr; align-items: center; padding: 2rem; margin-top: 3rem;}
@@ -869,8 +869,10 @@
   .price-view-detail{border: 1px solid #ddd; border-radius: 0.5rem; padding: 0 1rem 1rem 1rem;}
 
   .prd-row-head ul{grid-template-columns: 5fr 2fr;}
-  .prd-list.type-row .prd-box{grid-template-columns: 1fr 4fr 2.2fr; gap: 0.6rem;}
-  .prd-list.type-row .prd-box.simple{grid-template-columns: 13px 1fr 4fr 2fr;}
+  .prd-row-head.simple ul{grid-template-columns: 26px 5fr 2.5fr;}
+
+  .prd-list.type-row .prd-box{grid-template-columns: 1fr 4fr 2.5fr; gap: 0.6rem;}
+  .prd-list.type-row .prd-box.simple{grid-template-columns: 13px 1fr 4fr 3fr;}
   .prd-list.type-row .prd-img{grid-row: 1 / span 2;}
   .prd-list.type-row .prd-name{font-size: 0.9rem; line-height: 1.2rem;}
   .prd-list.type-row .prd-name .ea>i{display: inline-block;}
@@ -879,12 +881,14 @@
   .prd-list.type-row .prd-price h5{align-items: center;}
   .prd-list.type-row .prd-price h5 u{display: none;}
   .prd-list.type-row .prd-price h5::after{display: none;}
-  .prd-list.type-row .Qua{flex-direction: row; margin-right: 10px;}
+  .prd-list.type-row .Qua{flex-direction: row; margin-right: 20px;}
   .prd-list.type-row .Qua .pm-wrap{padding: 0.2rem; gap: 0.2rem;}
   .prd-list.type-row .Qua #numberUpDown input{font-size: 0.9rem; width: 1.6rem;}
   .prd-list.type-row .Qua .add-to-cart{font-size: 0.9rem; padding: 0.3rem 0.6rem;}
   .prd-list.type-row .prd-check{grid-row: 1 / span 2;}
   .prd-list.type-row .simple .prd-info{grid-column: 3 / span 1;}
+  /* .prd-list.type-row .simple .Qua{flex-direction: column;} */
+  
 
   .prd-list.type-row .equip .prd-price{grid-row: 2 / span 1; text-align: left;}
   .prd-list.type-row .equip .Qua{grid-column: 3 / span 1; grid-row: 1 / span 2;}

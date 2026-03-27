@@ -458,7 +458,7 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.m-quick-txt{text-align: left; display: flex; align-items: center; gap: 0.4rem;}
 	.mqt1{width: 2.2rem;}
 	.mqt2 span{margin-bottom: 0.2rem;}
-	.m-quick-btn{display: grid; grid-template-columns: 3.8fr 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;}
+	.m-quick-btn{display: grid; grid-template-columns: 1fr 1fr 3.8fr ; gap: 0.5rem; margin-top: 0.5rem;}
 	.m-quick-btn button{padding: 0.6rem;}	
 	.m-quick-btn .btn1 img{width: 1.6rem; margin: auto;}
 	.m-quick-btn .btn2 img{width: 1.8rem; margin: auto;}
@@ -511,6 +511,7 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 @media screen and (max-width: 680px){
 	.hide-680{display: none;}
 	.show-680{display: block;}
+	section{width: 92%;}
 	.table1 th{padding: 0.5rem 0.2rem; font-size: 0.9rem;}
 	.table1 td{padding: 0.5rem 0.2rem; font-size: 0.9rem;}
 	.table1 td button{font-size: 0.9rem; padding: 0.2rem 0.3rem;}

@@ -12,7 +12,7 @@
       $min_cart_ct_qty = $box_min_qty = $max_cart_ct_qty = 0;
 
       
-      if(isset($activeMember['mb_level']) && substr($activeMember['mb_level'], 0, 2) == '30' && $items['agency_it_buy_min_qty'] > 0) {
+      if(isset($activeMember['mb_level']) && substr($activeMember['mb_level'], 0, 2) == '30' && $items['agency_it_buy_min_qty'] > 0 || $activeMember['mb_branch_gubun_type'] == '3') {
           $min_cart_ct_qty = $items['agency_it_buy_min_qty']; // 주문최소
           $box_min_qty     = ($items['it_gubun'] == 'pack') ? $items['it_box_sale_pack'] : $items['it_box_sale_tot']; // 박스구매
           $max_cart_ct_qty = $items['agency_it_buy_max_qty']; // 최대치 구매

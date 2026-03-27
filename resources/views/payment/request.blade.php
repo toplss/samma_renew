@@ -447,12 +447,12 @@ if (isset($activeMember['mb_level_type'])) {
                 <div class="pay_btns">
                     <p class="flex-center"><img src="{{ asset('images/icon/bell.gif') }}">배송요일 하루전 오후 2시이전 주문시 원활한 납품을 받으실 수 있습니다.</p>
                     <ul>
+                        <li><button type="button" class="od_btn_cancel btn1" onclick="location.href='/mypage/cart'">장바구니</button></li>
                         @if ($payment_type == '선불')
                         <li><button type="button" class="od_btn btn3" onclick="requestPay()">결제하기</button></li>
                         @else
                         <li><button type="button" class="od_btn btn3" onclick="requestPay()">주문하기</button></li>
                         @endif
-                        <li><button type="button" class="od_btn_cancel btn1" onclick="location.href='/mypage/cart'">장바구니</button></li>
                     </ul>
                 </div>
             </div>

@@ -18,9 +18,7 @@ class BlockIp
     public function handle($request, Closure $next)
     {
         $blockedIps = [
-            '58.229.37.46',
-            '45.205.1.8',
-            '14.33.117.203',
+            '',
         ];
         
         $ip = $request->getClientIp();

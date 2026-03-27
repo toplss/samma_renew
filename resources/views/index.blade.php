@@ -319,7 +319,7 @@
 <div class="si-cart-modal">
   <img src="{{ asset('images/icon/close.svg') }}" class="scm-close">
   <ul>
-    <li class="scm1"><img src="" alt=""><span class="frozen_temp"><img src="{{ asset('images/icon/snow.svg') }}">냉동</span></li>
+    <li class="scm1"><img class="main_it_img" src="" alt=""><span class="frozen_temp"><img src="{{ asset('images/icon/snow.svg') }}">냉동</span></li>
     <li class="scm2"></li>
     <li class="scm3">
       <p class="Qua">

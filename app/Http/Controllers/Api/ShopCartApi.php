@@ -326,6 +326,8 @@ class ShopCartApi extends Controller
                 'si.it_price10',
                 'si.it_price_rate10',
                 'si.it_price_unit10',
+                'si.agency_it_buy_min_qty',
+                'si.agency_it_buy_max_qty',
                 'si.agency_it_price1',
                 'si.agency_it_price_rate1',
                 'si.agency_it_price_unit1',

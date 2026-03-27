@@ -209,9 +209,9 @@
 				</p>
 			</div>
 			<div class="m-quick-btn">
-				<button type="button" class="btn3">장바구니<i id="reload_quick_cart_cnt" class="cart_cnt">{{ $activeMyPageTop['cart_cnt'] ?? 0}}</i><span class="total_amount"></span>원 </button>
-				<button type="button" class="btn1" onclick="location.href='/mypage/cart'"><img src="{{ asset('images/icon/cart-w.svg') }}"></button>		
 				<button type="button" class="btn2" onclick="location.href='/mypage/my_page'"><img src="{{ asset('images/icon/user.svg') }}"></button>				
+				<button type="button" class="btn1" onclick="location.href='/mypage/cart'"><img src="{{ asset('images/icon/cart-w.svg') }}"></button>		
+				<button type="button" class="btn3">장바구니<i id="reload_quick_cart_cnt" class="cart_cnt">{{ $activeMyPageTop['cart_cnt'] ?? 0}}</i><span class="total_amount"></span>원 </button>
 			</div>
 		</div>
 
@@ -463,7 +463,7 @@
 						if (isDiscount) {
 							let org_it_price = ul.find('.org_it_price').val() * 1;
 							let org_price = org_it_price * min_qty;
-							ul.find('.price-dis').text(org_price.toLocaleString() + '원');
+							ul.find('.price-dis').find('del').text(org_price.toLocaleString() + '원');
 						}
 					}, 'json');
 				});
@@ -491,7 +491,7 @@
 					if (isDiscount) {
 						let org_it_price = ul.find('.org_it_price').val() * 1;
 						let org_price = org_it_price * qty;
-						ul.find('.price-dis').text(org_price.toLocaleString() + '원');
+						ul.find('.price-dis').find('del').text(org_price.toLocaleString() + '원');
 					}
 
 					ul.find('.ct_qty').val(qty);
@@ -533,7 +533,7 @@
 					if (isDiscount) {
 						let org_it_price = ul.find('.org_it_price').val() * 1;
 						let org_price = org_it_price * qty;
-						ul.find('.price-dis').text(org_price.toLocaleString() + '원');
+						ul.find('.price-dis').find('del').text(org_price.toLocaleString() + '원');
 					}
 
 					ul.find('.ct_qty').val(qty);
@@ -858,8 +858,28 @@ $('.si-cart-btn').click(function(){
 		
 		if (res.status == 'success') {
 			var result = res.data;
-			$('.scm1').find('img').attr('src', result.img_url);
-			$('.scm2').html(result.it_name + result.it_basic + ' <p><span class="return_x">반품불가</span><u>개당 2,000원</u></p>');
+			var scm1_icon = '';
+			var scm2_return = '';
+			var scm2_piece = '';
+
+			if (result.it_storage == 'frozen_temp') scm1_icon = `/images/icon/snow_frozen.svg`;
+			if (result.it_storage == 'low_temp') scm1_icon = `/images/icon/snow_low.svg`;
+
+			if (result.it_return_use == '1') {
+				scm2_return = (result.it_return_label == '반품불가') 
+					? `<span class="return_x">반품불가</span>`
+					: `<span class="return_o">반품가능</span>`;
+			}
+
+			if (result.it_price_piece_use == '1') {
+				var it_price_piece = parseInt(result.it_price_piece);
+				scm2_piece = `<u>개당 ${it_price_piece.toLocaleString()}원</u>`;
+			}
+
+			$('.scm1').find('.main_it_img').attr('src', result.img_url);
+			$('.scm1').find('span').attr('class', result.it_storage);
+			$('.scm1').find('span').html(`<img src="${scm1_icon}">` + result.it_storage_label);
+			$('.scm2').html(result.it_name + result.it_basic + ` <p>${scm2_return}${scm2_piece}</p>`);
 			$('.scm3').find('.cart_ct_qty').val(result.min_ct_qty);
 			$('.scm3').find('.min_ct_qty').val(result.min_ct_qty);
 
