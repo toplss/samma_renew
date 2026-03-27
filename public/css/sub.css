@@ -648,11 +648,13 @@
 
   .prd-list{grid-template-columns: repeat(5,1fr);}
   .prd-list.type-row .prd-box{grid-template-columns: 1fr 3fr 2fr 2.5fr 2fr;}
+  .prd-list.type-row .Qua-equip{flex-direction: column;}
   .prd-name .ea{font-size: 0.9rem;}
   .prd-view-img .sold-out:after{font-size: 3.5rem;}
   .recipe-list{grid-template-columns: repeat(5,1fr);}
   .recipe-detail{grid-template-columns: 1.3fr 2fr;}
 
+  
   .Qua-equip>p>img{width: 15px;}
 
   .prd-view-wrap{grid-template-columns: 1fr 1.2fr;}
@@ -888,11 +890,11 @@
   .prd-list.type-row .Qua .add-to-cart{font-size: 0.9rem; padding: 0.3rem 0.6rem;}
   .prd-list.type-row .prd-check{grid-row: 1 / span 2;}
   .prd-list.type-row .simple .prd-info{grid-column: 3 / span 1;}
-  /* .prd-list.type-row .simple .Qua{flex-direction: column;} */
   
 
-  .prd-list.type-row .equip .prd-price{grid-row: 2 / span 1; text-align: left;}
-  .prd-list.type-row .equip .Qua{grid-column: 3 / span 1; grid-row: 1 / span 2;}
+  .prd-list.type-row .equip .prd-price{grid-row: 2 / span 1; text-align: left; margin: 0;}
+  .prd-list.type-row .equip .prd-price h5{align-items: start;}
+  .prd-list.type-row .Qua-equip{grid-column: 3 / span 1; grid-row: 1 / span 2;}
   .prd-view-img .sold-out:after{font-size: 3.2rem;}
   .prd-view-more{padding-top: 1rem;}
   .prd-view-more p{width: 100%; max-height: 400px;}

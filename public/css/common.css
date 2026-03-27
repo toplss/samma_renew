@@ -79,7 +79,7 @@ section{max-width: 1280px; width: 96%; margin: auto; min-height: 40vh;}
 .frozen_temp{background-color: #5494de;}
 .return_o{background-color: #999;}
 .return_x{background-color: #da2727;}
-.dc_pin{background-color: #da2727; color: #fff; font-size: 0.85rem; font-weight: 400; padding: 0.2rem; border-radius: 0.2rem;}
+.dc_pin{display: inline-block; background-color: #da2727; color: #fff; font-size: 0.9rem; font-weight: 400; padding: 0 0.2rem; border-radius: 0.2rem;}
 
 /* datepicker */
 .datepicker{border: 1px solid #eee; padding: 0.2rem; width: 120px;  background: url("/images/icon/calendar.svg") no-repeat right 0 center / 20px auto; font-family: 'Pretendard Variable' !important; cursor: pointer;}
@@ -256,7 +256,7 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 .qp2{background-color: #f9f9f9; color: #097dcb;}
 .qp3{color: #da2727;}
 
-.sm_cart_box{display: flex; flex-direction: column; gap: 0.5rem; height: 70vh;}
+.sm_cart_box{display: flex; flex-direction: column; gap: 0.5rem; height: calc(100vh - 265px);}
 .sm_wrap_item{flex-grow: 0.5; overflow-y: auto; min-height: 20vh;}
 .sm_wrap_item::-webkit-scrollbar {width: 0;}
 .sm_wrap_item::-webkit-scrollbar-track {background-color: #f9f9f9;}
@@ -383,6 +383,7 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	#cartQuickBtn img{width: 20px;}
 	#cartQuickBtn .viva{padding: 0.7rem 0;}
 	#cartQuickBtn .viva img{width: 26px;}
+	.sm_cart_box{height: calc(100vh - 242px);}
 	.sm_wrap_title{font-size: 0.95rem;}
 	.item-div .tit_div{font-size: 0.9rem;}
 	.item-div-img img{width: 27px;}
@@ -497,7 +498,7 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.btn1,.btn2,.btn3{padding: 0.2rem 0.4rem;}
 	.big-btn{font-size: 1.1rem; padding: 0.5rem 1.5rem;}
 	._new, .best, .event,.mygrang,.vivacook,.bargain{font-size: 0.8rem;}
-	.dc_pin{border-radius: 1rem; padding: 0.1rem 0.3rem; font-size: 0.8rem;}
+	.dc_pin{padding: 0 0.3rem; border-radius: 1rem; font-size: 0.8rem;}
 	.f-box2{gap: 1rem;}
 	.f-box3 dl{ gap: 0.5rem; display: none;} 
 	.mf-toggle h6{font-size: 1.1rem; font-weight: 400; margin-bottom: 1rem;}

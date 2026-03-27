@@ -95,7 +95,7 @@
                 </i>
                 <!-- 할인표시 -->
                 @if($row['it_cust_rate'])
-                <b class="dc_pin">{{ $row['it_cust_rate'] }}%↓</b>
+                <b class="dc_pin">{{ $row['it_cust_rate'] }}% 할인</b>
                 @endif
                 <!-- 상품이벤트 라벨 -->
                 @foreach($arr_item_label as $key => $label)

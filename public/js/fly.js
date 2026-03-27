@@ -36,7 +36,7 @@ function flyToElement(flyer, flyingTo, e) {
 
 	// 모바일 도착 위치
 	if ($(window).width() < 1024) {
-		gotoX = window.innerWidth / 3;
+		gotoX = window.innerWidth / 3 * 2;
 		gotoY = window.innerHeight - 40;
 	}
 

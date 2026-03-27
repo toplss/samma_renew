@@ -31,7 +31,7 @@
             <option value="5" {{ request('desc') == '6' ? 'selected' : '' }} >MY 카테고리순</option>
         </select>
     </li>
-    <li>
+    <!-- <li>
         <select name="scale" id="scale" onchange="ShopItemOrderByScale(this.value)">
             <option value="60" {{ request('scale') == 60 ? 'selected' : '' }}>리스트 60개</option>
             <option value="120" {{ request('scale') == 120 ? 'selected' : '' }}>리스트 120개</option>
@@ -39,7 +39,7 @@
             <option value="240" {{ request('scale') == 240 ? 'selected' : '' }}>리스트 240개</option>
             <option value="300" {{ request('scale') == 300 ? 'selected' : '' }}>리스트 300개</option>
         </select>
-    </li>
+    </li> -->
     <li id="gridType"><img src="{{ asset('images/icon/grid.svg') }}"></li>
     <li id="rowType"><img src="{{ asset('images/icon/list.svg') }}"></li>
 </ul>

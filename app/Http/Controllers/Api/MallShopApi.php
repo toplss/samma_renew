@@ -171,6 +171,8 @@ class MallShopApi extends Controller
                 Redis::del('main_banner');
                 Redis::del('menu_banner');
 
+// dd('success');
+
                 $cursor = null;
 
                 do {
@@ -178,7 +180,7 @@ class MallShopApi extends Controller
                         'match' => 'mall:items:*',
                         'count' => 100
                     ]);
-                
+
                     if ($result === false) {
                         break;
                     }
