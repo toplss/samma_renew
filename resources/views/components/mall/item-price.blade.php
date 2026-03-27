@@ -24,7 +24,7 @@ if ($row['it_price_piece_use']) {
 
 @if($cust_price > 0)
 <input type="hidden" class="it_price" value="{{ $price }}" />
-<input type="hidden" class="org_it_price" value="{{ $row_list_cust_it_price }}" />
+<input type="hidden" class="org_it_price" value="{{ $cust_price }}" />
 <p class="price-dis"><del>{{ number_format($row_list_cust_it_price) }}원</del><b>{{ $row['it_cust_rate'] }}%</b></p>
 <h5 class="discount">
     <span class="field_it_price_">{{ number_format($row_list_field_it_price) }}원</span>

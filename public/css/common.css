@@ -79,7 +79,7 @@ section{max-width: 1280px; width: 96%; margin: auto; min-height: 40vh;}
 .frozen_temp{background-color: #5494de;}
 .return_o{background-color: #999;}
 .return_x{background-color: #da2727;}
-
+.dc_pin{background-color: #da2727; color: #fff; font-size: 0.85rem; font-weight: 400; padding: 0.2rem; border-radius: 0.2rem;}
 
 /* datepicker */
 .datepicker{border: 1px solid #eee; padding: 0.2rem; width: 120px;  background: url("/images/icon/calendar.svg") no-repeat right 0 center / 20px auto; font-family: 'Pretendard Variable' !important; cursor: pointer;}
@@ -497,6 +497,7 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.btn1,.btn2,.btn3{padding: 0.2rem 0.4rem;}
 	.big-btn{font-size: 1.1rem; padding: 0.5rem 1.5rem;}
 	._new, .best, .event,.mygrang,.vivacook,.bargain{font-size: 0.8rem;}
+	.dc_pin{border-radius: 1rem; padding: 0.1rem 0.3rem; font-size: 0.8rem;}
 	.f-box2{gap: 1rem;}
 	.f-box3 dl{ gap: 0.5rem; display: none;} 
 	.mf-toggle h6{font-size: 1.1rem; font-weight: 400; margin-bottom: 1rem;}

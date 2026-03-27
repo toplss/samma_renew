@@ -784,6 +784,7 @@
   .rd-table3{grid-column: auto; flex-direction: column;}
 
   /* 마이페이지 */
+  .cart-table-title h6 .show-820{display: inline-block;}
   .cart-table-ea .Qua input{width: 30px; font-size: 0.9rem;}
   .cart-table-ea .flex-between{justify-content: center;}
   .cart-table-ea .show-820{margin-bottom: 0.3rem; font-weight: 600;}

@@ -93,7 +93,8 @@
                   <s>/ 개당 {{ number_format($it_price_piece) }}원</s>
                   @endif
                 </i>
-
+                <!-- 할인표시 -->
+                <b class="dc_pin">30%↓</b>
                 <!-- 상품이벤트 라벨 -->
                 @foreach($arr_item_label as $key => $label)
                   @if($label)<span class="hide-820 {{ $item_label[$label] }}">{{ $label }}</span>@endif

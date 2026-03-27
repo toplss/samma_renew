@@ -125,10 +125,10 @@ class ShopCartApi extends Controller
                     'cartList'       => $cartList = $this->getCartList($request, $member),
                     'member'         => $member,
                     'infomation'     => $service->payInfomation($member),
-                    'deilivery_cost' => $this->deliveryCost(
+                    'deilivery_cost' => (count($cartList) > 0) ? $this->deliveryCost(
                         $member, 
                         array_sum(array_column($cartList, 'pt_sales'))
-                    ),
+                    ) : 0,
                     'waitInfo' => $this->wait_infos($member),
                     'siteInfo' => $this->getSiteInfo(),
                 ],
@@ -145,10 +145,10 @@ class ShopCartApi extends Controller
                     'cartList'       => $cartList = $this->getCartList($request, $member),
                     'member'         => $member,
                     'infomation'     => $service->payInfomation($member),
-                    'deilivery_cost' => $this->deliveryCost(
+                    'deilivery_cost' => (count($cartList) > 0) ? $this->deliveryCost(
                         $member, 
                         array_sum(array_column($cartList, 'pt_sales'))
-                    ),
+                    ) : 0,
                     'waitInfo' => $this->wait_infos($member),
                     'siteInfo' => $this->getSiteInfo(),
                 ],
