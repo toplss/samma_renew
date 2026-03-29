@@ -67,6 +67,7 @@
 
 	<!-- 문의하기 버튼 (우측 하단) -->
 	<button type="button" id="contactBtn"><img src="{{ asset('images/common/sm_icon.svg') }}"></button>
+	<div class="contact_bg"></div>
 	<div class="contact_wrap">
 		<form name="form_contact" id="form_contact" method="post" action="{{ route('contact_us') }}">
 			<input type="text" name="check_bot" id="check_bot" style="display:none">
@@ -209,7 +210,7 @@
 				</p>
 			</div>
 			<div class="m-quick-btn">
-				<button type="button" class="btn2" onclick="location.href='/mypage/my_page'"><img src="{{ asset('images/icon/user.svg') }}"></button>				
+				<!-- <button type="button" class="btn2" onclick="location.href='/mypage/my_page'"><img src="{{ asset('images/icon/user.svg') }}"></button>				 -->
 				<button type="button" class="btn1" onclick="location.href='/mypage/cart'"><img src="{{ asset('images/icon/cart-w.svg') }}"></button>		
 				<button type="button" class="btn3">장바구니<i id="reload_quick_cart_cnt" class="cart_cnt">{{ $activeMyPageTop['cart_cnt'] ?? 0}}</i><span class="total_amount"></span>원 </button>
 			</div>
@@ -273,7 +274,12 @@
 							<span>총 합계</span>
 							<p><b class="total_amount">0</b><small>원</small><u id="mTotalViewBtn">상세보기</u></p>
 						</div>
-						<div><button type="button" onclick="common_chkform_cart('common_buy');"><p><span class="total_amount">0</span>원</p>구매하기</button></div>
+						<div>
+							<button type="button" class="btn1 show-1024" onclick="location.href='/mypage/cart'"><img src="{{ asset('images/icon/cart-w.svg') }}"></button>
+							<button type="button" onclick="common_chkform_cart('common_buy');">
+								<p><span class="total_amount">0</span>원</p>구매하기
+							</button>
+						</div>
 					</div>
 				</div>
 

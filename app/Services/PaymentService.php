@@ -259,7 +259,9 @@ class PaymentService
             return false;
         }
 
-        $od_date            = date('Ymd');
+        $delivery_date      = app(MallShopService::class)->payInfomation($member)['d_od_delivery_date'];
+
+        $od_date            = $delivery_date ? date('Ymd', strtotime($delivery_date)) : date('Ymd');
         $od_date_time       = date('Y-m-d H:i:s');
         
         $od_group_code      = $request->order_type == 'items' 
@@ -370,7 +372,7 @@ class PaymentService
         $add_data = [
             'od_id' => $od_id,
             'od_id_org' => $od_id,
-            'od_date'   => $od_date,
+            'od_date'   => date('Ymd'),
             'od_group_code' => $od_group_code,
             'od_group_code_org' => $od_group_code,
             'mb_code'   => $member['mb_code'],

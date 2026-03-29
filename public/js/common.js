@@ -244,10 +244,16 @@ $(document).ready(function(){
 
   $('#contactBtn').click(function(){
     $('.contact_wrap').toggle();
+    if (window.innerWidth <= 680) {
+      $('.contact_bg').toggle();
+    }
   });
 
   $('#closeBtn').click(function(){
     $('.contact_wrap').hide();
+    if (window.innerWidth <= 680) {
+      $('.contact_bg').hide();
+    }
   });
 
   // 카테고리 버튼고정

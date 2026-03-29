@@ -24,6 +24,7 @@ use Illuminate\Pagination\Paginator;
 use App\Services\ShopCartService;
 use App\Traits\RedisTrait;
 use App\Traits\CommonTrait;
+use Barryvdh\Debugbar\Facades\Debugbar as FacadesDebugbar;
 use DebugBar\DebugBar as DebugBarDebugBar;
 use Illuminate\Support\Facades\DB;
 
@@ -100,6 +101,7 @@ class MallShopService
     public function payInfomation($member)
     {
         $siteInfo = $this->getSiteInfo();
+
         $now     = Carbon::now();
         $nowDay  = $now->dayOfWeekIso; // 1~7
         
@@ -134,29 +136,44 @@ class MallShopService
             7 => 'mb_cs_sun'
         ];
 
+            
+        $startOffset = $now->lte($cutTime) ? 1 : 2;
+        // 마감 전 → 내일(1)
+        // 마감 후 → 모레(2)
+
         // ------------------------------------
         // 배송 날짜 계산
         // ------------------------------------
-
         $addDay = null;
 
-        // 오늘 가능 + 마감 전
-        for ($i = 1; $i <= 7; $i++) {
+        for ($i = $startOffset; $i <= 7 + $startOffset; $i++) {
 
             $checkDay = (($nowDay + $i - 1) % 7) + 1;
-        
-            if (strtolower($member[$weekMap[$checkDay]]) === 'y') {
+
+            if (
+                isset($member[$weekMap[$checkDay]]) &&
+                strtolower($member[$weekMap[$checkDay]]) === 'y'
+            ) {
                 $addDay = $i;
                 break;
             }
         }
 
 
+        // 예외 처리
+        if ($addDay === null) {
+            return [
+                'ship_date'     => null,
+                'delivery_day'  => null,
+                'd_od_delivery_date' => null,
+                'mb_virtual_account' => null
+            ];
+        }
+
         // 날짜 계산
         $shipDate = $now->copy()->addDays($addDay);
         $shipWeek = $weekName[$shipDate->dayOfWeekIso - 1];
         $result = $shipDate->format('m월 d일') . ' (' . $shipWeek . ')';
-        
         
         $vr_account_info = $member['mb_virtual_account'];
 

@@ -134,6 +134,8 @@ class MallShopApi extends Controller
         try {
             Log::info($request->all());
             Log::info(__METHOD__. ' <<== 실행');
+            $redis = Redis::connection('cache');
+
             if (!$request->has('del_cach')) {
                 throw new Exception('필수값이 존재하지 않습니다.');
             }
@@ -193,27 +195,16 @@ class MallShopApi extends Controller
 
             // 상품정보 삭제
             if ($request->input('del_cach') === 'items') {
-                $cursor = 1;
-
+                $cursor = 0;
                 do {
-                    $result = Redis::scan($cursor, [
-                        'match' => 'shop:items:*',
+                    [$cursor, $keys] = $redis->scan($cursor, [
+                        'match' => 'laravel_cache:shop:items:*',
                         'count' => 100
                     ]);
 
-                    $result = Redis::scan($cursor, [
-                        'match' => 'lock:items:*',
-                        'count' => 100
-                    ]);
-                
-                    if ($result === false) {
-                        break;
+                    foreach ($keys as $key) {
+                        $redis->del($key); 
                     }
-                
-                    foreach ($result as $key) {
-                        Redis::del($key);
-                    }
-
                 } while ($cursor != 0);
             }
 
