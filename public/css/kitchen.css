@@ -210,7 +210,7 @@ ul li .hr {display: inline-block; width: 180px; height: 1px; background-color: #
 .tab04 .round .txt {width: 50%; display: flex; flex-direction: column;} 
 .tab04 .round h4 {font-family: 'yg-jalnan'; color: #444; margin-bottom: 20px; white-space: nowrap;}
 .tab04 .round p {font-size: 1.4rem; display: inline-flex; gap: 0 5px; white-space: nowrap;}
-.tab04 .round p::before {content: ""; display: inline-block; background-image: url(/images/kitchen/round-v.png); background-size: 100%; background-repeat: no-repeat; width: 20px; height: 20px; margin-right: 10px; margin-top: 12px; opacity: 1;}
+.tab04 .round p::before {content: ""; display: inline-block; background-image: url(/images/kitchen/round-v.png); background-size: 100%; background-repeat: no-repeat; width: 20px; height: 20px; margin-right: 10px; margin-top: 8px; opacity: 1;}
 .tab04 .round.ani p::before {opacity: 1;}
 .tab04 .round p span {font-weight: 900; color: #eda000;}
 
@@ -379,7 +379,7 @@ ul li .hr {display: inline-block; width: 180px; height: 1px; background-color: #
 .tab15 .box {gap: 0 60px; max-width: 920px; width: 100%; margin: 80px 0;}
 .tab15 .box .flex {width: calc(100% / 3 - 30px); gap: 10px 0;} 
 .tab15 .box .flex .img {max-height: 240px; width: auto; display: flex; justify-content: center;}
-.tab15 .box .flex .img img {width: 80%; height: auto;}
+.tab15 .box .flex .img img {height: auto;}
 .tab15 .box .flex:last-child img {padding: 20px;}
 .tab15 .box .flex p {color: #eb9e00; font-family: 'GmarketSansMedium'; font-size: 1.5rem;}
 .tab15 .box .flex span {text-align: center; line-height: 1.2; white-space: nowrap; font-size: 1.1rem;}
@@ -670,8 +670,8 @@ div.bottom span {font-size: 1.4rem; color: #fff; cursor: context-menu; word-brea
     .tab04 .mask .effect span:nth-child(1) {border-width: 15px;}
     .tab04 .round.center .txt {text-align: right; transform: unset;}
     .tab04 .round h4 {font-size: 2.4rem;}
-    .tab04 .round p::before {margin-top: 8px; margin-right: 0; width: 15px; height: 15px;}
-    .tab04 .round p {font-size: 18px; gap: 0 8px;}
+    .tab04 .round p::before {margin-top: 5px; margin-right: 0; width: 15px; height: 15px;}
+    .tab04 .round p {font-size: 18px; gap: 0 5px;}
 
     .tab05 h1 {font-size: 3rem; margin: 0 2rem;}
     .tab05 .top {max-width: 760px; margin: 3rem 20px;}
@@ -697,7 +697,7 @@ div.bottom span {font-size: 1.4rem; color: #fff; cursor: context-menu; word-brea
     .tab06 h1{padding: 5rem 0 1rem;}
     .tab07 .point-img img.one-set {left: calc(50% + 10rem / 1.5);}
     .tab07 .point p, 
-    .tab07 .point span {font-size: 24px;}
+    .tab07 .point span {font-size: 22px;}
 
     .tab08 .product {margin: 5rem auto 10rem;}
     .tab08 .product img:first-child {transform: translateY(3rem);}
@@ -836,12 +836,15 @@ div.bottom span {font-size: 1.4rem; color: #fff; cursor: context-menu; word-brea
     .pc-640 {display: none;}
     
 
-    .kitchen-wrap h3{font-size: 1.7rem;}
+    section{width: 100%;}
+    .sub-title-wrap{width: 96%; margin-left: 2%;}
+    .kitchen-wrap h3{font-size: 1.5rem;}
     .kitchen-wrap h1{font-size: 2rem;}
     
 
     .bg-1 {width: calc(100% + 80rem); margin-top: 12vw; transform: translateX(calc(100% - 70vw));}
     .tab02 {padding-top: 5rem;}
+    .tab02.system03{padding: 5rem 0 ;}
     .tab02 .img-txt {max-width: 65vw; margin-top: 2rem;  margin-bottom: 8rem;}
     .tab02 .img-section {max-width: 90vw; margin: auto; grid-template-columns: 1fr; gap: 3rem;}
     .tab02.system03 .img-section{grid-template-columns: 1fr; width: 75%;}
@@ -882,12 +885,12 @@ div.bottom span {font-size: 1.4rem; color: #fff; cursor: context-menu; word-brea
     .tab02.system02 .img-section img:last-child {transform: translateX(30px); margin: auto; max-width: 365px;}
 
     .tab09{margin-top: 5rem;}
-    .tab09 .mw-1080 {padding: 80px 20px 100px;}
+    .tab09 .mw-1080 {padding: 80px 20px;}
     .tab09 .box {padding: 40px 25px;}
     .tab09 .flex .icon {width: 50px; height: 50px; padding: 12px; margin-right: 8px;}
     .tab09 .flex .in-txt {margin-left: 0;}
     .tab09 .flex .in-txt span {font-size: 16px}
-    .tab09 .flex .in-txt p {font-size: 20px;}
+    .tab09 .flex .in-txt p {font-size: 20px; text-align: left;}
     .tab09 .flex .flex > p {height: 35px; margin-top: 10px; word-break: auto-phrase;}
     .tab09 .in-img {max-width: 100px; right: 20px; bottom: -25px;}
     .tab09 .box.point2 .in-img {max-width: 150px; right: 0;}
@@ -899,18 +902,21 @@ div.bottom span {font-size: 1.4rem; color: #fff; cursor: context-menu; word-brea
     .tab09 .flex .hr {width: calc(100% + 5rem);}
     .tab09 .in-img{display: none;}
 
+    
     .tab10 h3 {margin: 0 2rem; font-size: 30px;}
     .tab10 h3 p span::before {font-size: 5px;}
-    .tab10 ul li .in-img{max-width: 120px;}
-    .tab10 ul.grid-sys2{gap: 5px;}
+    .tab10 ul li .in-img{max-width: 120px; height: auto;}
+    .tab10 ul.grid-sys2{gap: 3rem 1.5rem;}
 
     .tab11 .mw-1080 img:nth-child(3) {top: calc(50% - 50px);}
     .tab11 .mw-1080 .in-img4::before {top: calc(50% + 20px); width: calc(23% - 80px);}
 
+    .tab12{margin-top: 2rem;}
     .tab12 > p {font-size: 16px;}
     .tab12 h3,
     .tab12 .box h3 {margin: 0;}
-    .tab12 ul.grid{padding: 0;}
+    .tab12 ul.grid{padding: 0; gap: 2rem 1rem;}
+    ul li .hr{width: 40vw;}
 
     .tab18 .grid-table,
     .tab13 .grid-table {grid-template-columns: 110px 1fr;}
@@ -931,7 +937,7 @@ div.bottom span {font-size: 1.4rem; color: #fff; cursor: context-menu; word-brea
     .tab15 .box {flex-direction: column; max-width: 340px; margin: 40px 0 0;}
     .tab15.system05 .box {max-width: 400px;}
     .tab15.system05 .box .flex,
-    .tab15 .box .flex { display: grid; grid-template-columns: 1fr 200px; grid-template-rows: 30px 30px 30px 30px; width: 100%;}
+    .tab15 .box .flex { display: grid; grid-template-columns: 1fr 2fr; grid-template-rows: 30px 30px 30px 30px; width: 100%;}
     .tab15.system05 .box .flex {gap: 10px; grid-template-columns: 1fr 250px;}
     .tab15 .box .flex .img {grid-row: 1 / span 4; margin: auto; width: 100%;}
     .tab15 .box .flex .img img {display: block; max-height: 140px; width: auto; margin: auto;}
@@ -944,7 +950,7 @@ div.bottom span {font-size: 1.4rem; color: #fff; cursor: context-menu; word-brea
 
     .tab16{padding-bottom: 2rem;}
     .tab16.clone .grid.table {grid-template-columns: 0.4fr 0.5fr 1fr;}
-    .tab16 .grid.table{width: 100%;}
+    .tab16 .grid.table{width: 92%;}
     .tab16 ul li {font-size: 13px; text-align: left;}
     .tab16 .img-set img:last-child {bottom: -50px;}
     .tab16.system05 .img-set {width: 65%;}
@@ -952,7 +958,7 @@ div.bottom span {font-size: 1.4rem; color: #fff; cursor: context-menu; word-brea
     .tab17 ul.box {grid-template-columns: repeat(1, 1fr); grid-template-rows: 0.5fr 1fr; margin: 20px;}
     .tab17 ul.center li:first-child {order: 1;}
     .tab17 ul.box li {max-height: 240px; height: unset;}
-    .tab17 ul.box li.bg p {font-size: 1.3rem; letter-spacing: 0;}
+    .tab17 ul.box li.bg p {font-size: 1.2rem; letter-spacing: 0;}
     .tab17 ul.box li.bg span {font-size: 16px; line-height: 1.2;}
 
     .tab18 .grid-table {grid-template-columns: 120px 1fr;}
@@ -964,11 +970,12 @@ div.bottom span {font-size: 1.4rem; color: #fff; cursor: context-menu; word-brea
     .tab20 .flex.img-box {gap: 0 20px;}
     .tab20 > p.txt-p, .tab20 .flex > p, .tab22 > .txt p{font-size: 20px;}
 
-    .tab21 .img-set {height: 180px; padding: 10px; gap: 0 25px;}
-    .tab21 .img-set .in-img {width: 160px; height: 160px;}
-    .tab21 .img-set .in-txt p {font-size: 1.3rem;}
+    .tab21 .img-set {height: 160px; padding: 10px; gap: 0 8px; width: 96%;}
+    .tab21 .img-set .in-img {width: 140px; height: 140px;}
+    .tab21 .img-set .in-txt p {font-size: 1.2rem; line-height: 1.6rem; margin-bottom: 5px;}
     .tab21 .img-set .in-txt span {font-size: 1.1rem;}
     .tab21 .img-set .in-txt span::before {width: 12px; height: 12px;}
+    .tab22 .img-box.twin .point{top: 3%; right: 9%;}
     .tab24 p{font-size: 15px; margin-bottom: 6px;}
     .tab24 h3{padding-top: 3rem;}
     .tab18 .grid-table {grid-template-columns: 100px 1fr;}
@@ -979,7 +986,7 @@ div.bottom span {font-size: 1.4rem; color: #fff; cursor: context-menu; word-brea
     .tab16.system05 h3 {margin: 0 5rem;}
     .tab16.system05 .grid.table li {word-break: keep-all; align-content: center;}
 
-    .tab23 p {font-size: 18px;}
+    .tab23 p {font-size: 16px;}
 
     .tab24 img {max-width: 360px; transform: translateX(-40px); margin-top: 60px;}
 
