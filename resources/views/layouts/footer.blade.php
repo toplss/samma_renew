@@ -275,6 +275,7 @@
 							<p><b class="total_amount">0</b><small>원</small><u id="mTotalViewBtn">상세보기</u></p>
 						</div>
 						<div>
+							<button type="button" class="btn2 show-1024" onclick="location.href='/mypage/my_page'"><img src="{{ asset('images/icon/user.svg') }}"></button>	
 							<button type="button" class="btn1 show-1024" onclick="location.href='/mypage/cart'"><img src="{{ asset('images/icon/cart-w.svg') }}"></button>
 							<button type="button" onclick="common_chkform_cart('common_buy');">
 								<p><span class="total_amount">0</span>원</p>구매하기

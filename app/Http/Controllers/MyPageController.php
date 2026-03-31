@@ -164,9 +164,17 @@ class MyPageController extends Controller
                     'si.it_img1',
                 ])
                 ->groupBy('so.od_group_code')
+
+                // ->orderByRaw("so.od_gubun IN ('기초잔액추가', '잔액조정') ASC")
+                // ->orderByDesc('so.od_delivery_date')
+                // ->orderByDesc('so.od_idx')
+
+                ->orderByRaw('(so.od_delivery_step = 8) ASC')
+                ->orderBy('so.od_delivery_step', 'ASC')
                 ->orderByRaw("so.od_gubun IN ('기초잔액추가', '잔액조정') ASC")
-                ->orderByDesc('so.od_delivery_date')
-                ->orderByDesc('so.od_idx')
+                ->orderBy('so.od_delivery_date', 'DESC')
+                ->orderBy('so.od_idx', 'DESC')
+
                 ->paginate($perPage);
 
 

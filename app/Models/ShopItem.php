@@ -62,7 +62,8 @@ class ShopItem extends Model
                 })
                 ->when($strlen == '4' && !in_array($ca_id, $except), function($query) use($ca_id){
                     $query->where(function($query) use($ca_id) {
-                        $query->where('ca_id2', $ca_id);
+                        $query->where('ca_id2', $ca_id)
+                        ->orWhere('it_multi_cate_code', 'LIKE', '%'.$ca_id.'%');
                     });
                 })
                 ->when($ca_id == 'vivacook' ,function($query) use($request) {

@@ -291,6 +291,8 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 .pg2 .total_amount{font-weight: 600; color: #097dcb;}
 .pg2 button{background-color: #333; color: #fff; width: calc(100% - 34px); padding: .8rem 0; border-radius: 0.5rem;}
 .pg2 button p{display: none;}
+.pg2 .btn2{background-color: #eee;}
+.pg2 .btn2>img{width: 1.8rem; margin: auto;}
 .pg2 .btn1>img{width: 1.6rem; margin: auto;}
 .pg1 small,.pg2 small{font-size: 0.85rem; margin-left: 0.1rem;}
 #mTotalViewBtn{background-color: #333; color: #fff; text-decoration: none; padding: 0.3rem 0.6rem; border-radius: 0.2rem; display: none; margin-left: 0.4rem; font-size: 0.9rem;}
@@ -485,8 +487,8 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.item-div .del{order: 4; margin-left: 10px;}
 	
 	.pg1{display: none;}
-	.pg2>div:last-of-type{display: grid; grid-template-columns: 1fr 3fr; gap: 0.5rem; align-items: stretch;}
-	.pg2 button{width: 100%; padding: 0.6rem 0; border-radius: 0.3rem;}
+	.pg2>div:last-of-type{display: grid; grid-template-columns: 1fr 1fr 3fr; gap: 0.5rem; align-items: stretch;}
+	.pg2 button{width: 100%; padding: 0.4rem; border-radius: 0.3rem;}
 	.pg2>div:last-of-type button:last-of-type{background-color: #8ec251;}
 	.pg2 button p{display: inline-block; margin-right: 5px;}
 	.pg2>div:last-of-type .total_amount{color: #fff; margin-right: 1px;}
