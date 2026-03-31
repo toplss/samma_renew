@@ -210,7 +210,7 @@
 				</p>
 			</div>
 			<div class="m-quick-btn">
-				<!-- <button type="button" class="btn2" onclick="location.href='/mypage/my_page'"><img src="{{ asset('images/icon/user.svg') }}"></button>				 -->
+				<button type="button" class="btn2" onclick="location.href='/mypage/my_page'"><img src="{{ asset('images/icon/user.svg') }}"></button>				
 				<button type="button" class="btn1" onclick="location.href='/mypage/cart'"><img src="{{ asset('images/icon/cart-w.svg') }}"></button>		
 				<button type="button" class="btn3">장바구니<i id="reload_quick_cart_cnt" class="cart_cnt">{{ $activeMyPageTop['cart_cnt'] ?? 0}}</i><span class="total_amount"></span>원 </button>
 			</div>

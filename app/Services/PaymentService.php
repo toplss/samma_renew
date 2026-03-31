@@ -259,7 +259,8 @@ class PaymentService
             return false;
         }
 
-        $delivery_date      = app(MallShopService::class)->payInfomation($member)['d_od_delivery_date'];
+        $deliveryInfo      = app(MallShopService::class)->payInfomation($member);
+        $delivery_date     = $deliveryInfo['d_od_delivery_date'];
 
         $od_date            = $delivery_date ? date('Ymd', strtotime($delivery_date)) : date('Ymd');
         $od_date_time       = date('Y-m-d H:i:s');
@@ -291,13 +292,9 @@ class PaymentService
         $od_receipt_point   = $request->input('input_od_temp_point', 0) + $request->input('input_od_temp_point_reserve', 0);
 
         // 배송일 구하기
-        $deliveryInfo = json_decode(app(ShopCartApi::class)->execute($request->merge(['mode' => 'show'])), true)['data'];
-        $deliveryData = $deliveryInfo['header_into'];
-        $yoil         = $deliveryData['ship_date'];
-        $od_delivery_date = $deliveryData['delivery_day'];
+        $yoil = $deliveryInfo['ship_date'];
         
-        // 배송일자 변환
-        $od_delivery_date = self::getDeliveryDateIncoding($od_delivery_date);
+        $od_delivery_date = $delivery_date;
 
         // 배송사원 정보 조회
         $deliverMember = DB::table('tb_employee')->where('mb_code', $member['delivery_mb_code'])
@@ -523,9 +520,9 @@ class PaymentService
         ];
 
 
-        // if ($make_lock_date) {
-        //     $this->make_lock_date(['od_group_code' => $od_group_code, 'mb_code' => $member['mb_code']]);
-        // }
+        if ($od_group_code) {
+            $this->make_lock_date(['od_group_code' => $od_group_code, 'mb_code' => $member['mb_code']]);
+        }
 
 
         return ShopOrderModel::create($add_data);

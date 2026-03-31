@@ -168,133 +168,124 @@ class ShopOrderModel extends Model
 
     public static function realTimeOrderPoints($mb_code, $od_group_code)
     {
-        $b = self::query()
-            ->selectRaw("
-                od_idx,
-                mb_code,
-                od_delivery_date,
-                od_gubun,
-                od_company,
-                od_id,
-                od_group_code,
+        $points = DB::select("
+            SELECT 
+                * 
+            FROM 
+            (
+                SELECT  
+                    c.od_gubun,
+                    c.mb_code,
+                    c.od_delivery_date,
+                    c.od_delivery_step,
+                    c.od_company,
+                    c.od_id,
+                    c.od_group_code,
+                    c.put_balance,
+                    c.put_reserve,
+                    c.put_charge,
 
-                SUM(
-                    CASE 
-                        WHEN SUBSTR(level_ca_id2, -1) = '1' THEN
-                            IFNULL(pt_sales_delivery, 0)
-                            - IFNULL(pt_charge, 0)
-                            - IFNULL(pt_reserve, 0)
-                            - IFNULL(pt_cash, 0)
-                            - IFNULL(pt_bank, 0)
-                            - IFNULL(pt_card, 0)
-                            - IFNULL(pt_diff_pay, 0)
-                            - IFNULL(pt_return_receivable, 0)
-                            - IFNULL(pt_outofstock_deposit, 0)
-                        ELSE
-                            IFNULL(pt_sales_delivery, 0)
-                            - IFNULL(pt_charge, 0)
-                            - IFNULL(pt_reserve, 0)
-                            - IFNULL(pt_cash, 0)
-                            - IFNULL(pt_bank, 0)
-                            - IFNULL(pt_card, 0)
-                            - IFNULL(pt_diff_pay, 0)
-                            - IFNULL(pt_incentive, 0)
-                            - IFNULL(pt_dc, 0)
-                            - IFNULL(pt_different_amount, 0)
-                            - IFNULL(pt_damage_staff, 0)
-                            - IFNULL(pt_damage_logistic, 0)
-                            - IFNULL(pt_return, 0)
-                            - IFNULL(pt_return_receivable, 0)
-                            - IFNULL(pt_cancel, 0)
-                            - IFNULL(pt_outofstock, 0)
-                            - IFNULL(pt_outofstock_deposit, 0)
-                    END
-                    - (
-                        CASE 
-                            WHEN JSON_UNQUOTE(JSON_EXTRACT(refund_detail, '$.refund_deposit_status')) 
-                                IN ('완료', '상계')
-                            THEN IFNULL(CAST(JSON_UNQUOTE(JSON_EXTRACT(refund_detail, '$.refund_mb_point_balance_prev')) AS SIGNED), 0)
-                            ELSE 0
-                        END
-                    )
-                ) AS delta_balance,
+                    IFNULL(LAG(c.put_balance) OVER (ORDER BY c.od_delivery_date, c.od_idx), 0) AS prev_balance,
+                    IFNULL(LAG(c.put_reserve) OVER (ORDER BY c.od_delivery_date, c.od_idx), 0) AS prev_reserve,
+                    IFNULL(LAG(c.put_charge) OVER (ORDER BY c.od_delivery_date, c.od_idx), 0) AS prev_charge
 
-                SUM(
-                    CASE 
-                        WHEN SUBSTR(level_ca_id2, -1) = '1' THEN
-                            IFNULL(pt_buy_reserve, 0)
-                            + IFNULL(pt_incentive, 0)
-                            + IFNULL(pt_dc, 0)
-                            + IFNULL(pt_different_amount, 0)
-                            + IFNULL(pt_damage_staff, 0)
-                            + IFNULL(pt_damage_logistic, 0)
-                            + IFNULL(pt_return, 0)
-                            + IFNULL(pt_cancel, 0)
-                            + IFNULL(pt_outofstock, 0)
-                            - IFNULL(pt_reserve, 0)
-                        ELSE
-                            - IFNULL(pt_reserve, 0)
-                    END
-                    - (
-                        CASE 
-                            WHEN JSON_UNQUOTE(JSON_EXTRACT(refund_detail, '$.refund_deposit_status')) 
-                                IN ('완료', '상계')
-                            THEN IFNULL(CAST(JSON_UNQUOTE(JSON_EXTRACT(refund_detail, '$.refund_f_point_reserve')) AS SIGNED), 0)
-                            ELSE 0
-                        END
-                    )
-                ) AS delta_reserve,
+                FROM (
+                    SELECT
+                        b.*,
 
-                SUM(
-                    IFNULL(pt_buy_charge, 0) - IFNULL(pt_charge, 0)
-                    - (
-                        CASE 
-                            WHEN JSON_UNQUOTE(JSON_EXTRACT(refund_detail, '$.refund_deposit_status')) 
-                                IN ('완료', '상계')
-                            THEN IFNULL(CAST(JSON_UNQUOTE(JSON_EXTRACT(refund_detail, '$.pt_refund_f_point')) AS SIGNED), 0)
-                            ELSE 0
-                        END
-                    )
-                ) AS delta_charge
-            ")
-            ->where('mb_code', $mb_code)
-            ->whereIn('od_delivery_step', [8, 90, 99])
-            ->groupBy('od_group_code');
+                        SUM(b.delta_balance) OVER (
+                            ORDER BY b.od_delivery_date, b.od_idx
+                        ) AS put_balance,
 
-        $c = self::query()
-            ->fromSub($b, 'b')
-            ->selectRaw("
-                b.*,
-                SUM(b.delta_balance) OVER (ORDER BY b.od_delivery_date, b.od_idx) AS put_balance,
-                SUM(b.delta_reserve) OVER (ORDER BY b.od_delivery_date, b.od_idx) AS put_reserve,
-                SUM(b.delta_charge) OVER (ORDER BY b.od_delivery_date, b.od_idx) AS put_charge
-            ");
+                        SUM(b.delta_reserve) OVER (
+                            ORDER BY b.od_delivery_date, b.od_idx
+                        ) AS put_reserve,
 
-        $a = self::query()
-            ->fromSub($c, 'c')
-            ->selectRaw("
-                c.od_gubun,
-                c.mb_code,
-                c.od_delivery_date,
-                c.od_company,
-                c.od_id,
-                c.od_group_code,
-                c.put_balance,
-                c.put_reserve,
-                c.put_charge,
+                        SUM(b.delta_charge) OVER (
+                            ORDER BY b.od_delivery_date, b.od_idx
+                        ) AS put_charge
 
-                IFNULL(LAG(c.put_balance) OVER (ORDER BY c.od_delivery_date, c.od_idx), 0) AS prev_balance,
-                IFNULL(LAG(c.put_reserve) OVER (ORDER BY c.od_delivery_date, c.od_idx), 0) AS prev_reserve,
-                IFNULL(LAG(c.put_charge) OVER (ORDER BY c.od_delivery_date, c.od_idx), 0) AS prev_charge
-            ")
-            ->orderByDesc('c.od_delivery_date')
-            ->orderByDesc('c.od_idx');
+                    FROM (
+                        SELECT  
+                            od_idx,
+                            mb_code,
+                            od_delivery_date,
+                            od_gubun,
+                            od_company,
+                            od_id,
+                            od_group_code,
+                            od_delivery_step,
 
-        return self::query()
-            ->fromSub($a, 'A')
-            ->where('od_group_code', $od_group_code)
-            ->limit(1)
-            ->first();
+                            /* delta_balance */
+                            SUM(
+                                CASE 
+                                    WHEN SUBSTR(level_ca_id2, -1) = '1' THEN
+                                        IFNULL(pt_sales_delivery, 0)
+                                        - IFNULL(pt_charge, 0)
+                                        - IFNULL(pt_reserve, 0)
+                                        - CASE WHEN od_gubun != '충전금구매' THEN IFNULL(pt_cash, 0) ELSE 0 END
+                                        - CASE WHEN od_gubun != '충전금구매' THEN IFNULL(pt_bank, 0) ELSE 0 END
+                                        - CASE WHEN od_gubun != '충전금구매' THEN IFNULL(pt_card, 0) ELSE 0 END
+                                        - IFNULL(pt_diff_pay, 0)
+                                        - IFNULL(pt_return_receivable, 0)
+                                        - IFNULL(pt_outofstock_deposit, 0)
+                                    ELSE
+                                        IFNULL(pt_sales_delivery, 0)
+                                        - IFNULL(pt_charge, 0)
+                                        - IFNULL(pt_reserve, 0)
+                                        - IFNULL(pt_cash, 0)
+                                        - IFNULL(pt_bank, 0)
+                                        - IFNULL(pt_card, 0)
+                                        - IFNULL(pt_diff_pay, 0)
+                                        - IFNULL(pt_incentive, 0)
+                                        - IFNULL(pt_dc, 0)
+                                        - IFNULL(pt_different_amount, 0)
+                                        - IFNULL(pt_damage_staff, 0)
+                                        - IFNULL(pt_damage_logistic, 0)
+                                        - IFNULL(pt_return, 0)
+                                        - IFNULL(pt_return_receivable, 0)
+                                        - IFNULL(pt_cancel, 0)
+                                        - IFNULL(pt_outofstock, 0)
+                                        - IFNULL(pt_outofstock_deposit, 0)
+                                END 
+                            ) AS delta_balance,
+
+                            /* delta_reserve */
+                            SUM(
+                                CASE 
+                                    WHEN SUBSTR(level_ca_id2, -1) = '1' THEN
+                                        IFNULL(pt_buy_reserve, 0)
+                                        + IFNULL(pt_incentive, 0)
+                                        + IFNULL(pt_dc, 0)
+                                        + IFNULL(pt_different_amount, 0)
+                                        + IFNULL(pt_damage_staff, 0)
+                                        + IFNULL(pt_damage_logistic, 0)
+                                        + IFNULL(pt_return, 0)
+                                        + IFNULL(pt_cancel, 0)
+                                        + IFNULL(pt_outofstock, 0)
+                                        - IFNULL(pt_reserve, 0)
+                                    ELSE
+                                        - IFNULL(pt_reserve, 0)
+                                END
+                            ) AS delta_reserve,
+
+                            /* delta_charge */
+                            SUM(
+                                IFNULL(pt_buy_charge, 0) - IFNULL(pt_charge, 0)
+                            ) AS delta_charge
+
+                        FROM g5_shop_order
+                        WHERE mb_code = ?
+                        GROUP BY od_group_code
+                    ) b
+                ) c
+                ORDER BY c.od_delivery_date DESC, c.od_idx DESC 
+            ) A
+            WHERE od_group_code = ?
+            LIMIT 1
+            ", [$mb_code, $od_group_code]);
+
+        return collect($points)->first();
 
     }
 }

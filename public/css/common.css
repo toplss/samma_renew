@@ -461,8 +461,8 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.m-quick-txt{text-align: left; display: flex; align-items: center; gap: 0.4rem;}
 	.mqt1{width: 2.2rem;}
 	.mqt2 span{margin-bottom: 0.2rem;}
-	.m-quick-btn{display: grid; grid-template-columns: 1fr 3fr ; gap: 0.5rem; margin-top: 0.5rem;}
-	.m-quick-btn button{padding: 0.6rem;}	
+	.m-quick-btn{display: grid; grid-template-columns: 1fr 1fr 3fr ; gap: 0.5rem; margin-top: 0.5rem;}
+	.m-quick-btn button{padding: 0.4rem;}	
 	.m-quick-btn .btn1 img{width: 1.6rem; margin: auto;}
 	.m-quick-btn .btn2 img{width: 1.8rem; margin: auto;}
 	.m-quick-btn .btn3 i{font-style: normal; background-color: #fff; color: #333; padding: 0.1rem 0.3rem; border-radius: 0.3rem; font-size: 0.9rem; margin: 0 0.5rem;}
