@@ -169,15 +169,26 @@ class MyPageController extends Controller
                 // ->orderByDesc('so.od_delivery_date')
                 // ->orderByDesc('so.od_idx')
 
-                ->orderByRaw('(so.od_delivery_step = 8) ASC')
+                ->orderByRaw("
+                    CASE 
+                        WHEN so.od_delivery_step = 8 THEN 2
+                        WHEN so.od_delivery_step IN (90, 99) THEN 1
+                        ELSE 0
+                    END ASC
+                ")
+
+                // 90,99는 step 무시, 날짜 우선
+                ->orderByRaw("
+                    CASE 
+                        WHEN so.od_delivery_step IN (90, 99) THEN so.od_delivery_date
+                    END DESC
+                ")
                 ->orderBy('so.od_delivery_step', 'ASC')
                 ->orderByRaw("so.od_gubun IN ('기초잔액추가', '잔액조정') ASC")
                 ->orderBy('so.od_delivery_date', 'DESC')
                 ->orderBy('so.od_idx', 'DESC')
 
                 ->paginate($perPage);
-
-
 
         $items = new LengthAwarePaginator(
             $result,
@@ -1286,6 +1297,137 @@ class MyPageController extends Controller
 
 
     }    
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * method Name : DepositHistory
+     * Description : 입금내역
+     * Author : Kim Hairyong 
+     * Created Date : 2026-03-10
+     * Params : Params
+     * History :
+     *   - 2026-03-10 : Initial creation
+     */
+    public function new_DepositHistory(Request $request)
+    {
+        $page    = $request->get('page', 1);
+        $perPage = $request->get('scale', 20);
+
+        $mb_code = session('ss_mb_code');
+
+        if (!$mb_code) {
+            throw new \Exception('로그인 사용자가 아닙니다.');
+        }
+
+        $start_date = $request->input('start_date');
+        $end_date   = $request->input('end_date');
+
+        if (!$start_date || !$end_date) {
+            $end_date   = \Carbon\Carbon::today()->format('Y-m-d');
+            $start_date = \Carbon\Carbon::today()->subMonths(2)->format('Y-m-d');
+        }
+
+        $service = app(MallShopService::class);
+        $member = $service->getMemberInfo(session('ss_mb_code'));
+
+
+
+      //선불, 후불 주문 구분
+    //   $payment_type = '';
+    //   if (isset($row->level_ca_id2)) {
+    //       if (strlen($row->level_ca_id2) == 4) {
+    //           if (substr($row->level_ca_id2, -1) == '1') $payment_type = '선불';
+    //           if (substr($row->level_ca_id2, -1) == '2') $payment_type = '후불';
+    //       }
+    //   }                
+
+// dd($member);
+
+        $result = DB::table('g5_shop_order')
+            ->selectRaw('
+                mb_code,
+                mb_id,
+                od_id,
+                od_group_code,
+                od_company,
+                level_ca_id2_name,
+                od_gubun,
+                pt_cash,
+                pt_bank,
+                pt_card,
+                pt_incentive,
+                pt_dc,
+                od_delivery_date
+            ')
+            ->selectRaw('
+                IFNULL(pt_cash,0) +
+                IFNULL(pt_bank,0) +
+                IFNULL(pt_card,0) +
+                IFNULL(pt_incentive,0) +
+                IFNULL(pt_dc,0) as row_total
+            ')
+            ->where('mb_code', $mb_code)
+            ->where(function ($q) {
+                $q->where('pt_cash', '>', 0)
+                ->orWhere('pt_bank', '>', 0)
+                ->orWhere('pt_card', '>', 0)
+                ->orWhere('pt_incentive', '>', 0)
+                ->orWhere('pt_dc', '>', 0);
+            })
+            // ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
+            //                 $query->whereBetween(DB::raw('DATE(od_delivery_date)'), [$start_date, $end_date]);
+            //             })
+            ->orderBy('od_delivery_date', 'desc')
+            ->paginate($perPage);
+
+// dd($result);
+
+        $items = new LengthAwarePaginator(
+            $result,
+            $result->total(),
+            $perPage,
+            $page,
+            [
+                'path'  => Paginator::resolveCurrentPath(),
+                'query' => $request->query(),
+            ]
+        );
+
+        return view('mypage.deposit_history', ['items' => $items]);
+
+
+    }    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

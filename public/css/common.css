@@ -561,6 +561,8 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.item-div{flex-wrap: nowrap;}
 
 	.contact_wrap{width: 96%; right: 2%;}
+	#contactBtn{bottom: 8px;}
+	#contactBtn img{width: 30px;}
 
 	.pg2>div{margin-top: 0.6rem;}
 	.pg2>div:last-of-type{gap: 0.3rem; width: 92%;}

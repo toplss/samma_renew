@@ -57,7 +57,8 @@ class ShopItem extends Model
             $data = ShopItem::where('it_use', '1')
                 ->when($strlen == '2' && !in_array($ca_id, $except), function($query) use($ca_id){
                     $query->where(function($query) use($ca_id) {
-                        $query->where('ca_id', $ca_id);
+                        $query->where('ca_id', $ca_id)
+                        ->orWhere('it_multi_cate_code', 'LIKE', '%'.$ca_id.'%');
                     });
                 })
                 ->when($strlen == '4' && !in_array($ca_id, $except), function($query) use($ca_id){

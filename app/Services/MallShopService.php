@@ -27,6 +27,7 @@ use App\Traits\CommonTrait;
 use Barryvdh\Debugbar\Facades\Debugbar as FacadesDebugbar;
 use DebugBar\DebugBar as DebugBarDebugBar;
 use Illuminate\Support\Facades\DB;
+use App\Models\ShopOrderModel;
 
 
 class MallShopService 
@@ -44,26 +45,15 @@ class MallShopService
          * Created Date : 2026-03-18
          */
 
-        // if ($mb_code) {
-            
-        //     $redis_member_key_generate = $mb_code.':member';
-
-        //     if (Redis::exists($redis_member_key_generate)) {
-            
-        //         $arr_member = $this->getReids($redis_member_key_generate);
-
-        //     } else {
-                
-        //         $arr_member = TbMember::where('mb_code', $mb_code)->get()->toArray()[0];
-
-
-        //         $this->setRedis($redis_member_key_generate, $arr_member);
-        //     }
-        // }
-
         if ($mb_code) {
             
             $arr_member = TbMember::where('mb_code', $mb_code)->get()->first();
+
+            $reatimeBalance = ShopOrderModel::realTimeOrderTopPoints($mb_code);
+            
+            $arr_member['mb_point'] = $reatimeBalance->put_charge ?? 0;
+            $arr_member['mb_point_reserve'] = $reatimeBalance->put_reserve ?? 0;
+            $arr_member['mb_point_balance'] = $reatimeBalance->put_balance ?? 0;
         }
 
 

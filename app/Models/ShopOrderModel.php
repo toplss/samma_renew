@@ -160,10 +160,6 @@ class ShopOrderModel extends Model
         'od_test',
     ];
 
-    public static function GetShopOrder()
-    {
-
-    }
 
 
     public static function realTimeOrderPoints($mb_code, $od_group_code)

@@ -187,7 +187,7 @@
 .recom-name{font-weight: 500; margin-top: 0.5rem; min-height: 40px; word-break: break-word; overflow-wrap: anywhere;}
 .recom-ea{color: #777; font-size: 0.9rem; margin-top: 0.2rem;}
 .recom-price{font-weight: 500; margin: 0.5rem auto;}
-
+.recom-img.sold-out::after{content: "SOLD OUT"; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 2rem; text-align: center; border-radius: 0.5rem;}
 
 
 /* 레시피 */
@@ -282,7 +282,8 @@
 .odr-list-item span{color: #da2727; border: 1px solid #da2727; padding: 0.2rem; margin-left: 5px;}
 .odr-list-item h6{font-size: 1.2rem;}
 .odr-list-item p{text-align: left;}
-.odr-content{margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #eee;}
+.odr-content{margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding: 0.5rem;}
+.odr-bg{border-radius: 0.5rem; background-color: #FBF7F2; border: 2px dashed #a8a094;}
 .odr-content ul{display: grid; grid-template-columns: repeat(6,1fr); border-left: 1px solid #999; border-right: 1px solid #999; border-top: 1px solid #999;}
 .odr-content ul li{border-right: 1px solid #999; text-align: left; margin-bottom: -1px;}
 .odr-content ul li:last-of-type{border-right: none;}
@@ -902,6 +903,7 @@
   .recom-item-slide1,.recom-item-slide2{margin: 0 -0.3rem;}
   .recom-item-list{margin: 0 0.3rem;}
   .recom-img .room_temp, .recom-img .low_temp, .recom-img .frozen_temp{width: 33px; height: 33px; font-size: 0.7rem;}
+  .recom-img.sold-out::after{font-size: 1.5rem;}
 
   .recipe-search form input{width: 150px;}
   .recipe-btn{display: none;}
@@ -933,6 +935,8 @@
 
   .odr-table1 td .btn1{font-size: 0.8rem;}
   .odr-table2 img{width: 35px;}
+  .odr-bg{border-width: 1px !important;}
+  .odr-content{margin-bottom: 1rem;}
   .odr-content ul{grid-template-columns: repeat(2,1fr); font-size: 0.9rem;}
   .odr-content ul li:nth-of-type(4){border-bottom: 1px solid #eee;}
   .odr-list-title h6{font-size: 1rem;}

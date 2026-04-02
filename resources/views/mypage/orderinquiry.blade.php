@@ -8,6 +8,9 @@
     use App\Models\ShopOrderModel;
 @endphp
 
+<style>
+.odr-bg{border-radius: 0.5rem; background-color:#FBF7F2; border: 2px dashed #a8a094;}
+</style>
 
 <div class="sub-container">
   <div class="sub-title-wrap">
@@ -143,7 +146,8 @@
       */                  
 
     @endphp
-    <div class="odr-content">
+    
+    <div class="odr-content {{ ( $row->od_delivery_step != 8 && $row->od_delivery_step < 90 ) ? 'odr-bg' : '' }}">
       <div class="odr-list-title">
         <h6>{{ $date_gubun }} : {{ $str_date }}({{ $str_week }}) 
           <i>{{ number_format($row->order_cnt) }}건</i>|

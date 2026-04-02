@@ -368,7 +368,6 @@ Route::middleware(['block.ip'])->group(function () {
 
 
             /********** 반품접수 **********/
-            // Route::get('/customer_service/return_reception', [CustomerServiceController::class, 'MyPageReturnReceptionView'])->name('return_view');
             Route::get('/customer_service/return_reception', [CustomerServiceController::class, 'MyPageReturnReceptionList'])->name('return_list');
 
             Route::post('/customer_service/return_reception', [CustomerServiceController::class, 'MyPageReturnReceptionSave'])->name('return_save');

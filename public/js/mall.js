@@ -330,6 +330,11 @@ $(".sale-item-tab li").click(function () {
       $(this).hide();
     }
   });
+  $('.odr-list3').each(function () {
+    if ($.trim($(this).html()) === '') {
+      $(this).css('border-bottom','none');
+    }
+  });
 
   // 문의접수
   $('.terms-toggle').on('click', function () {
