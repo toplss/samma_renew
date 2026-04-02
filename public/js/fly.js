@@ -111,7 +111,7 @@ $(document).ready(function () {
 		const isQty = $box.find('.cart_ct_qty').val() * 1;
 
 		// 품절 또는 수량 0일때 액션x
-		if (isSoldOut || isQty == 0) return;
+		if (isQty == 0) return;
 
 		flyToElement($box.find('.scm1 .main_it_img').eq(0), $('.cart_cnt'), e);
 	});

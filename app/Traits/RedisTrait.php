@@ -12,7 +12,8 @@ trait RedisTrait
 {
     public static function setRedis($redis_key_generate, $data)
     {
-        $ttl = 24 * 60 * 60;
+        // $ttl = 24 * 60 * 60;
+        $ttl = 60;  //전산재고 실시간 반영을 위해 1분으로 변경함 ( 전산재고 갱신 크론 주기가 1분임 )
 
         Redis::set($redis_key_generate, json_encode($data, JSON_UNESCAPED_UNICODE), 'EX', $ttl);
     }

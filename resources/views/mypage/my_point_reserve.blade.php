@@ -11,7 +11,9 @@
     
     @include('layouts.mypage_top')
 
-    <p class="mypoint"><span>적립금 정산은 주문 배송일에 정산 예정입니다.</span></p>
+    @if( $activeMember['level_ca_id2_name'] != '후불' )
+      <p class="mypoint"><span>적립금 정산은 주문 배송일에 정산 예정입니다.</span></p>
+    @endif
 
     <table class="table1 point-table">
       <colgroup>

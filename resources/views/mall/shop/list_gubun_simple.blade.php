@@ -73,11 +73,22 @@
                 @endif
                 <li class="Qua {{ $sold_out ? 'sold-out' : '' }}">
                     @if($activeMember)
+                    @php
+                    $read_only = 'readonly'; 
+                    $onkey_press_event = '';
+                    
+                    if($min_cart_ct_qty < 2) {
+                        $read_only = '';
+                        
+                        $onkey_press_event = 'oninput="isNumberKey(this)" inputmode="numeric"';
+                    }
+                    @endphp
                     <p class="pm-wrap">
                         <button type="button" class="sit_qty_minus" ><img src="{{ asset('images/icon/minus.svg') }}"></button>
                         <span id="numberUpDown">
-                            <input type="hidden" name="min_ct_qty" class="min_ct_qty"  value="{{ $min_cart_ct_qty }}" readonly>
-                            <input type="text" name="ct_qty" class="ct_qty"  value="{{ $min_cart_ct_qty }}" readonly>
+                            <input type="hidden" name="min_ct_qty" class="min_ct_qty"  value="{{ $min_cart_ct_qty }}">
+                            <input type="hidden" name="max_ct_qty" class="max_ct_qty"  value="{{ $max_cart_ct_qty }}">
+                            <input type="text" name="ct_qty" class="ct_qty"  value="{{ $min_cart_ct_qty }}" {{ $read_only }} {!! $onkey_press_event !!}>
                         </span>
                         <button type="button" class="sit_qty_plus" ><img src="{{ asset('images/icon/plus.svg') }}"></button>
                     </p>
