@@ -17,7 +17,6 @@
             @endforeach
         </ul>
     </div>
-    <button type="button" class="btn3" onclick="choiceItem()">선택한 상품담기</button>
 </div>
 
 

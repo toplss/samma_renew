@@ -573,6 +573,8 @@
 			el.value = el.value.replace(/[^0-9]/g, '');
 			let qty = parseInt(el.value) || 0;
 
+			// if (qty < 1) qty = 1;
+
 			var ul = $(el).closest('ul');
 			var min_qty = ul.find('.min_ct_qty').val() * 1;
 			var max_qty = ul.find('.max_ct_qty').val() * 1;
@@ -1148,6 +1150,8 @@ $('.scm-close').click(function(){
 function isNumberKeyModal(el) {
 	el.value = el.value.replace(/[^0-9]/g, '');
 	let qty = parseInt(el.value) || 0;
+
+	// if (qty < 1) qty = 1;
 
 	var scm3 = $(el).closest('.scm3');
 	var scm4 = $(el).closest('.scm3').next('.scm4');

@@ -19,7 +19,7 @@
     
     <div class="prd-row-head simple">
         <ul>
-            <li><input type="checkbox" name="" id="simple_all"></li>
+            <li><input type="checkbox" name="" id="simple_all"><button type="button" onclick="choiceItem()">상품담기</button></li>
             <li>상품명</li>
             <li>판매가</li>
             <li class="hide-680">유형</li>
@@ -29,6 +29,7 @@
 
     <div class="flex sab">
         <label class="simple-all-btn"><input type="checkbox" name="" id="simple_all2">전체 선택</label>
+        <button type="button" class="btn3" onclick="choiceItem()">선택한 상품담기</button>
     </div>
     
     <div class="prd-list">

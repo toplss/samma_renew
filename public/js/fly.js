@@ -73,20 +73,34 @@ $(document).ready(function () {
 	$('.prd-box .add-to-cart').on('click', function (e) {
 		const $box = $(this).closest('.prd-box');
     const isSoldOut = $box.find('.prd-img').hasClass('sold-out');
+		const isQty = $box.find('.ct_qty').val() * 1;
 
-		// 품절일땐 액션x
-		if (isSoldOut) return;
+		// 품절 또는 수량 0일때 액션x
+		if (isSoldOut || isQty == 0) return;
 
 		flyToElement($box.find('.prd-img img').eq(0),$('.cart_cnt'),e);
+	});
+
+	// 상품상세
+	$('.add-to-cart-view').on('click', function (e) {
+		const $box = $(this).closest('.prd-view-wrap');
+    const isSoldOut = $box.find('.pv-img').hasClass('sold-out');
+		const isQty = $box.find('.ct_qty').val() * 1;
+
+		// 품절 또는 수량 0일때 액션x
+		if (isSoldOut || isQty == 0) return;
+
+		flyToElement($box.find('.pv-img img').eq(0),$('.cart_cnt'),e);
 	});
 
 	// 추천상품 슬라이드
 	$('.recom-item-list .add-to-cart').on('click', function (e) {
 		const $box = $(this).closest('.recom-item-list');
     const isSoldOut = $box.find('.recom-img').hasClass('sold-out');
+		const isQty = $box.find('.ct_qty').val() * 1;
 
-		// 품절일땐 액션x
-		if (isSoldOut) return;
+		// 품절 또는 수량 0일때 액션x
+		if (isSoldOut || isQty == 0) return;
 
 		flyToElement($box.find('.recom-img img').eq(0),$('.cart_cnt'),e);
 	});
@@ -94,6 +108,11 @@ $(document).ready(function () {
 	// 메인 장바구니 모달
 	$(document).on('click', '.si-cart-modal .scm-cart', function (e) {
 		const $box = $(this).closest('.si-cart-modal').find('ul');
+		const isQty = $box.find('.cart_ct_qty').val() * 1;
+
+		// 품절 또는 수량 0일때 액션x
+		if (isSoldOut || isQty == 0) return;
+
 		flyToElement($box.find('.scm1 .main_it_img').eq(0), $('.cart_cnt'), e);
 	});
 });

@@ -141,7 +141,7 @@
                   <img src="{{ asset('images/icon/minus.svg') }}">
                 </button> 
                 
-                <input type="text" name="" id="ct_qty_{{ $it_id }}" value="{{ $row['ct_qty'] }}" class="cart_ct_qty" readonly>
+                <input type="text" name="" id="ct_qty_{{ $it_id }}" value="{{ $row['ct_qty'] }}" readonly>
                 
                 <button type="button" class="sit_qty_plus cart_qty_plus" data-it_id="{{ $it_id }}">
                   <img src="{{ asset('images/icon/plus.svg') }}">
@@ -373,6 +373,7 @@ $(document).ready(function() {
         }
     });
 });
+
 
 
 function cartbuy_box_qty(e) {

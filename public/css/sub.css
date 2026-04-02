@@ -85,15 +85,16 @@
 .prd-price .price-dis b{font-weight: 700; color: #da2727; padding-left: 0.5rem;}
 
 /* 간편주문 체크박스 */
-.simple-all-btn {display: inline-flex; align-items: center; border: 1px solid #8ec251; padding: 0.4rem 0.6rem; margin-bottom: 0.5rem; margin-top: -0.5rem; border-radius: 0.3rem; background-color: #f0f7ea; font-weight: 500; color: #4a8b00;}
-#simple_all,#simple_all2 {appearance: none; width: 1.2rem; height: 1.2rem; border: 1.5px solid #8ec251; border-radius: 50%; background: #fff; cursor: pointer; position: relative; transition: 0.1s;}
+.sab{margin-top: -0.5rem; margin-bottom: 0.5rem; gap: 0.5rem;}
+.simple-all-btn {display: inline-flex; align-items: center; border: 1px solid #8ec251; padding: 0.4rem 0.6rem; border-radius: 0.3rem; background-color: #f0f7ea; font-weight: 500; color: #4a8b00;}
+#simple_all,#simple_all2 {appearance: none; width: 1.2rem; height: 1.2rem; border: 1.5px solid #8ec251; border-radius: 0.1rem; background: #fff; cursor: pointer; position: relative; transition: 0.1s;}
 #simple_all:checked,#simple_all2:checked {background: #8ec251;}
 #simple_all:checked::after,#simple_all2:checked::after {content: ''; position: absolute; top: 50%; left: 50%; width: 0.3rem; height: 0.6rem; border: solid #fff; border-width: 0 2px 2px 0; transform: translate(-50%, -60%) rotate(45deg);}
 #simple_all2{margin-right: 5px;}
 
 .prd-box.simple{position: relative;}
 .prd-check{position: absolute; top: 8px; left: 8px; z-index: 3;filter: drop-shadow(0 1px 2px rgba(0,0,0,0.08));}
-.prd-check input[type="checkbox"] {appearance: none; width: 1.2rem; height: 1.2rem; border: 1.5px solid #8ec251; border-radius: 50%; background: #fff; cursor: pointer; position: relative; transition: 0.1s;}
+.prd-check input[type="checkbox"] {appearance: none; width: 1.2rem; height: 1.2rem; border: 1.5px solid #8ec251; border-radius: 0.1rem; background: #fff; cursor: pointer; position: relative; transition: 0.1s;}
 .prd-check input[type="checkbox"]:checked {background: #8ec251;}
 .prd-check input[type="checkbox"]:checked::after {content: ''; position: absolute; top: 50%; left: 50%; width: 0.3rem; height: 0.6rem; border: solid #fff; border-width: 0 2px 2px 0; transform: translate(-50%, -60%) rotate(45deg);}
 
@@ -101,7 +102,8 @@
 .prd-row-head ul{display: grid; grid-template-columns: 5fr 2fr 2fr 3fr; border-top: 1px solid #8ec251; border-bottom: 1px solid #8ec251; margin: 1rem auto;}
 .prd-row-head ul li{padding: 0.7rem 0;}
 
-.prd-row-head.simple ul{grid-template-columns: 26px 5fr 2fr 2fr 3fr;}
+.prd-row-head.simple ul{grid-template-columns: 100px 5fr 2fr 2fr 3fr;}
+.prd-row-head.simple button{background-color: #d1e2be;}
 .prd-list.type-row{grid-template-columns: 1fr; gap: 1rem;}
 .prd-list.type-row .prd-box{display: grid; grid-template-columns: 1fr 4fr 2fr 2fr 3fr; align-items: center; gap: 1rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;}
 .prd-list.type-row .prd-box.simple{grid-template-columns:26px 1fr 4fr 2fr 2fr 3fr; }

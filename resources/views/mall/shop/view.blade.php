@@ -435,13 +435,13 @@ function isNumberKeyView(el) {
     el.value = el.value.replace(/[^0-9]/g, '');
     let qty = parseInt(el.value) || 0;
 
+    // if (qty < 1) qty = 1;
+
     var ul = $(el).closest('.prd-view-wrap');
     var min_qty = ul.find('.min_ct_qty').val() * 1;
     var max_qty = ul.find('.max_ct_qty').val() * 1;
     var it_price = ul.find('.it_price').val() * 1;
     var isDiscount = ul.find('.price-dis').length > 0;
-
-    if (qty < 0) qty = min_qty || 1;
 
     if (min_qty) {
       qty = Math.round(qty / min_qty) * min_qty;
