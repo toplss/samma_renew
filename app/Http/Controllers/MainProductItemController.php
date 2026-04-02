@@ -86,6 +86,7 @@ class MainProductItemController extends Controller
                 'it_gubun'=> $items->it_gubun,
                 'sold_out'=> $sold_out,
 
+                'max_ct_qty'  => $max_cart_ct_qty,
                 'min_ct_qty'  => $min_cart_ct_qty,
                 'ct_qty'      => $min_cart_ct_qty,
                 'buy_box_qty' => $box_min_qty,

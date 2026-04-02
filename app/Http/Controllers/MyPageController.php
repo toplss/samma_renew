@@ -912,6 +912,9 @@ class MyPageController extends Controller
         $service = app(MallShopService::class);
         $member = $service->getMemberInfo(session('ss_mb_code'));        
 
+        //후불업체 여부
+        $is_hubul = ($member['level_ca_id2_name'] == '후불');
+
         $result = DB::table('g5_shop_order')
                     ->select([
                         'mb_code',
@@ -921,28 +924,34 @@ class MyPageController extends Controller
                         'od_company',
                         'level_ca_id2_name',
                         'od_gubun',
-
-                        // 후불업체 관련
-                        'pt_incentive',
-                        'pt_dc',
-                        'pt_damage_staff',
-                        'pt_damage_logistic',
-                        'pt_return',                
-                        'pt_cancel',
-                        'pt_outofstock',
-
-                        // 선.후불 공통
                         'pt_cash',
                         'pt_bank',
                         'pt_card',
                         'pt_return_receivable',
                         'pt_outofstock_deposit',
-
-                        // 날짜
                         'od_delivery_date'
                     ])
 
+                    // 후불일 때만 컬럼 추가
+                    ->when($is_hubul, function ($query) {
+                        $query->addSelect([
+                            'pt_incentive',
+                            'pt_dc',
+                            'pt_damage_staff',
+                            'pt_damage_logistic',
+                            'pt_return',
+                            'pt_cancel',
+                            'pt_outofstock',
+                        ]);
+                    })
+
                     ->selectRaw("
+                        IFNULL(pt_cash,0) +
+                        IFNULL(pt_bank,0) +
+                        IFNULL(pt_card,0) +
+                        IFNULL(pt_return_receivable,0) +
+                        IFNULL(pt_outofstock_deposit,0) +
+
                         (
                             CASE 
                                 WHEN '{$member['level_ca_id2_name']}' = '후불' THEN
@@ -955,29 +964,30 @@ class MyPageController extends Controller
                                     IFNULL(pt_outofstock,0)
                                 ELSE 0
                             END
-                        ) +
-                        IFNULL(pt_cash,0) +
-                        IFNULL(pt_bank,0) +
-                        IFNULL(pt_card,0) +
-                        IFNULL(pt_return_receivable,0) +
-                        IFNULL(pt_outofstock_deposit,0) as row_total
+                        ) as row_total
                     ")
 
                     ->where('mb_code', $mb_code)
-                    ->where(function ($q) {
+                    ->where(function ($q) use ($is_hubul) {
                         $q->where('pt_cash', '>', 0)
                         ->orWhere('pt_bank', '>', 0)
                         ->orWhere('pt_card', '>', 0)
-                        ->orWhere('pt_incentive', '>', 0)
-                        ->orWhere('pt_dc', '>', 0)
-                        ->orWhere('pt_damage_staff', '>', 0)
-                        ->orWhere('pt_damage_logistic', '>', 0)
-                        ->orWhere('pt_return', '>', 0)
                         ->orWhere('pt_return_receivable', '>', 0)
-                        ->orWhere('pt_cancel', '>', 0)
-                        ->orWhere('pt_outofstock', '>', 0)
                         ->orWhere('pt_outofstock_deposit', '>', 0);
+
+                        //후불업체인 경우만
+                        if ($is_hubul) {
+                            $q->orWhere('pt_incentive', '>', 0)
+                            ->orWhere('pt_dc', '>', 0)
+                            ->orWhere('pt_damage_staff', '>', 0)
+                            ->orWhere('pt_damage_logistic', '>', 0)
+                            ->orWhere('pt_return', '>', 0)
+                            ->orWhere('pt_cancel', '>', 0)
+                            ->orWhere('pt_outofstock', '>', 0);
+                        }
+                        
                     })
+
                     ->when($start_date && $end_date, function($query) use($start_date, $end_date) {
                         $query->whereBetween(DB::raw('od_delivery_date'), [$start_date, $end_date]);
                     })

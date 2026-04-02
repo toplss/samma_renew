@@ -92,9 +92,8 @@ $(document).ready(function () {
 	});
 
 	// 메인 장바구니 모달
-	$('.si-cart-modal .scm-cart').on('click', function (e) {
-		const $box = $(this).closest('.si-cart-modal ul');
-
-		flyToElement($box.find('.scm1 .main_it_img').eq(0),$('.cart_cnt'),e);
+	$(document).on('click', '.si-cart-modal .scm-cart', function (e) {
+		const $box = $(this).closest('.si-cart-modal').find('ul');
+		flyToElement($box.find('.scm1 .main_it_img').eq(0), $('.cart_cnt'), e);
 	});
 });

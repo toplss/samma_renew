@@ -454,6 +454,23 @@ function isNumberKeyView(el) {
         html: `최대 주문 수량은 <span style="color:red;">${max_qty}개</span>입니다. <br>해당 수량 초과는 주문할 수 없습니다.`
       });
       qty = max_qty;
+
+      it_price = it_price * qty;
+
+      if (isDiscount) {
+        let org_it_price = ul.find('.org_it_price').val() * 1;
+        let org_price = org_it_price * qty;
+
+        ul.find('.view-price').text(org_price.toLocaleString() + '원');
+        ul.find('.field_it_price_').text(it_price.toLocaleString() + '원');
+      } else {
+        ul.find('.view-price').text(it_price.toLocaleString() + '원');
+      }
+
+      ul.find('.ct_qty').val(qty);
+      ul.find('.sit_tot_price_view').text(it_price.toLocaleString() + '원');
+
+      return false;
     }
 
     it_price = it_price * qty;

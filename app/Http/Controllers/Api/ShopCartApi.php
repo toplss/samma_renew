@@ -126,7 +126,7 @@ class ShopCartApi extends Controller
                         }
 
                         if ($buy_available === false) {
-                            $gubunString = ['box' => '박스', 'pack' => '팩', 'pcs' => '낱개'];
+                            $gubunString = ['box' => '박스', 'pack' => '팩', 'pcs' => '낱개', '' => ''];
                             $buy_return_str = "최대 구매 가능 수량은 " . $max_ct_qty . $gubunString[$item->it_gubun]. " 입니다.";
                             throw new \Exception($buy_return_str);
                         }

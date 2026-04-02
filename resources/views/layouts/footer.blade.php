@@ -444,7 +444,7 @@
 				
 
 				// 담기기능
-				$(document).off('click', '.add-to-cart').on('click', '.add-to-cart', function(){
+				$(document).off('click', '.add-to-cart').on('click', '.add-to-cart', function(e){
 					var ul = $(this).closest('ul');
 					var it_id = ul.data('item');
 					var it_name = ul.find('.prd-name').text();
@@ -471,6 +471,7 @@
 							let org_price = org_it_price * min_qty;
 							ul.find('.price-dis').find('del').text(org_price.toLocaleString() + '원');
 						}
+												
 						return false;
 					}
 
@@ -952,7 +953,18 @@ $('.si-cart-btn').click(function(){
 			$('.scm1').find('span').html(`<img src="${scm1_icon}">` + result.it_storage_label);
 			$('.scm2').html(result.it_name + result.it_basic + ` <p>${scm2_return}${scm2_piece}</p>`);
 			$('.scm3').find('.cart_ct_qty').val(result.min_ct_qty);
+			$('.scm3').find('.max_ct_qty').val(result.max_ct_qty);
 			$('.scm3').find('.min_ct_qty').val(result.min_ct_qty);
+
+			if (result.min_ct_qty < 2) {
+				var onkey_press_event = `oninput="isNumberKey(this)" inputmode="numeric"`;
+				$('.scm3').find('.cart_ct_qty')
+				.prop('readonly', false)
+				.attr({
+					oninput: 'isNumberKeyModal(this)',
+					inputmode: 'numeric'
+				});
+			}
 
 			var scm4 = `<input type="hidden" class="main_show_item" value="${it_id}" />`;
 
@@ -1000,6 +1012,7 @@ $(document).off('click', '.scm3 .sit_qty_plus').on('click', '.scm3 .sit_qty_plus
 	var it_id = scm4.find('.main_show_item').val();
 	var qty = scm3.find('.cart_ct_qty').val() * 1;
 	var min_qty = scm3.find('.min_ct_qty').val() * 1;
+	var max_qty = scm3.find('.max_ct_qty').val() * 1;
 	var it_price = scm4.find('.it_price').val() * 1;
 	var isDiscount = scm4.find('.price-dis').length > 0;
 
@@ -1009,6 +1022,15 @@ $(document).off('click', '.scm3 .sit_qty_plus').on('click', '.scm3 .sit_qty_plus
 	} else {
 		qty += 1;
 	}
+
+	if (qty > max_qty) {
+      Swal.fire({
+        toast : false,
+        icon : 'info',
+        html: `최대 주문 수량은 <span style="color:red;">${max_qty}개</span>입니다. <br>해당 수량 초과는 주문할 수 없습니다.`
+      });
+      qty = max_qty;
+    }
 
 	it_price = it_price * qty;
 
@@ -1075,6 +1097,26 @@ $(document).off('click', '.si-cart-modal .scm-cart').on('click', '.si-cart-modal
 	var it_price = scm4.find('.it_price').val() * 1;
 	var isDiscount = scm4.find('.price-dis').length > 0;
 
+	if (qty < 1) {
+		Swal.fire({
+			toast : false,
+			icon : 'info',
+			html: `최소 주문 수량은 <span style="color:red;">${min_qty}개</span>입니다. <br>해당 수량 미만은 주문할 수 없습니다.`
+		});
+
+		it_price = it_price * min_qty;
+
+		if (isDiscount) {
+			let org_it_price = scm4.find('.org_it_price').val() * 1;
+			let org_price = org_it_price * qty;
+			scm4.find('.price-dis').text(org_price.toLocaleString() + '원');
+		}
+
+		scm3.find('.cart_ct_qty').val(min_qty);
+		scm4.closest('div').find('.total_price').text(it_price.toLocaleString() + '원');
+		return false;
+	}
+
 	$.post('/mall/proc_query_cart', {
 		mode: 'cart_insert',
 		it_id: it_id,
@@ -1086,28 +1128,62 @@ $(document).off('click', '.si-cart-modal .scm-cart').on('click', '.si-cart-modal
 		
 		$('.scm-close').trigger('click');
 
-	
-		// it_price = it_price * min_qty;
-		
-		// scm3.find('.cart_ct_qty').val(min_qty);
-		// scm4.closest('div').find('.total_price').text(it_price.toLocaleString() + '원');
-
-		// var isDiscount = ul.find('.price-dis').length > 0;
-		// if (isDiscount) {
-		// 	let org_it_price = scm4.find('.org_it_price').val() * 1;
-		// 	let org_price = org_it_price * min_qty;
-		// 	scm4.find('.price-dis').text(org_price.toLocaleString() + '원');
-		// }
 	}, 'json');
 
 });
 
 $('.scm-close').click(function(){
 	$('.scm1').find('img').attr('src', '');
-
+	$('.scm3').find('.cart_ct_qty')
+	.prop('readonly', true)
+	.attr({
+		oninput: '',
+		inputmode: ''
+	});
 	$('.si-cart-modal').hide();
 	$('.si-bg').hide();
 });
+
+
+function isNumberKeyModal(el) {
+	el.value = el.value.replace(/[^0-9]/g, '');
+	let qty = parseInt(el.value) || 0;
+
+	var scm3 = $(el).closest('.scm3');
+	var scm4 = $(el).closest('.scm3').next('.scm4');
+
+	var it_id = scm4.find('.main_show_item').val();
+	var min_qty = scm3.find('.min_ct_qty').val() * 1;
+	var max_qty = scm3.find('.max_ct_qty').val() * 1;
+	var it_price = scm4.find('.it_price').val() * 1;
+	var isDiscount = scm4.find('.price-dis').length > 0;
+
+	if (qty < 0) qty = min_qty || 1;
+
+    if (min_qty) {
+      qty = Math.round(qty / min_qty) * min_qty;
+    }
+
+	if (qty > max_qty) {
+      Swal.fire({
+        toast : false,
+        icon : 'info',
+        html: `최대 주문 수량은 <span style="color:red;">${max_qty}개</span>입니다. <br>해당 수량 초과는 주문할 수 없습니다.`
+      });
+      qty = max_qty;
+    }
+
+	it_price = it_price * qty;
+
+	if (isDiscount) {
+		let org_it_price = scm4.find('.org_it_price').val() * 1;
+		let org_price = org_it_price * qty;
+		scm4.find('.price-dis').text(org_price.toLocaleString() + '원');
+	}
+
+	scm3.find('.cart_ct_qty').val(qty);
+	scm4.closest('div').find('.total_price').text(it_price.toLocaleString() + '원');
+}
 </script>
 
 </body>
