@@ -60,6 +60,10 @@
       <tr>
         <th>상품명 검색</th>
         <td>
+
+{{-- @dd($result); --}}
+{{-- @dd($activeMember); --}}
+
           <select name="return_skeyword" id="return_skeyword">
             <option value="" selected>검색어를 입력해 주세요</option>
             @foreach($result as $key => $row)

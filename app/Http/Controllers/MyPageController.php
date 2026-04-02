@@ -566,150 +566,6 @@ class MyPageController extends Controller
 
      /**
      * method Name : MyPoint
-     * Description : 충전금내역 (로그테이블 join)
-     * Author : Kim Hairyong 
-     * Created Date : 2026-01-26
-     * Params : Params
-     * History :
-     *   - 2026-01-26 : Initial creation
-     */
-    public function MyPoint_old(Request $request)
-    {
-        $page    = $request->get('page', 1);
-        $perPage = $request->get('scale', 20);
-
-        $mb_code = session('ss_mb_code');
-
-        if (!$mb_code) {
-            throw new \Exception('로그인 사용자가 아닙니다.');
-        }
-
-        $start_date = $request->input('start_date');
-        $end_date   = $request->input('end_date');
-
-        if (!$start_date || !$end_date) {
-            $end_date   = \Carbon\Carbon::today()->format('Y-m-d');
-            $start_date = \Carbon\Carbon::today()->subMonths(2)->format('Y-m-d');
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 1. 로그 데이터
-        |--------------------------------------------------------------------------
-        */
-        $logQuery = DB::table('tb_member_point_logs as po')
-            ->leftJoin('g5_shop_order as so', 'po.po_fk', '=', 'so.od_id')
-            ->select([
-                'po.po_idx as idx',
-                DB::raw("'로그 데이터' as tmp"),
-                'po.po_path',
-                'po.po_fk as od_id',
-                DB::raw('null as od_delivery_step'),
-                'po.po_point_type',
-                DB::raw("
-                    CASE 
-                        WHEN po.po_action IS NULL THEN 'pt_buy_charge'
-                        ELSE po.po_action
-                    END as po_action
-                "),
-                'po.po_point',
-                DB::raw('null as pt_buy_charge'),
-                DB::raw('null as pt_charge'),
-                DB::raw('null as od_temp_point'),
-                DB::raw('ABS(po.po_point) as change_point'),
-                DB::raw('null as pt_cur_charge'),
-                'po.po_current_point',
-                DB::raw('case when po.po_current_point > 0 then po.po_current_point end as current_point'),
-                'po.po_comment',
-                DB::raw('DATE(so.od_delivery_date) as reg_date')                
-            ])
-            ->where('po.po_mb_code', $mb_code)
-            ->where('po.po_gubun', 'CHARGE')
-            ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
-                $query->whereBetween(DB::raw('DATE(so.od_delivery_date)'), [$start_date, $end_date]);
-            });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | 2. 주문 데이터
-        |--------------------------------------------------------------------------
-        */
-        $orderQuery = DB::table('g5_shop_order')
-            ->select([
-                'od_idx as idx',
-                DB::raw("'주문 데이터' as tmp"),
-                'od_id',
-                'od_delivery_step',
-                DB::raw("
-                    case
-                        when pt_charge > 0 then 'decrease'
-                        when pt_buy_charge > 0 and od_delivery_step = 8 then 'increase'
-                    end as po_point_type
-                "),
-
-                DB::raw("
-                    CONCAT_WS('#',
-                        IF(pt_charge > 0, 'pt_charge', NULL),
-                        IF(pt_buy_charge > 0 AND od_delivery_step = 8, 'modify', NULL)
-                    ) as po_action
-                "),
-
-                DB::raw('null as po_point'),
-                'pt_buy_charge',
-                'pt_charge',
-                'od_temp_point',
-                DB::raw("
-                    case
-                        when pt_buy_charge > 0 then pt_buy_charge
-                        when pt_charge > 0 then pt_charge
-                        when od_temp_point > 0 then od_temp_point
-                    end as change_point
-                "),
-                'pt_cur_charge',
-                DB::raw('null as po_current_point'),
-                DB::raw("
-                    case
-                        when pt_cur_charge > 0 then pt_cur_charge
-                    end as current_point
-                "),
-                DB::raw('null as po_comment'),
-                DB::raw('null as po_path'),
-                'od_delivery_date as reg_date',
-            ])
-            ->where('mb_code', $mb_code)
-            ->where(function ($q) {
-                $q->where(function ($q2) {
-                    $q2->where('pt_buy_charge', '>', 0)
-                    ->where('od_delivery_step', 8);
-                });
-            })
-            ->where('od_delivery_step', '>', 0)
-            ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
-                $query->whereBetween(DB::raw('DATE(od_delivery_date)'), [$start_date, $end_date]);
-            });
-
-        /*
-        |--------------------------------------------------------------------------
-        | 3. UNION
-        |--------------------------------------------------------------------------
-        */
-        $unionQuery = $logQuery->unionAll($orderQuery);
-
-        $rows = DB::query()
-            ->fromSub($unionQuery, 'u')
-            ->orderByDesc('reg_date')
-            ->orderByDesc('od_id')
-            ->paginate($perPage, ['*'], 'page', $page);
-
-        return view('mypage.my_point', [
-            'items' => $rows,
-        ]);
-    }
-
-
-     /**
-     * method Name : MyPoint
      * Description : 충전금내역
      * Author : Kim Hairyong 
      * Created Date : 2026-01-26
@@ -769,6 +625,11 @@ class MyPageController extends Controller
                 $q->where('pt_buy_charge', '>', 0)
                 ->orWhere('pt_charge', '>', 0);
             })
+
+            ->when($start_date && $end_date, function($query) use($start_date, $end_date) {
+                $query->whereBetween(DB::raw('od_delivery_date'), [$start_date, $end_date]);
+            })
+
             ->orderByDesc('od_delivery_date')
             ->orderByDesc('od_id')
             ->paginate($perPage);
@@ -787,206 +648,6 @@ class MyPageController extends Controller
     
         return view('mypage.my_point', [
             'items' => $items,
-        ]);
-    }
-
-
-
-    /**
-     * method Name : MyPointReserve
-     * Description : 적립금내역 (로그테이블 join)
-     * Author : Kim Hairyong 
-     * Created Date : 2026-02-14
-     * Params : Params
-     * History :
-     *   - 2026-02-14 : Initial creation
-     */
-    public function MyPointReserve_old(Request $request)
-    {
-        $page    = $request->get('page', 1);
-        $perPage = $request->get('scale', 20);
-
-        $mb_code = session('ss_mb_code');
-
-        if (!$mb_code) {
-            throw new \Exception('로그인 사용자가 아닙니다.');
-        }
-
-        $start_date = $request->input('start_date');
-        $end_date   = $request->input('end_date');
-
-        if (!$start_date || !$end_date) {
-            $start_date = \Carbon\Carbon::today()->subMonths(2)->format('Y-m-d');
-            $end_date   = Carbon::now()->endOfMonth()->format('Y-m-d');
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | 1. 로그 데이터
-        |--------------------------------------------------------------------------
-        */
-        $logQuery = DB::table('tb_member_point_logs as po' )
-            ->leftJoin('g5_shop_order as so', 'po.po_fk', '=', 'so.od_id')
-            ->select([
-                'po.po_idx as idx',
-                DB::raw("'로그 데이터' as tmp"),
-                'po.po_path',
-                'po.po_fk as od_id',
-                DB::raw('null as od_delivery_step'),
-                'po.po_point_type',
-                'po.po_action',
-                DB::raw("
-                    CASE po.po_point_type
-                        WHEN 'increase' THEN po.po_point
-                    END as increase_point
-                "),
-                DB::raw('null as bond_point'),
-                DB::raw("
-                    CASE po.po_point_type
-                        WHEN 'decrease' THEN po.po_point
-                    END as decrease_point
-                "),
-                'po.po_point',
-                DB::raw('null as pt_buy_reserve'),
-                DB::raw('null as pt_reserve'),
-                DB::raw('null as pt_cancel'),
-                DB::raw('null as pt_return'),
-                DB::raw('null as pt_return_receivable'),
-                DB::raw('null as pt_outofstock'),
-                DB::raw('null as pt_outofstock_deposit'),
-                DB::raw('null as pt_damage_staff'),
-                DB::raw('null as pt_damage_logistic'),
-                DB::raw('null as pt_incentive'),
-                DB::raw('null as pt_dc'),
-                DB::raw('null as od_temp_point_reserve'),
-                DB::raw('ABS(po_point) as change_point'),                
-                DB::raw('null as pt_subtotal'),
-                DB::raw('null as pt_cur_reserve'),
-                'po.po_current_point',
-                DB::raw('CASE WHEN po.po_current_point > 0 THEN po.po_current_point END as current_point'),
-                'po.po_comment',
-                DB::raw('DATE(so.od_delivery_date) as reg_date')
-            ])
-            ->where('po.po_mb_code', $mb_code)
-            ->where('po.po_gubun', 'RESERVE')
-            ->where('po.po_path', 'mall')
-            ->where('po.po_action', '<>', 'od_cancel')
-            ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
-                $query->whereBetween(DB::raw('DATE(so.od_delivery_date)'), [$start_date, $end_date]);
-            });
-
-        /*
-        |--------------------------------------------------------------------------
-        | 2. 주문 데이터
-        |--------------------------------------------------------------------------
-        */
-        $orderQuery = DB::table('g5_shop_order')
-            ->select([
-                'od_idx as idx',
-                DB::raw("'주문 데이터' as tmp"),
-                DB::raw('null as po_path'),
-                'od_id',
-                'od_delivery_step',
-                DB::raw("
-                    CASE
-                        WHEN pt_reserve > 0 THEN 'decrease'
-                        WHEN pt_buy_reserve > 0 THEN 'increase'
-                        WHEN pt_cancel > 0 THEN 'increase'
-                        WHEN pt_return > 0 THEN 'increase'
-                        WHEN pt_return_receivable > 0 THEN 'bond'
-                        WHEN pt_outofstock > 0 THEN 'increase'
-                        WHEN pt_outofstock_deposit > 0 THEN 'bond'
-                        WHEN pt_damage_staff > 0 THEN 'increase'
-                        WHEN pt_damage_logistic > 0 THEN 'increase'
-                        WHEN pt_incentive > 0 THEN 'increase'
-                        WHEN pt_dc > 0 THEN 'increase'
-                        WHEN pt_buy_reserve > 0 AND od_delivery_step = 8 THEN 'increase'
-                    END as po_point_type
-                "),
-                DB::raw("
-                    CONCAT_WS('#',                        
-                        IF(pt_reserve > 0, 'pt_reserve', NULL),
-                        IF(pt_buy_reserve > 0 AND od_delivery_step <> 8, 'pt_buy_reserve', NULL),                        
-                        IF(pt_cancel > 0, 'pt_cancel', NULL),
-                        IF(pt_return > 0, 'pt_return', NULL),
-                        IF(pt_return_receivable > 0, 'pt_return_receivable', NULL),
-                        IF(pt_outofstock > 0, 'pt_outofstock', NULL),
-                        IF(pt_outofstock_deposit > 0, 'pt_outofstock_deposit', NULL),
-                        IF(pt_damage_staff > 0, 'pt_damage_staff', NULL),
-                        IF(pt_damage_logistic > 0, 'pt_damage_logistic', NULL),
-                        IF(pt_incentive > 0, 'pt_incentive', NULL),
-                        IF(pt_dc > 0, 'pt_dc', NULL),
-                        IF(pt_buy_reserve > 0 AND od_delivery_step = 8, 'modify', NULL)
-                    ) as po_action
-                "),
-                DB::raw('(pt_buy_reserve + pt_cancel + pt_return + pt_outofstock + pt_damage_staff + pt_damage_logistic + pt_incentive + pt_dc) as increase_point'),
-                DB::raw('(pt_return_receivable + pt_outofstock_deposit) as bond_point'),
-                DB::raw('pt_reserve as decrease_point'),                
-                DB::raw('null as po_point'),
-                'pt_reserve',
-                'pt_buy_reserve',                
-                'pt_cancel',
-                'pt_return',
-                'pt_return_receivable',
-                'pt_outofstock',
-                'pt_outofstock_deposit',
-                'pt_damage_staff',
-                'pt_damage_logistic',
-                'pt_incentive',
-                'pt_dc',
-                'od_temp_point_reserve',
-                DB::raw("
-                    CASE
-                        WHEN pt_reserve > 0 THEN pt_reserve                        
-                        WHEN pt_buy_reserve > 0 THEN pt_buy_reserve
-                        WHEN pt_cancel > 0 THEN pt_cancel                        
-                        WHEN pt_incentive > 0 THEN pt_incentive
-                        WHEN pt_outofstock > 0 THEN pt_outofstock
-                        WHEN pt_dc > 0 THEN pt_dc
-                        WHEN ABS(pt_subtotal) > 0 THEN ABS(pt_subtotal)
-                    END as change_point
-                "),
-                'pt_subtotal',
-                'pt_cur_reserve',
-                DB::raw('null as po_current_point'),
-                DB::raw("CASE WHEN pt_cur_reserve > 0 THEN pt_cur_reserve END as current_point"),
-                DB::raw('null as po_comment'),
-                'od_delivery_date as reg_date'
-            ])
-            ->where('mb_code', $mb_code)
-            ->where('od_temp_point_reserve', 0)
-            ->where(function ($q) {
-                $q->Where('pt_reserve', '>', 0)
-                ->orWhere('pt_buy_reserve', '>', 0)
-                ->orWhere('pt_cancel', '>', 0)
-                ->orWhere('pt_return', '>', 0)
-                ->orWhere('pt_return_receivable', '>', 0)
-                ->orWhere('pt_outofstock', '>', 0)
-                ->orWhere('pt_outofstock_deposit', '>', 0)
-                ->orWhere('pt_damage_staff', '>', 0)
-                ->orWhere('pt_damage_logistic', '>', 0)
-                ->orWhere('pt_incentive', '>', 0)
-                ->orWhere('pt_dc', '>', 0);
-            })
-            ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
-                $query->whereBetween(DB::raw('DATE(od_delivery_date)'), [$start_date, $end_date]);
-            });
-
-        /*
-        |--------------------------------------------------------------------------
-        | 3. UNION
-        |--------------------------------------------------------------------------
-        */
-        $unionQuery = $logQuery->unionAll($orderQuery);
-
-        $rows = DB::query()
-            ->fromSub($unionQuery, 'u')
-            ->orderByDesc('reg_date')
-            ->orderByDesc('od_id')
-            ->paginate($perPage, ['*'], 'page', $page);
-
-        return view('mypage.my_point_reserve', [
-            'items' => $rows,
         ]);
     }
 
@@ -1099,6 +760,11 @@ class MyPageController extends Controller
                 ->orWhere('pt_incentive', '>', 0)
                 ->orWhere('pt_dc', '>', 0);
             })
+
+            ->when($start_date && $end_date, function($query) use($start_date, $end_date) {
+                $query->whereBetween(DB::raw('od_delivery_date'), [$start_date, $end_date]);
+            })
+
             ->orderByDesc('od_delivery_date')
             ->orderByDesc('od_id')
             ->paginate($perPage);
@@ -1243,153 +909,80 @@ class MyPageController extends Controller
             $start_date = \Carbon\Carbon::today()->subMonths(2)->format('Y-m-d');
         }
 
-        $result = DB::table('g5_shop_order')
-            ->select(
-                'mb_code',
-                'mb_id',
-                'od_id',
-                'od_group_code',
-                'od_company',
-                'level_ca_id2_name',
-                'od_gubun',
-                'pt_cash',
-                'pt_bank',
-                'pt_card',
-                'pt_incentive',
-                'pt_dc',
-                'od_delivery_date'
-            )
-            ->selectRaw('
-                IFNULL(pt_cash,0) +
-                IFNULL(pt_bank,0) +
-                IFNULL(pt_card,0) +
-                IFNULL(pt_incentive,0) +
-                IFNULL(pt_dc,0) as row_total
-            ')
-            ->where('mb_code', $mb_code)
-            ->where(function ($q) {
-                $q->where('pt_cash', '>', 0)
-                ->orWhere('pt_bank', '>', 0)
-                ->orWhere('pt_card', '>', 0)
-                ->orWhere('pt_incentive', '>', 0)
-                ->orWhere('pt_dc', '>', 0);
-            })
-            // ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
-            //                 $query->whereBetween(DB::raw('DATE(od_delivery_date)'), [$start_date, $end_date]);
-            //             })
-            ->orderBy('od_delivery_date', 'desc')
-            ->paginate($perPage);
-
-// dd($result);
-
-        $items = new LengthAwarePaginator(
-            $result,
-            $result->total(),
-            $perPage,
-            $page,
-            [
-                'path'  => Paginator::resolveCurrentPath(),
-                'query' => $request->query(),
-            ]
-        );
-
-        return view('mypage.deposit_history', ['items' => $items]);
-
-
-    }    
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * method Name : DepositHistory
-     * Description : 입금내역
-     * Author : Kim Hairyong 
-     * Created Date : 2026-03-10
-     * Params : Params
-     * History :
-     *   - 2026-03-10 : Initial creation
-     */
-    public function new_DepositHistory(Request $request)
-    {
-        $page    = $request->get('page', 1);
-        $perPage = $request->get('scale', 20);
-
-        $mb_code = session('ss_mb_code');
-
-        if (!$mb_code) {
-            throw new \Exception('로그인 사용자가 아닙니다.');
-        }
-
-        $start_date = $request->input('start_date');
-        $end_date   = $request->input('end_date');
-
-        if (!$start_date || !$end_date) {
-            $end_date   = \Carbon\Carbon::today()->format('Y-m-d');
-            $start_date = \Carbon\Carbon::today()->subMonths(2)->format('Y-m-d');
-        }
-
         $service = app(MallShopService::class);
-        $member = $service->getMemberInfo(session('ss_mb_code'));
-
-
-
-      //선불, 후불 주문 구분
-    //   $payment_type = '';
-    //   if (isset($row->level_ca_id2)) {
-    //       if (strlen($row->level_ca_id2) == 4) {
-    //           if (substr($row->level_ca_id2, -1) == '1') $payment_type = '선불';
-    //           if (substr($row->level_ca_id2, -1) == '2') $payment_type = '후불';
-    //       }
-    //   }                
-
-// dd($member);
+        $member = $service->getMemberInfo(session('ss_mb_code'));        
 
         $result = DB::table('g5_shop_order')
-            ->selectRaw('
-                mb_code,
-                mb_id,
-                od_id,
-                od_group_code,
-                od_company,
-                level_ca_id2_name,
-                od_gubun,
-                pt_cash,
-                pt_bank,
-                pt_card,
-                pt_incentive,
-                pt_dc,
-                od_delivery_date
-            ')
-            ->selectRaw('
-                IFNULL(pt_cash,0) +
-                IFNULL(pt_bank,0) +
-                IFNULL(pt_card,0) +
-                IFNULL(pt_incentive,0) +
-                IFNULL(pt_dc,0) as row_total
-            ')
-            ->where('mb_code', $mb_code)
-            ->where(function ($q) {
-                $q->where('pt_cash', '>', 0)
-                ->orWhere('pt_bank', '>', 0)
-                ->orWhere('pt_card', '>', 0)
-                ->orWhere('pt_incentive', '>', 0)
-                ->orWhere('pt_dc', '>', 0);
-            })
-            // ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
-            //                 $query->whereBetween(DB::raw('DATE(od_delivery_date)'), [$start_date, $end_date]);
-            //             })
-            ->orderBy('od_delivery_date', 'desc')
-            ->paginate($perPage);
+                    ->select([
+                        'mb_code',
+                        'mb_id',
+                        'od_id',
+                        'od_group_code',
+                        'od_company',
+                        'level_ca_id2_name',
+                        'od_gubun',
 
-// dd($result);
+                        // 후불업체 관련
+                        'pt_incentive',
+                        'pt_dc',
+                        'pt_damage_staff',
+                        'pt_damage_logistic',
+                        'pt_return',                
+                        'pt_cancel',
+                        'pt_outofstock',
+
+                        // 선.후불 공통
+                        'pt_cash',
+                        'pt_bank',
+                        'pt_card',
+                        'pt_return_receivable',
+                        'pt_outofstock_deposit',
+
+                        // 날짜
+                        'od_delivery_date'
+                    ])
+
+                    ->selectRaw("
+                        (
+                            CASE 
+                                WHEN '{$member['level_ca_id2_name']}' = '후불' THEN
+                                    IFNULL(pt_incentive,0) +
+                                    IFNULL(pt_dc,0) +
+                                    IFNULL(pt_damage_staff,0) +
+                                    IFNULL(pt_damage_logistic,0) +
+                                    IFNULL(pt_return,0) +                
+                                    IFNULL(pt_cancel,0) +
+                                    IFNULL(pt_outofstock,0)
+                                ELSE 0
+                            END
+                        ) +
+                        IFNULL(pt_cash,0) +
+                        IFNULL(pt_bank,0) +
+                        IFNULL(pt_card,0) +
+                        IFNULL(pt_return_receivable,0) +
+                        IFNULL(pt_outofstock_deposit,0) as row_total
+                    ")
+
+                    ->where('mb_code', $mb_code)
+                    ->where(function ($q) {
+                        $q->where('pt_cash', '>', 0)
+                        ->orWhere('pt_bank', '>', 0)
+                        ->orWhere('pt_card', '>', 0)
+                        ->orWhere('pt_incentive', '>', 0)
+                        ->orWhere('pt_dc', '>', 0)
+                        ->orWhere('pt_damage_staff', '>', 0)
+                        ->orWhere('pt_damage_logistic', '>', 0)
+                        ->orWhere('pt_return', '>', 0)
+                        ->orWhere('pt_return_receivable', '>', 0)
+                        ->orWhere('pt_cancel', '>', 0)
+                        ->orWhere('pt_outofstock', '>', 0)
+                        ->orWhere('pt_outofstock_deposit', '>', 0);
+                    })
+                    ->when($start_date && $end_date, function($query) use($start_date, $end_date) {
+                        $query->whereBetween(DB::raw('od_delivery_date'), [$start_date, $end_date]);
+                    })
+                    ->orderBy('od_delivery_date', 'desc')
+                    ->paginate($perPage);
 
         $items = new LengthAwarePaginator(
             $result,
@@ -1404,30 +997,7 @@ class MyPageController extends Controller
 
         return view('mypage.deposit_history', ['items' => $items]);
 
-
     }    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

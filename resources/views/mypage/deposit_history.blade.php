@@ -11,8 +11,6 @@
 
     @include('layouts.mypage_top')
 
-    <!-- <p class="mypoint">보유충전금 <b>{{ number_format($activeMember['mb_point']) }}</b><small>원</small></p> -->
-
     <table class="table1 point-table">
       <colgroup>
         <col style="width:5%;" class="hide-820">
@@ -31,14 +29,24 @@
           <th>현금입금</th>
           <th>예금입금</th>
           <th>카드입금</th>
-          <th>장려금</th>
-          <th>DC</th>
+          <th>반품입금</th>
+          <th>결품입금</th>
+
+          <!-- 후불업체인 경우만 표기 -->
+          @if( $activeMember['level_ca_id2_name'] == '후불' )
+            <th>장려금</th>
+            <th>DC</th>
+            <th>기사파손</th>
+            <th>물류파손</th>
+            <th>반품</th>            
+            <th>취소</th>
+            <th>결품</th>            
+          @endif
+          
           <th>합계</th>
         </tr>
       </thead>
       <tbody>
-
-{{-- @dd($items['data']); --}}
 
         @foreach($items['data'] as $key => $row)
         <tr>
@@ -47,8 +55,20 @@
           <td class="txt-blue">{{ ( $row->pt_cash > 0 ) ? number_format($row->pt_cash) . '원' : '-' }}</td>
           <td class="txt-blue">{{ ( $row->pt_bank > 0 ) ? number_format($row->pt_bank) . '원' : '-' }}</td>
           <td class="txt-blue">{{ ( $row->pt_card > 0 ) ? number_format($row->pt_card) . '원' : '-' }}</td>
-          <td class="txt-blue">{{ ( $row->pt_incentive > 0 ) ? number_format($row->pt_incentive) . '원' : '-' }}</td>
-          <td class="txt-blue">{{ ( $row->pt_dc > 0 ) ? number_format($row->pt_dc) . '원' : '-' }}</td>
+          <td class="txt-blue">{{ ( $row->pt_return_receivable > 0 ) ? number_format($row->pt_return_receivable) . '원' : '-' }}</td>
+          <td class="txt-blue">{{ ( $row->pt_outofstock_deposit > 0 ) ? number_format($row->pt_outofstock_deposit) . '원' : '-' }}</td>
+
+          <!-- 후불업체인 경우만 표기 -->
+          @if( $activeMember['level_ca_id2_name'] == '후불' )            
+            <td class="txt-blue">{{ ( $row->pt_incentive > 0 ) ? number_format($row->pt_incentive) . '원' : '-' }}</td>
+            <td class="txt-blue">{{ ( $row->pt_dc > 0 ) ? number_format($row->pt_dc) . '원' : '-' }}</td>
+            <td class="txt-blue">{{ ( $row->pt_damage_staff > 0 ) ? number_format($row->pt_damage_staff) . '원' : '-' }}</td>
+            <td class="txt-blue">{{ ( $row->pt_damage_logistic > 0 ) ? number_format($row->pt_damage_logistic) . '원' : '-' }}</td>
+            <td class="txt-blue">{{ ( $row->pt_return > 0 ) ? number_format($row->pt_return) . '원' : '-' }}</td>            
+            <td class="txt-blue">{{ ( $row->pt_cancel > 0 ) ? number_format($row->pt_cancel) . '원' : '-' }}</td>
+            <td class="txt-blue">{{ ( $row->pt_outofstock > 0 ) ? number_format($row->pt_outofstock) . '원' : '-' }}</td>            
+          @endif
+          
           <td class="txt-blue">{{ ( $row->row_total > 0 ) ? number_format($row->row_total) . '원' : '-' }}</td>
         </tr>
         @endforeach

@@ -69,7 +69,8 @@ function flyToElement(flyer, flyingTo, e) {
 
 // 실행
 $(document).ready(function () {
-	$('.add-to-cart').on('click', function (e) {
+	// 상품리스트
+	$('.prd-box .add-to-cart').on('click', function (e) {
 		const $box = $(this).closest('.prd-box');
     const isSoldOut = $box.find('.prd-img').hasClass('sold-out');
 
@@ -77,5 +78,23 @@ $(document).ready(function () {
 		if (isSoldOut) return;
 
 		flyToElement($box.find('.prd-img img').eq(0),$('.cart_cnt'),e);
+	});
+
+	// 추천상품 슬라이드
+	$('.recom-item-list .add-to-cart').on('click', function (e) {
+		const $box = $(this).closest('.recom-item-list');
+    const isSoldOut = $box.find('.recom-img').hasClass('sold-out');
+
+		// 품절일땐 액션x
+		if (isSoldOut) return;
+
+		flyToElement($box.find('.recom-img img').eq(0),$('.cart_cnt'),e);
+	});
+
+	// 메인 장바구니 모달
+	$('.si-cart-modal .scm-cart').on('click', function (e) {
+		const $box = $(this).closest('.si-cart-modal ul');
+
+		flyToElement($box.find('.scm1 .main_it_img').eq(0),$('.cart_cnt'),e);
 	});
 });

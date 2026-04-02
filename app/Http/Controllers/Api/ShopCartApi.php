@@ -23,7 +23,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Debugbar;
 use Illuminate\Database\QueryException;
-
+use PhpParser\Node\Stmt\Break_;
+use PhpParser\Node\Stmt\Continue_;
 
 class ShopCartApi extends Controller
 {
@@ -36,8 +37,10 @@ class ShopCartApi extends Controller
             $service = app(\App\Services\MallShopService::class);
             $member  = $service->getMemberInfo(session('ss_mb_code'));
 
-            $mode  = $request->input('mode');
-            $it_id = $request->input('it_id');
+            $mode   = $request->input('mode');
+            $it_id  = $request->input('it_id');
+            $ct_qty = $request->input('ct_qty');
+            $action = $request->input('action');
 
             if (!$member) throw new \Exception("회원정보가 존재하지 않습니다.");
 
@@ -60,7 +63,6 @@ class ShopCartApi extends Controller
                         throw new \Exception("품절된 상품 입니다.");
                     }
 
-
                     $cnt_exists = ShopItem::where('it_id', $it_id)
                     ->where('it_use', '1')
                     ->exists();
@@ -78,6 +80,56 @@ class ShopCartApi extends Controller
 
                     if (trim($member['mb_gubun_type']) == 'employee') {
                         throw new \Exception("직원 계정은 장바구니 사용이 불가능합니다.");
+                    }
+
+                    # 상품구매 최대치 체크
+                    if ($action != 'minus') {
+                        $cartItem = DB::table('g5_shop_cart as sc')
+                        ->where('sc.it_id', $it_id)
+                        ->where('sc.mb_code', $member['mb_code'])
+                        ->where('sc.ct_status', '쇼핑')
+                        ->where('sc.ct_cate', '납품')
+                        ->select(
+                            'sc.ct_qty'
+                        )
+                        ->first();
+
+                        $item = DB::table('g5_shop_item')->where('it_id', $it_id)
+                        ->select(
+                            'it_qty_box',
+                            'it_qty_pack',
+                            'it_qty_pcs',
+                            'it_gubun', 
+                            'agency_it_buy_max_qty', 
+                            'it_buy_max_qty'
+                        )
+                        ->first();
+
+                        $max_ct_qty = 0; 
+                        $buy_available = true;
+                        
+                        if ($member['mb_branch_gubun_type'] == '3') {
+                            $max_ct_qty = $item->agency_it_buy_max_qty ?? 0;
+                        } else {
+                            $max_ct_qty = $item->it_buy_max_qty ?? 0;
+                        }
+
+                        // 최대 구매가능 수량
+                        if ($cartItem) { 
+                            if ($cartItem->ct_qty > $max_ct_qty) {
+                                $buy_available = false;
+                            }
+                        } else {
+                            if ($ct_qty > $max_ct_qty) {
+                                $buy_available = false;
+                            }
+                        }
+
+                        if ($buy_available === false) {
+                            $gubunString = ['box' => '박스', 'pack' => '팩', 'pcs' => '낱개'];
+                            $buy_return_str = "최대 구매 가능 수량은 " . $max_ct_qty . $gubunString[$item->it_gubun]. " 입니다.";
+                            throw new \Exception($buy_return_str);
+                        }
                     }
                 }
             }
@@ -467,6 +519,7 @@ class ShopCartApi extends Controller
                         'si.it_qty_pack',
                         'si.it_qty_pcs',
                         'si.it_qty_system_stock',
+                        'si.agency_it_buy_max_qty',
                         'si.agency_it_buy_min_qty',
                         'si.it_buy_min_qty',
                         'si.it_buy_max_qty',

@@ -327,6 +327,7 @@
           <img src="{{ asset('images/icon/minus.svg') }}">
         </button> 
         <input type="hidden" name="min_ct_qty" class="min_ct_qty"  value="" />
+        <input type="hidden" name="max_ct_qty" class="max_ct_qty"  value="" />
         <input type="text" value="1" class="cart_ct_qty" readonly="">
         <button type="button" class="sit_qty_plus cart_qty_plus">
           <img src="{{ asset('images/icon/plus.svg') }}">

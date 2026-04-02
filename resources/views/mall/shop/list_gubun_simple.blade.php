@@ -26,6 +26,11 @@
             <li class="hide-680">수량</li>
         </ul>
     </div>
+
+    <div class="flex sab">
+        <label class="simple-all-btn"><input type="checkbox" name="" id="simple_all2">전체 선택</label>
+    </div>
+    
     <div class="prd-list">
 
         @foreach ($items as $key => $row)
@@ -140,7 +145,7 @@
 
 <script>
 $(document).ready(function(){
-    $('#simple_all').change(function() {
+    $('#simple_all,#simple_all2').change(function() {
         if ($(this).is(':checked')) {
             $('.cart_it_id:not(:disabled)').prop('checked', true);
         } else {

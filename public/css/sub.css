@@ -73,7 +73,6 @@
 .prd-info .pin{margin-left: auto;}
 .prd-info .pin span{border-radius: 30px; padding: 0.2rem 0.4rem; color: #fff; display: inline-block; font-size: 0.9rem;}
 .prd-info .low_temp,.prd-info .frozen_temp{display: none !important;}
-.prd-check{display: none;}  /* 리스트 형식일때만 보임 */
 
 .prd-name{font-size: 1.1rem; font-weight: 500; line-height: 1.4rem; word-break: break-word; overflow-wrap: anywhere; /* safari 깨짐 방어 */}
 .prd-name .ea{color: #999;font-size: 0.95rem;}
@@ -85,6 +84,18 @@
 .prd-price .price-dis{color: #999; font-size: 1.1rem; font-weight: 500; margin-bottom: 2px;}
 .prd-price .price-dis b{font-weight: 700; color: #da2727; padding-left: 0.5rem;}
 
+/* 간편주문 체크박스 */
+.simple-all-btn {display: inline-flex; align-items: center; border: 1px solid #8ec251; padding: 0.4rem 0.6rem; margin-bottom: 0.5rem; margin-top: -0.5rem; border-radius: 0.3rem; background-color: #f0f7ea; font-weight: 500; color: #4a8b00;}
+#simple_all,#simple_all2 {appearance: none; width: 1.2rem; height: 1.2rem; border: 1.5px solid #8ec251; border-radius: 50%; background: #fff; cursor: pointer; position: relative; transition: 0.1s;}
+#simple_all:checked,#simple_all2:checked {background: #8ec251;}
+#simple_all:checked::after,#simple_all2:checked::after {content: ''; position: absolute; top: 50%; left: 50%; width: 0.3rem; height: 0.6rem; border: solid #fff; border-width: 0 2px 2px 0; transform: translate(-50%, -60%) rotate(45deg);}
+#simple_all2{margin-right: 5px;}
+
+.prd-box.simple{position: relative;}
+.prd-check{position: absolute; top: 8px; left: 8px; z-index: 3;filter: drop-shadow(0 1px 2px rgba(0,0,0,0.08));}
+.prd-check input[type="checkbox"] {appearance: none; width: 1.2rem; height: 1.2rem; border: 1.5px solid #8ec251; border-radius: 50%; background: #fff; cursor: pointer; position: relative; transition: 0.1s;}
+.prd-check input[type="checkbox"]:checked {background: #8ec251;}
+.prd-check input[type="checkbox"]:checked::after {content: ''; position: absolute; top: 50%; left: 50%; width: 0.3rem; height: 0.6rem; border: solid #fff; border-width: 0 2px 2px 0; transform: translate(-50%, -60%) rotate(45deg);}
 
 /* 리스트형식일때 */
 .prd-row-head ul{display: grid; grid-template-columns: 5fr 2fr 2fr 3fr; border-top: 1px solid #8ec251; border-bottom: 1px solid #8ec251; margin: 1rem auto;}
@@ -94,7 +105,7 @@
 .prd-list.type-row{grid-template-columns: 1fr; gap: 1rem;}
 .prd-list.type-row .prd-box{display: grid; grid-template-columns: 1fr 4fr 2fr 2fr 3fr; align-items: center; gap: 1rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;}
 .prd-list.type-row .prd-box.simple{grid-template-columns:26px 1fr 4fr 2fr 2fr 3fr; }
-.prd-list.type-row .prd-check{display: block; text-align: center;}
+.prd-list.type-row .prd-check{position: unset; text-align: center;}
 .prd-list.type-row .prd-img{order:1;}
 .prd-list.type-row .prd-name{order:2; width: 100%; margin: auto; min-height: auto;}
 .prd-list.type-row .prd-price{order:3; text-align: center; margin: auto;}
@@ -861,7 +872,7 @@
   .prd-price h5::after {content: ""; display: block; height: 1.27rem;}
   .prd-price h5:has(u)::after {display: none;}
   .prd-price .price-dis{font-weight: 400;}
-  .prd-check input[type=checkbox]{accent-color: #8ec251;}
+
 	.prd-img .room_temp,.prd-img .low_temp,.prd-img .frozen_temp{top: 4px; right: 4px; width: 34px; height: 34px; font-size: 0.7rem;}
 	.room_temp>img,.low_temp>img,.frozen_temp>img{width: 17px;} 
 

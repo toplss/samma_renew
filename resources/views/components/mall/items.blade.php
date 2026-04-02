@@ -50,15 +50,27 @@ if ($activeMember) {
         <li class="recom-price">{{ number_format($row_list_field_it_price) }}원</li>
 
         <li class="pm-wrap">
+            @php
+            $read_only = 'readonly'; 
+            $onkey_press_event = '';
+            
+            if($min_cart_ct_qty < 2) {
+                $read_only = '';
+                
+                $onkey_press_event = 'oninput="isNumberKey(this)" inputmode="numeric"';
+            }
+            @endphp
             <button type="button" class="sit_qty_minus" ><img src="{{ asset('images/icon/minus.svg') }}"></button>
             <span id="numberUpDown">
-                <input type="hidden" name="min_ct_qty" class="min_ct_qty"  value="{{ $min_cart_ct_qty }}" readonly>
-                <input type="text" name="ct_qty" class="ct_qty"  value="{{ $min_cart_ct_qty }}" readonly>
+                <input type="hidden" name="min_ct_qty" class="min_ct_qty"  value="{{ $min_cart_ct_qty }}">
+                <input type="hidden" name="max_ct_qty" class="max_ct_qty"  value="{{ $max_cart_ct_qty }}">
+                <input type="text" name="ct_qty" class="ct_qty"  value="{{ $min_cart_ct_qty }}" {{ $read_only }} {!! $onkey_press_event !!}>
             </span>
             <button type="button" class="sit_qty_plus" ><img src="{{ asset('images/icon/plus.svg') }}"></button>
         </li>
         <li>
         @if($row['it_gubun'] !== 'box')
+            <input type="hidden" class="it_name" value="{{ $row['it_name'] }}" />
             <input type="hidden" class="it_gubun" value="{{ $row['it_gubun'] }}" />
             <input type="hidden" class="buy_box_qty" value="{{ $box_min_qty }}" />
             <input type="hidden" class="it_box_sale_pcs" value="{{ $row['it_box_sale_pcs'] }}" />

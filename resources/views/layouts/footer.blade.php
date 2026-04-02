@@ -452,6 +452,28 @@
 					var min_qty = ul.find('.min_ct_qty').val();
 					var it_price = ul.find('.it_price').val() * 1;
 
+					if (qty < 1) {
+						Swal.fire({
+							toast : false,
+							icon : 'info',
+							html: `최소 주문 수량은 <span style="color:red;">${min_qty}개</span>입니다. <br>해당 수량 미만은 주문할 수 없습니다.`
+						});
+						ul.find('.ct_qty').val(min_qty);
+
+						it_price = it_price * min_qty;
+						
+						ul.find('.ct_qty').val(min_qty);
+						ul.find('.field_it_price_').text(it_price.toLocaleString() + '원');
+
+						var isDiscount = ul.find('.price-dis').length > 0;
+						if (isDiscount) {
+							let org_it_price = ul.find('.org_it_price').val() * 1;
+							let org_price = org_it_price * min_qty;
+							ul.find('.price-dis').find('del').text(org_price.toLocaleString() + '원');
+						}
+						return false;
+					}
+
 					$.post('/mall/proc_query_cart', {
 						mode: 'cart_insert',
 						it_id: it_id,
@@ -483,6 +505,7 @@
 					var it_name = ul.find('.prd-name').text();
 					var qty = ul.find('.ct_qty').val() * 1;
 					var min_qty = ul.find('.min_ct_qty').val() * 1;
+					var max_qty = ul.find('.max_ct_qty').val() * 1;
 					var it_price = ul.find('.it_price').val() * 1;
 					var isDiscount = ul.find('.price-dis').length > 0;
 
@@ -493,16 +516,18 @@
 						qty += 1;
 					}
 
-					it_price = it_price * qty;
-
-					if (isDiscount) {
-						let org_it_price = ul.find('.org_it_price').val() * 1;
-						let org_price = org_it_price * qty;
-						ul.find('.price-dis').find('del').text(org_price.toLocaleString() + '원');
+					if (qty > max_qty) {
+						Swal.fire({
+							toast : false,
+							icon : 'info',
+							html: `최대 주문 수량은 <span style="color:red;">${max_qty}개</span>입니다. <br>해당 수량 초과는 주문할 수 없습니다.`
+						});
+						qty = max_qty;
 					}
 
-					ul.find('.ct_qty').val(qty);
-					ul.find('.field_it_price_').text(it_price.toLocaleString() + '원');
+					it_price = it_price * qty;
+
+					make_view_price(ul, isDiscount, it_price, qty);
 				});
 
 
@@ -536,27 +561,53 @@
 					}
 
 					it_price = it_price * qty;
-
-					if (isDiscount) {
-						let org_it_price = ul.find('.org_it_price').val() * 1;
-						let org_price = org_it_price * qty;
-						ul.find('.price-dis').find('del').text(org_price.toLocaleString() + '원');
-					}
-
-					ul.find('.ct_qty').val(qty);
-					ul.find('.field_it_price_').text(it_price.toLocaleString() + '원');
+					
+					make_view_price(ul, isDiscount, it_price, qty);
 				});
 		})
+
+
+		// 상품수량 수동입력
+		function isNumberKey(el) {
+			el.value = el.value.replace(/[^0-9]/g, '');
+			let qty = parseInt(el.value) || 0;
+
+			var ul = $(el).closest('ul');
+			var min_qty = ul.find('.min_ct_qty').val() * 1;
+			var max_qty = ul.find('.max_ct_qty').val() * 1;
+			var it_price = ul.find('.it_price').val() * 1;
+			var isDiscount = ul.find('.price-dis').length > 0;
+
+			if (qty < 0) qty = min_qty || 1;
+
+			if (min_qty) {
+				qty = Math.round(qty / min_qty) * min_qty;
+			}
+
+			if (qty > max_qty) {
+				Swal.fire({
+					toast : false,
+					icon : 'info',
+					html: `최대 주문 수량은 <span style="color:red;">${max_qty}개</span>입니다. <br>해당 수량 초과는 주문할 수 없습니다.`
+				});
+				qty = max_qty;
+			}
+
+			let total_price = it_price * qty;
+
+			make_view_price(ul, isDiscount, total_price, qty);
+		}
+
+
 
 		// 박스구매 
 		function buy_box_qty(e) {
 			var ul = $(e).closest('ul');
 			var it_id = ul.data('item');
-			var it_name = ul.find('.prd-name').clone().find('p').remove().end().text().trim();
+			var it_name = ul.find('.prd-name').clone().find('p').remove().end().text().trim() || ul.find('.it_name').val();
 			var it_gubun = ul.find('.it_gubun').val();
 			var qty = ul.find('.buy_box_qty').val();
 			var message = '';
-
 
 			if (it_gubun == 'pcs') {
 				var pcs = ul.find('.it_box_sale_tot').val();
@@ -614,6 +665,19 @@
 				$('.cart_cnt').text(cart_count);
 				$('.top_cart_cnt').text(cart_count);
 			}, 200)
+		}
+
+
+
+		function make_view_price(ul, isDiscount, total_price, qty) {
+			if (isDiscount) {
+				let org_it_price = ul.find('.org_it_price').val() * 1;
+				let org_price = org_it_price * qty;
+				ul.find('.price-dis del').text(org_price.toLocaleString() + '원');
+			}
+
+			ul.find('.ct_qty').val(qty);
+			ul.find('.field_it_price_').text(total_price.toLocaleString() + '원');
 		}
 		</script>
 

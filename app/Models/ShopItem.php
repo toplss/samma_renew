@@ -153,7 +153,8 @@ class ShopItem extends Model
                         $query->orderBy('g5_shop_item.it_insert_time', 'DESC');
                     }
                 }, function($query) {
-                    $query->orderBy('it_order', 'asc')
+                    $query->orderBy('it_multi_cate_code', 'asc')
+                    ->orderBy('it_order', 'asc')
                     ->orderBy('it_time', 'desc')
                     ->orderBy('idx', 'desc');
                 })

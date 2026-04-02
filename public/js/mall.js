@@ -266,12 +266,14 @@ $(".sale-item-tab li").click(function () {
     $(this).addClass('on');
     $('#rowType').removeClass('on');
     $('.prd-list').removeClass('type-row');
+    $('.sab').show();
   });
 
   $('#rowType').click(function(){
     $(this).addClass('on');
     $('#gridType').removeClass('on');
     $('.prd-list').addClass('type-row');
+    $('.sab').hide();
   });
 
   $('.cate-details li').each(function () {

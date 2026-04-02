@@ -321,8 +321,10 @@ $(document).ready(function(){
   function togglePrdRowHead() {
     if ($('#rowType').hasClass('on')) {
       $('.prd-row-head').show();
+      $('.sab').hide();
     } else if ($('#gridType').hasClass('on')) {
       $('.prd-row-head').hide();
+      $('.sab').show();
     }
   };
 

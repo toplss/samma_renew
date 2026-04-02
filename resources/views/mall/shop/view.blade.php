@@ -104,6 +104,16 @@
       @endif
 
       @if($activeMember)
+      @php
+        $read_only = 'readonly'; 
+        $onkey_press_event = '';
+        
+        if($min_cart_ct_qty < 2) {
+            $read_only = '';
+            
+            $onkey_press_event = 'oninput="isNumberKeyView(this)" inputmode="numeric"';
+        }
+        @endphp
       <div class="price-view-opt">
         <div class="sit_opt">
               
@@ -111,8 +121,9 @@
             <button type="button" class="btn2 sit_qty_minus sit_qty_minus_view">
               <img src="{{ asset('images/icon/minus.svg') }}">
             </button>
-            <input type="hidden" name="min_ct_qty" class="min_ct_qty"  value="{{ $min_cart_ct_qty }}" readonly>
-            <input type="text"  id="ct_qty" class="ct_qty" value="{{ $min_cart_ct_qty }}" readonly>
+            <input type="hidden" name="min_ct_qty" class="min_ct_qty"  value="{{ $min_cart_ct_qty }}">
+            <input type="hidden" name="max_ct_qty" class="max_ct_qty"  value="{{ $max_cart_ct_qty }}">
+            <input type="text"  id="ct_qty" class="ct_qty" value="{{ $min_cart_ct_qty }}" {{ $read_only }} {!! $onkey_press_event !!}>
             <button type="button" class="btn2 sit_qty_plus sit_qty_plus_view">
               <img src="{{ asset('images/icon/plus.svg') }}">
             </button>
@@ -232,6 +243,32 @@ $(document).ready(function() {
         var it_price = ul.find('.it_price').val() * 1;
         var isDiscount = ul.find('.d-rate').length > 0;
 
+        if (qty < 1) {
+          Swal.fire({
+            toast : false,
+            icon : 'info',
+            html: `최소 주문 수량은 <span style="color:red;">${min_qty}개</span>입니다. <br>해당 수량 미만은 주문할 수 없습니다.`
+          });
+          ul.find('.ct_qty').val(min_qty);
+
+          it_price = it_price * min_qty;
+						
+          if (isDiscount) {
+            let org_it_price = ul.find('.org_it_price').val() * 1;
+            let org_price = org_it_price * min_qty;
+
+            ul.find('.view-price').text(org_price.toLocaleString() + '원');
+            ul.find('.field_it_price_').text(it_price.toLocaleString() + '원');
+          } else {
+            ul.find('.view-price').text(it_price.toLocaleString() + '원');
+          }
+
+          ul.find('.ct_qty').val(min_qty);
+          ul.find('.sit_tot_price_view').text(it_price.toLocaleString() + '원');
+
+          return false;
+        }
+
 
         $.post('/mall/proc_query_cart', {
           mode: 'cart_insert',
@@ -267,6 +304,7 @@ $(document).ready(function() {
         var it_name = ul.find('.prd-name').text();
         var qty = ul.find('.ct_qty').val() * 1;
         var min_qty = ul.find('.min_ct_qty').val() * 1;
+        var max_qty = ul.find('.max_ct_qty').val() * 1;
         var it_price = ul.find('.it_price').val() * 1;
         var isDiscount = ul.find('.d-rate').length > 0;
 
@@ -275,6 +313,15 @@ $(document).ready(function() {
           qty += min_qty;
         } else {
           qty += 1;
+        }
+
+        if (qty > max_qty) {
+          Swal.fire({
+            toast : false,
+            icon : 'info',
+            html: `최대 주문 수량은 <span style="color:red;">${max_qty}개</span>입니다. <br>해당 수량 초과는 주문할 수 없습니다.`
+          });
+          qty = max_qty;
         }
 
         it_price = it_price * qty;
@@ -347,11 +394,24 @@ function buy_box_qty_view(e) {
     var ul = $(e).closest('.prd-view-wrap');
     var it_id = ul.data('item');
     var it_name = ul.find('.sit_title02').text();
+    var it_gubun = ul.find('.it_gubun').val();
     var qty = ul.find('.buy_box_qty').val();
+
+
+    if (it_gubun == 'pcs') {
+				var pcs = ul.find('.it_box_sale_tot').val();
+				message = `<span style="color:#e02f30">${it_name}</span><br>${pcs}입*1박스로 구매 하시겠습니까?`;
+			}
+			if (it_gubun == 'pack') {
+				var pcs = ul.find('.it_box_sale_pcs').val();
+				var pack = ul.find('.it_box_sale_pack').val();
+				var total = ul.find('.it_box_sale_tot').val();
+				message = `<span style="color:#e02f30">${it_name}</span><br>${pcs}입*${pack}팩*${total}개*1박스로 구매 하시겠습니까?`;
+			}
 
     Swal.fire({
       title: '구매 확인',
-      html: `상품 ${it_name}을(를)<br> ${qty}개 구매하시겠습니까?`,
+      html: message,
       icon: 'question',
       showCancelButton: true,
       confirmButtonText: '구매',
@@ -369,6 +429,49 @@ function buy_box_qty_view(e) {
       }
     });
 }
+
+// 상품수량 수동입력
+function isNumberKeyView(el) {
+    el.value = el.value.replace(/[^0-9]/g, '');
+    let qty = parseInt(el.value) || 0;
+
+    var ul = $(el).closest('.prd-view-wrap');
+    var min_qty = ul.find('.min_ct_qty').val() * 1;
+    var max_qty = ul.find('.max_ct_qty').val() * 1;
+    var it_price = ul.find('.it_price').val() * 1;
+    var isDiscount = ul.find('.price-dis').length > 0;
+
+    if (qty < 0) qty = min_qty || 1;
+
+    if (min_qty) {
+      qty = Math.round(qty / min_qty) * min_qty;
+    }
+
+    if (qty > max_qty) {
+      Swal.fire({
+        toast : false,
+        icon : 'info',
+        html: `최대 주문 수량은 <span style="color:red;">${max_qty}개</span>입니다. <br>해당 수량 초과는 주문할 수 없습니다.`
+      });
+      qty = max_qty;
+    }
+
+    it_price = it_price * qty;
+
+    if (isDiscount) {
+      let org_it_price = ul.find('.org_it_price').val() * 1;
+      let org_price = org_it_price * qty;
+
+      ul.find('.view-price').text(org_price.toLocaleString() + '원');
+      ul.find('.field_it_price_').text(it_price.toLocaleString() + '원');
+    } else {
+      ul.find('.view-price').text(it_price.toLocaleString() + '원');
+    }
+
+    ul.find('.ct_qty').val(qty);
+    ul.find('.sit_tot_price_view').text(it_price.toLocaleString() + '원');
+}
+
 </script>
 
 

@@ -805,19 +805,19 @@ class CustomerServiceController extends Controller
      * History :
      *   - 2026-01-30 : Initial creation
      */        
-    public function MyPageReturnReceptionView(Request $request)
-    {
-        $mb_code = session('ss_mb_code');
+    // public function MyPageReturnReceptionView(Request $request)
+    // {
+    //     $mb_code = session('ss_mb_code');
 
-        if (!$mb_code) {
-            throw new Exception('로그인 사용자가 아닙니다.');
-        }
+    //     if (!$mb_code) {
+    //         throw new Exception('로그인 사용자가 아닙니다.');
+    //     }
 
-        $result = app(ShopCartService::class)->MyRecetOrderItems($request);
+    //     $result = app(ShopCartService::class)->MyRecetOrderItems($request);
 
         
-        return view('customer_service.return_reception', compact('result'));
-    }
+    //     return view('customer_service.return_reception', compact('result'));
+    // }
 
 
     /**
@@ -838,29 +838,60 @@ class CustomerServiceController extends Controller
         }        
 
         //전체 상품정보 (회원이 구매한 상품포함 - Left Join)
-        $result = DB::table('g5_shop_item as si')
+        $result = DB::table('g5_shop_order as so')
+                ->join('g5_shop_cart as sc', function ($join) {
+                    $join->on('so.od_id', '=', 'sc.od_id')
+                        ->where('sc.ct_cate', '=', '납품')
+                        ->where('sc.ct_status', '<>', '쇼핑');
+                })
+                ->join('g5_shop_item as si', 'sc.it_id', '=', 'si.it_id')
+                ->where('so.mb_code', $mb_code)
+                ->whereIn('so.od_delivery_step', [90, 99])
+                ->where('so.od_delivery_date', '>=', DB::raw("
+                    DATE_FORMAT(
+                        DATE_SUB(CURDATE(), INTERVAL 3 MONTH),
+                        '%Y-%m-%d'
+                    )
+                "))
                 ->select([
+                    'sc.ct_id',
+                    'sc.mb_code',
+                    'sc.od_id',
+                    'sc.od_group_code',
+                    'sc.od_date',
+                    'sc.ct_qty',
+                    'sc.ct_price',
+                    'sc.ct_status',
+                    'sc.ct_cate',
+
+                    'so.od_delivery_date',
+                    'so.od_delivery_step',
+
                     'si.idx',
                     'si.ca_id',
                     'si.it_id',
                     'si.it_name',
                     'si.it_img1',
                     'si.it_storage',
+
                     DB::raw("
                         CASE
                             WHEN si.it_storage = '1' THEN '상온'
                             WHEN si.it_storage = '2' THEN '냉동'
                             WHEN si.it_storage = '3' THEN '냉장'
                             ELSE '상온'
-                        END AS it_storage_label
+                        END as it_storage_label
                     "),
+
                     'si.it_return',
+
                     DB::raw("
                         CASE
                             WHEN si.it_return = '1' THEN '반품가능'
                             WHEN si.it_return = '2' THEN '반품불가'
-                        END AS it_return_label
+                        END as it_return_label
                     "),
+
                     'si.it_buy_min_qty',
                     'si.it_buy_max_qty',
                     'si.it_basic',
@@ -873,49 +904,19 @@ class CustomerServiceController extends Controller
                     'si.it_price_piece_unit',
                     'si.it_price_unit',
 
-                    'si.it_price1', 'si.it_price_rate1', 'si.it_price_unit1',
-                    'si.it_price2', 'si.it_price_rate2', 'si.it_price_unit2',
-                    'si.it_price3', 'si.it_price_rate3', 'si.it_price_unit3',
-                    'si.it_price4', 'si.it_price_rate4', 'si.it_price_unit4',
-                    'si.it_price5', 'si.it_price_rate5', 'si.it_price_unit5',
-                    'si.it_price6', 'si.it_price_rate6', 'si.it_price_unit6',
-                    'si.it_price7', 'si.it_price_rate7', 'si.it_price_unit7',
-                    'si.it_price8', 'si.it_price_rate8', 'si.it_price_unit8',
-                    'si.it_price9', 'si.it_price_rate9', 'si.it_price_unit9',
-                    'si.it_price10', 'si.it_price_rate10', 'si.it_price_unit10',
+                    'si.it_price1',
+                    'si.it_price2',
+                    'si.it_price3',
+                    'si.it_price4',
+                    'si.it_price5',
+                    'si.it_price6',
+                    'si.it_price7',
+                    'si.it_price8',
+                    'si.it_price9',
+                    'si.it_price10',
 
-                    'si.agency_it_price1', 'si.agency_it_price_rate1', 'si.agency_it_price_unit1',
-                    'si.agency_it_price2', 'si.agency_it_price_rate2', 'si.agency_it_price_unit2',
-                    'si.agency_it_price3', 'si.agency_it_price_rate3', 'si.agency_it_price_unit3',
-                    'si.agency_it_price4', 'si.agency_it_price_rate4', 'si.agency_it_price_unit4',
-                    'si.agency_it_price5', 'si.agency_it_price_rate5', 'si.agency_it_price_unit5',
-
-                    'sc.ct_id',
-                    'sc.mb_code',
-                    'sc.od_id',
-                    'sc.od_group_code',
-                    'sc.od_date',
-                    'sc.ct_qty',
-                    'sc.ct_price',
-                    'sc.ct_status',
-                    'sc.ct_cate',
+                    
                 ])
-                ->join('g5_shop_category as scg', function ($query) {
-                    $query->on('si.ca_id', '=', 'scg.ca_id')
-                        ->where('scg.ca_display', 1);
-                })
-                ->leftJoin('g5_shop_cart as sc', function ($query) use ($mb_code) {
-                    $query->on('si.it_id', '=', 'sc.it_id')
-                        ->where('sc.mb_code', $mb_code)
-                        ->where('sc.ct_cate', '납품')
-                        ->where('sc.ct_status', '<>', '쇼핑')
-                        ->whereRaw("
-                            sc.od_date >= DATE_FORMAT(
-                                DATE_SUB(CURDATE(), INTERVAL 3 MONTH),
-                                '%Y%m%d'
-                            )
-                        ");
-                })
                 ->groupBy('si.it_id')
                 ->get();
 
