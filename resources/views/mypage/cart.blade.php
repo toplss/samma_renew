@@ -172,7 +172,7 @@
         @endforeach
 
         @if(count($items['cartAllItems']) == 0)
-        <tr><td colspan="6" height="70">장바구니에 담긴 상품이 존재하지 않습니다.</td></tr>
+        <tr><td colspan="8" height="70">장바구니에 담긴 상품이 존재하지 않습니다.</td></tr>
         @endif
       </tbody>
       <tfoot>

@@ -260,6 +260,8 @@ $(document).ready(function(){
   var generate_hash = $('#generate_hash').val();
 
   var url_params = new URLSearchParams(window.location.search);
+  var location = window.location;
+
   var ca_id = url_params.get('ca_id') || '';
   var type = url_params.get('type') || '';
 
@@ -276,6 +278,15 @@ $(document).ready(function(){
       $('#cateBtn').contents().filter(function() {
           return this.nodeType === 3; // 텍스트 노드만 선택
       }).first().replaceWith(text);
+    }
+  } else {
+    if (location.pathname.includes('/mall/shop/list_gubun_simple')) {
+      $('#cateBtn').contents().filter(function() {
+          return this.nodeType === 3; // 텍스트 노드만 선택
+      }).first().replaceWith('전체');
+
+      $('.first_cate_gory').prop('selected', true);
+
     }
   }
 

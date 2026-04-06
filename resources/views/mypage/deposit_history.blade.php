@@ -76,7 +76,7 @@
         <!-- 없을때 -->
         @if($items->total() < 1)
         <tr>
-        <td colspan="8" height="100">내역이 없습니다.</td>
+        <td colspan="15" height="100">내역이 없습니다.</td>
         </tr>
         @endif
 

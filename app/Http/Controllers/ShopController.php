@@ -690,6 +690,7 @@ class ShopController extends Controller
         $page = $request->input('page', '1');
         $desc = $request->input('desc', '');
         $perPage = $request->input('scale', '60');
+        $ca_id = $request->input('ca_id', '');
 
         $shopGroup = ShopItem::selectRaw('it_qty_system_stock AS cnt, stock_it_id')
         ->groupBy('stock_it_id');
@@ -714,6 +715,9 @@ class ShopController extends Controller
             $query->whereIn('g5_shop_cart.ct_status', ['배송', '완료'])
                   ->orWhereIn('g5_shop_cart.ct_cate', ['납품']);
         })
+        ->when($ca_id, function($query) use ($ca_id) {
+            $query->where('g5_shop_item.ca_id', $ca_id);
+        })
         ->groupBy('g5_shop_cart.it_id')
         ->when($desc, function($query) use ($desc){
             if ($desc == '3') {
@@ -725,7 +729,7 @@ class ShopController extends Controller
                 ->orderBy('g5_shop_item.idx', 'desc');
             }
             if ($desc == '6') {
-                $query->orderBy('g5_shop_item.it_time', 'asc');
+                $query->orderBy('g5_shop_item.ca_id', 'asc');
             }
         }, function($query) {
             $query->orderBy('g5_shop_item.it_order', 'asc')

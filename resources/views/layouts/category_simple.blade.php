@@ -4,7 +4,7 @@
     <div class="category">
         <button type="button"class="btn3" id="cateBtn">전체<img src="{{ asset('images/icon/down.svg') }}"></button>
         <ul id="cateList">
-            <li><a href="?ca_id=20"><span class="rank_ico_img"><img src="https://samma-erp.com/img/menu19_ico.png" alt=""></span>전체</a></li>
+            <li class="first_cate_gory"><a href="?"><span class="rank_ico_img"><img src="https://samma-erp.com/img/menu19_ico.png" alt=""></span>전체</a></li>
             @foreach($activeCategory['mobile'] as $key => $row)
             <li data-ca-id="{{ $row['ca_id'] }}">
                 <a href="?ca_id={{ $row['ca_id'] }}">
@@ -19,15 +19,24 @@
     </div>
 </div>
 
-
-
+@php
+if (request('desc') == '3') {
+    $selected = '3';
+} else if (request('desc') == '5') {
+    $selected = '5';
+} else if (request('desc') == '6') {
+    $selected = '6';
+} else {
+    $selected = '5';
+}
+@endphp
 <ul class="st-right">
     <li>
         <select name="desc" id="desc" onchange="ShopItemOrderByDesc(this.value)">
-            <option value="1">정렬</option>
-            <option value="3" {{ request('desc') == '3' ? 'selected' : '' }} >MY 구매높은순</option>
-            <option value="4" {{ request('desc') == '5' ? 'selected' : '' }} >MY 최신주문순</option>
-            <option value="5" {{ request('desc') == '6' ? 'selected' : '' }} >MY 카테고리순</option>
+            <option value="">정렬</option>
+            <option value="3" {{ $selected == '3' ? 'selected' : '' }} >MY 구매높은순</option>
+            <option value="5" {{ $selected == '5' ? 'selected' : '' }} >MY 최신주문순</option>
+            <option value="6" {{ $selected == '6' ? 'selected' : '' }} >MY 카테고리순</option>
         </select>
     </li>
     <!-- <li>

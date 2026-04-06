@@ -18,6 +18,7 @@ use App\Models\ShopItem;
 use App\Models\ShopOrderModel;
 use App\Models\TbMember;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 use App\Traits\CommonTrait;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -37,6 +38,16 @@ class PaymentService
                 $od_receipt_point   = $request->input('input_od_temp_point', 0) + $request->input('input_od_temp_point_reserve', 0);
                 $payment  = (integer) $request->input('payment', 0);
                 $od_price = (integer) $payment - $request->input('deilivery_cost', 0); // 결제금액 에서 배송비 차감(상품금액 만 추출)
+
+                $service = app(MallShopService::class);
+                $member  = $service->getMemberInfo(session('ss_mb_code'));
+                $delivery_date = $service->payInfomation($member)['d_od_delivery_date'];
+
+
+                if (!$delivery_date) {
+                    throw new \Exception('배송일이 설정되지 않았습니다. 관리자에게 문의 부탁드립니다.');
+                }
+
 
                 if ($od_receipt_point > $payment) {
                     throw new \Exception('충전금 또는 적립금 사용 금액은 결제 예정 금액을 초과할 수 없습니다.');
@@ -141,15 +152,20 @@ class PaymentService
             });
 
 
-            // 캐시삭제
-            Redis::del(session('ss_mb_code').':member');
-
-
             return [
                 'status'  => 'success',
                 'resultData' => $data,
                 'message' => '주문완료',
                 'code'    => '00'
+            ];
+
+        } catch (QueryException $e) {
+            Log::error('Database error during payment processing: ' . $e->getMessage(), ['exception' => $e]);
+            return [
+                'status'  => 'error',
+                'resultData' => [],
+                'message' => '데이터베이스 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+                'code'    => $e->getCode()
             ];
 
         } catch (\Exception $e) {
@@ -212,7 +228,7 @@ class PaymentService
 
                 $message  = '<b>['.$row['it_name'].']</b>';
                 $message .= '<br>요청하신 수량은 '.$buyGroup[$row['it_gubun']].$gubunArr[$row['it_gubun']].' 총 (<span style="color:red;">'.number_format($row['ct_qty_tot']) .'</span>개)입니다. ';
-                $message .= '<br>재고 수량은 '.$stockGroup[$row['it_gubun']].$gubunArr[$row['it_gubun']].' 총 (<span style="color:red;">'.number_format($row['it_qty_system_stock']) .'</span>개)입니다. ';
+                $message .= '<br>현재 구매 가능한 재고는 낱개 기준<span style="color:red;">'.number_format($row['it_qty_system_stock']) .'</span>개 입니다. ';
                 $message .= '<br><br>구매 가능 수량으로 조정하신 후 다시 주문해 주시기 바랍니다.';
 
                 $ret = [

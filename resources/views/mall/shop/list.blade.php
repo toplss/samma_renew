@@ -187,6 +187,13 @@ if (request()->has('page'))  $isDown = false;
         @endforeach
     </div>
 
+
+    @if ($items->total() == 0)
+        <div style="text-align: center; padding: 40px 0;">
+            상품이 없습니다
+        </div>
+    @endif    
+
     {{ $items->links() }}
 </div>
 <script>
