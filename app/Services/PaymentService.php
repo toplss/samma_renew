@@ -73,12 +73,6 @@ class PaymentService
                     throw new \Exception('결제 금액이 0원 이하일 수 없습니다.');
                 }
 
-
-                if ($od_price != $this->validate_cart_price($od_id)) {
-                    throw new \Exception('결제 금액과 상품 금액이 일치하지 않습니다. 다시 확인해 주세요.');
-                }
-
-
                 // 상품이 없는 경우
                 $cart_exists = DB::table('g5_shop_cart')
                 ->where('od_id', $od_id)
@@ -117,6 +111,7 @@ class PaymentService
                 // 재고량 체크 + 카트상태 업데이트 + 재고량 차감
                 $resDt = $this->checkSystemStock($od_id);
 
+
                 if ($resDt['status'] == 'reject') {
                     throw new \Exception($resDt['message'], 409);
                 }
@@ -145,8 +140,14 @@ class PaymentService
                     }                    
                 }
 
+                // 결제금액과 상품금액 일치 여부 체크
+                if ($od_price != $this->validate_cart_price($od_id)) {
+                    throw new \Exception('결제 금액과 상품 금액이 일치하지 않습니다. 다시 확인해 주세요.');
+                }
+
                 // 충전금 + 적립금 + 채권액 처리
                 $this->setOrderMemberPoints($request, app(MallShopService::class)->getMemberInfo(session('ss_mb_code')));
+
 
                 return $this->resultData($od_id);
             });
@@ -864,7 +865,7 @@ class PaymentService
     private function validate_cart_price($oid)
     {
         return DB::table('g5_shop_cart')
-        ->where('ct_status', '쇼핑')
+        // ->where('ct_status', '쇼핑')
         ->where('od_id', $oid)
         ->selectRaw('SUM(ct_price * ct_qty) as total_price')
         ->value('total_price');

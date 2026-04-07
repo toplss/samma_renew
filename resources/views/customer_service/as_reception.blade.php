@@ -71,18 +71,20 @@
             </tr>
             <!-- 반복 -->
             @php
-            $it_id_type_str = array("4"=>"<span style='color:#0000ff;'>판매</span>","5"=>"임대","7"=>"<span style='color:#e02f30;'>회수</span>");
+            $it_id_type_str = [
+                4 => "<span style='color:#0000ff;'>판매</span>",
+                5 => "임대",
+                7 => "<span style='color:#e02f30;'>회수</span>",
+            ];
             @endphp
             @foreach ($items as $key => $row)
             <tr>
               <td class="hide-820">{{ $row->row_num }}</td>
-              <td class="ci1">
-								<img src="{{ asset('images/item/'.$row->it_img1) }}" alt="">
-              </td>
+              <td class="ci1"><img src="{{ asset('images/item/'.$row->it_img1) }}" alt=""></td>
               <td class="hide-680">{{ $row->ca_name }}</td>
               <td class="ci2"><span class="show-680 txt-blue">{{ $row->ca_name }}</span>{{ $row->it_name }} </td>
               <td class="hide-680">{{ $row->t_p_code }}</td>
-              <td>{{ $it_id_type_str[$row->t_it_id_type] }}</td>
+              <td>{!! $it_id_type_str[$row->t_it_id_type] !!}</td>
               <td><input type="radio" name="title" id="" class="it_id" value="{{ $row->it_id.'||'.$row->it_name }}" {{ ($row->idx == request('idx')) ? 'checked' : '' }}></td>
             </tr>
             @endforeach

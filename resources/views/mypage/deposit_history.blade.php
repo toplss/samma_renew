@@ -12,16 +12,6 @@
     @include('layouts.mypage_top')
 
     <table class="table1 point-table">
-      <colgroup>
-        <col style="width:5%;" class="hide-820">
-        <col style="width:5%;">
-        <col style="width:15%;">
-        <col style="width:15%;">
-        <col style="width:15%;">
-        <col style="width:15%;">
-        <col style="width:15%;">
-        <col style="width:15%;">
-      </colgroup>
       <thead>
         <tr>
           <th class="hide-820">번호</th>
