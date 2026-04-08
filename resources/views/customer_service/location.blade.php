@@ -87,9 +87,17 @@
 </script>
 
 <style>
-  .root_daum_roughmap{width: 100%;}
+  .root_daum_roughmap{width: 100%; font-family: 'Pretendard Variable'; letter-spacing: -0.5px;}
   .root_daum_roughmap .wrap_map{height: 500px;}
   .root_daum_roughmap .wrap_btn_zoom{z-index: 2;}
+  .root_daum_roughmap .cont .section{margin: auto;}
+
+  @media screen and (max-width: 1280px){
+    .root_daum_roughmap .wrap_map{height: 400px;}
+  }
+  @media screen and (max-width: 680px){
+    .root_daum_roughmap .wrap_map{height: 260px;}
+  }
 </style>
 
 @endsection

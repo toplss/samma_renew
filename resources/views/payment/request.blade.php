@@ -172,7 +172,7 @@ if (isset($activeMember['mb_level_type'])) {
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>
-                                @if(!Storage::disk('public')->exists($image_url) && $row['it_img1'])
+                                @if(file_exists(public_path($image_url)) && $row['it_img1'])
                                 <img src="{{ asset($image_url) }}" alt="">
                                 @else
                                 <img src="{{ asset('images/common/no_image.gif') }}" alt="">
@@ -243,7 +243,7 @@ if (isset($activeMember['mb_level_type'])) {
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>
-                                @if(!Storage::disk('public')->exists($image_url) && $row['it_img1'])
+                                @if(file_exists(public_path($image_url)) && $row['it_img1'])
                                 <img src="{{ asset($image_url) }}" alt="">
                                 @else
                                 <img src="{{ asset('images/common/no_image.gif') }}" alt="">

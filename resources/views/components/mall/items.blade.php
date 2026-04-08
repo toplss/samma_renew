@@ -30,7 +30,7 @@ if ($activeMember) {
 @endphp
 <div class="recom-item-list">
     <ul data-item="{{ $it_id }}">
-        @if(!Storage::disk('public')->exists($image_url) && $row['it_img1'])
+        @if(file_exists(public_path($image_url)) && $row['it_img1'])
         <li class="recom-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; ">
             <img src="{{ asset($image_url) }}">
             <span class="{{ $timpArr[$row['it_storage']] }}"><img src="{{ asset('images/icon/snow.svg') }}">{{ $row['it_storage_label'] }}</span>

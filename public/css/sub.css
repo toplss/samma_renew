@@ -42,7 +42,7 @@
 .sub-list-slide .slick-dots .slick-active button{background-color: #fdd00d;}
 
 /* 상품리스트 */
-.prd-list{display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); /* safari 깨짐 방어 */ gap: 2rem 10px;}
+.prd-list{display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); /* safari 깨짐 방어 */ gap: 1.5rem 10px;}
 
 .prd-box{display: flex; gap: 0.5rem; flex-direction: column; text-align: left; cursor: pointer; user-select: none;}
 .prd-box:hover .prd-img{border: 1px solid #8ec251;}
@@ -78,7 +78,7 @@
 .prd-name .ea{color: #999;font-size: 0.95rem;}
 .prd-name .ea>i{display: none; font-style: normal;white-space: nowrap; margin-left: 0.3rem;}
 
-.prd-price{margin-bottom: 0.5rem; margin-top: auto;}
+.prd-price{margin-top: auto;}
 .prd-price h5{font-size: 1.3rem; font-weight: 600; display: flex; align-items: center; gap: 5px;}
 .prd-price h5 u{font-size: 0.9rem; font-weight: 400; text-decoration: none; letter-spacing: -0.5px; background-color: #eee; color: #777; padding: 0.1rem 0.3rem; border-radius: 0.3rem; white-space: nowrap;}
 .prd-price .price-dis{color: #999; font-size: 1.1rem; font-weight: 500; margin-bottom: 2px;}
@@ -468,6 +468,7 @@
 .point-table .txt-red,.point-table .txt-blue{font-weight: 500; white-space: nowrap;}
 .pt1{cursor: pointer; transition: 0.2s;}
 .pt1:hover{ color: #78b434; font-weight: 500;}
+
 
 /* 제휴문의 */
 .ask-table th{padding: 0.8rem; width: 10%; border: 1px solid #eee; background-color: #f5f5f5;}
@@ -935,6 +936,8 @@
   .mmy-wrap ul{grid-template-columns: repeat(2,1fr);}
   .mmy-wrap li a{padding: 0.8rem;}
 
+
+
   .cart-table th{font-size: 0.9rem;}
   .cart-table-title h6{font-size: 0.9rem; line-height: 1.2rem;}
   .cart-table-title h6 p span{font-size: 0.8rem;}
@@ -1024,6 +1027,16 @@
   .claim-item-table .ci2{text-align: left;}
   .terms-scroll{height: 140px;}
   .board-view{margin: 1rem auto;}
+
+  /* 모바일 카드형 */
+  .mobile-card thead{display: none;}
+  .mobile-card,.mobile-card tbody,.mobile-card tr,.mobile-card td {display: block; width: 100%;}
+  .mobile-card tr {background: #fff; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; border: 1px solid #ccc;}
+  .mobile-card td {display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border: none; font-size: 1.05rem;}
+  .mobile-card td::before {content: attr(data-label); color: #555; font-size: 1rem;}
+  .mobile-card td[data-label="날짜"] {font-weight: 600; padding-bottom: 0.7rem; border-bottom: 1px solid #ddd; margin-bottom: 0.5rem;}
+  .mobile-card td[data-label="합계"] { font-weight: 700; border-top: 1px solid #ddd; margin-top: 0.5rem; padding-top: 0.7rem;}
+  .mobile-card .c-hide{display: none;}
 }
 
 @media screen and (max-width: 370px){

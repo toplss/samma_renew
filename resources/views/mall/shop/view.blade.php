@@ -25,7 +25,6 @@
 
 
       $image_url = 'images/item/'.$items['it_img1'];
-      $images_visiable = file_exists($image_url);
       @endphp
 
       @php
@@ -140,7 +139,7 @@
           <input type="hidden" class="it_box_sale_tot" value="{{ $items['it_box_sale_tot'] }}" />
           
             @if ($items['it_box_sale_pcs'])
-            <button type="button" class="btn2" onclick="buy_box_qty_view(this); return false;">박스구매</button>
+            <button type="button" class="btn2 buy_box_btn" onclick="buy_box_qty_view(this); return false;">박스구매</button>
             @endif
           @endif
 

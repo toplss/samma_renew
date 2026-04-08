@@ -430,7 +430,14 @@ $('#seach_frm2').on('submit', function(e) {
 	@yield('content')
 </section>
 
-
+<!-- 대리점 회원일 경우 박스구매 display none -->
+@if (session('ss_mb_code')) 
+	@php
+	if ($activeMember['mb_branch_gubun_type'] == '3') {
+		echo '<style>#buy_box_btn, .buy_box_btn { display: none; }</style>';
+	}
+	@endphp
+@endif
 
 @include('error-alert')
 
