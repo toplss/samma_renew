@@ -534,6 +534,13 @@ class PaymentService
             'pt_cur_reserve' => $member['mb_point_reserve'] - $request->input('input_od_temp_point_reserve', 0),
             'pt_cur_balance' => $member['mb_point_balance'] + ($request->payment_type === '후불' ? $request->payment : 0),
             'od_test' => 0,
+
+            // 추가필드
+            'branch_ca_id'  => $member['branch_ca_id'],
+            'branch_ca_id2' => $member['branch_ca_id2'],
+            'branch_ca_id3' => $member['branch_ca_id3'],
+            'branch_ca_id4' => $member['branch_ca_id4'],
+            'branch_ca_id5' => $member['branch_ca_id5'],
         ];
 
 

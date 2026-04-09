@@ -17,7 +17,6 @@
 .rank_ico_img img{display: inline-block; width: 1.6rem;}
 .cate-details{display: flex; gap: 0.4rem; position: relative;}
 .cate-details>li>a{display: inline-block; border: 1px solid #8ec251; border-radius: 0.3rem; padding: 0.3rem 0.6rem; color: #78b434;}
-.cate-details>li>a:hover{border-color: #ff6517; color: #ff6517;}
 .cate-details>li>a.on{border-color: #ff6517; color: #ff6517;}
 .cate-r-ul{display: flex; gap: 0.3rem;}
 .cate-r-ul a{background-color: #eee; color: #777; padding: 0.3rem 0.6rem; border-radius: 0.2rem;} 
@@ -27,7 +26,7 @@
 .m-cate1{display: none;}
 .m-cate2{display: none;}
 
-.st-right select{border: 1px solid #ccc; padding: 0.3rem 0.1rem; border-radius: 0.3rem;}
+.st-right select{border: 1px solid #ccc; padding: 0.3rem 0.1rem; border-radius: 0.3rem; background-color: #fff;}
 #gridType,#rowType{cursor: pointer; transition: 0.1s;}
 #gridType.on,#rowType.on{filter: brightness(0.8);}
 #gridType:hover,#rowType:hover{filter: brightness(0.8);}
@@ -46,15 +45,15 @@
 
 .prd-box{display: flex; gap: 0.5rem; flex-direction: column; text-align: left; cursor: pointer; user-select: none;}
 .prd-box:hover .prd-img{border: 1px solid #8ec251;}
-.prd-img{border: 1px solid #f5f5f5; border-radius: 0.5rem; overflow: hidden; position: relative; aspect-ratio: 1 / 1;}
+.prd-img{border: 1px solid #eee; border-radius: 0.5rem; overflow: hidden; position: relative; aspect-ratio: 1 / 1;}
 .prd-img img{height: 100%; object-fit: contain}
 .prd-img.sold-out::after{content: "SOLD OUT"; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; font-size: 2rem; text-align: center;}
 .prd-img ._new,.prd-img .best,.prd-img .event , .prd-img .mygrang, .prd-img .vivacook, .prd-img .bargain{position: absolute; top: 0; left: 6px; border-radius: 0 0 7px 7px; padding: 0.3rem;}
-.prd-img .room_temp,.prd-img .low_temp,.prd-img .frozen_temp{position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; width: 42px; height: 42px; border-radius: 40px; font-size: 0.8rem; background-color: #fff;}
+.prd-img .room_temp,.prd-img .low_temp,.prd-img .frozen_temp{position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; width: 42px; height: 42px; border-radius: 40px; font-size: 0.8rem; background-color: rgba(255, 255, 255, 0.9);}
 .prd-img .low_temp{border: 1px solid #21c1c1; color: #21c1c1;}
 .prd-img .frozen_temp{border: 1px solid #5494de; color: #5494de;}
 
-.Qua{border: 1px solid #f5f5f5; display: flex; justify-content: space-around; align-items: center; border-radius: 0.5rem; position:relative; overflow: hidden;}
+.Qua{border: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; border-radius: 0.5rem; position:relative; overflow: hidden;}
 .Qua.sold-out{opacity: 0.3;}
 .Qua button{background-color: #fff; font-weight: 500;}
 .Qua .add-to-cart{padding: 0.6rem 1rem;}
@@ -62,7 +61,7 @@
 .Qua #numberUpDown input{width: 2rem; text-align: center;}
 .Qua-login{padding: 0.3rem;}
 .Qua-equip{display: flex; align-items: center; justify-content: center; gap: 0.3rem;}
-.Qua-equip>p{border: 1px solid #f5f5f5; padding: 0.4rem 0; border-radius: 0.3rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 2px;}
+.Qua-equip>p{border: 1px solid #eee; padding: 0.4rem 0; border-radius: 0.3rem; width: 100%; display: flex; align-items: center; justify-content: center; gap: 2px;}
 .Qua-call{color: #e45710;}
 .Qua-view{color: #777;}
 .Qua-equip>p>img{width: 17px;}
@@ -72,6 +71,7 @@
 #buy_box_btn{padding: 0.2rem 0.5rem; font-size: 0.9rem;}
 .prd-info .pin{margin-left: auto;}
 .prd-info .pin span{border-radius: 30px; padding: 0.2rem 0.4rem; color: #fff; display: inline-block; font-size: 0.9rem;}
+.prd-info .pin span:empty {display: none;}
 .prd-info .low_temp,.prd-info .frozen_temp{display: none !important;}
 
 .prd-name{font-size: 1.1rem; font-weight: 500; line-height: 1.4rem; word-break: break-word; overflow-wrap: anywhere; /* safari 깨짐 방어 */}
@@ -193,7 +193,7 @@
 .recom-item-list .Qua-login{background-color: #f9f9f9; border-radius: 0.3rem; margin-top: 0.2rem;}
 .recom-img{aspect-ratio: 1 / 1; overflow: hidden; cursor: pointer; position: relative;}
 .recom-img img{height: 100%; object-fit: contain;}
-.recom-img .room_temp,.recom-img .low_temp,.recom-img .frozen_temp{position: absolute; top: 0; right: 0; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; width: 42px; height: 42px; border-radius: 40px; font-size: 0.8rem; background-color: #fff;}
+.recom-img .room_temp,.recom-img .low_temp,.recom-img .frozen_temp{position: absolute; top: 0; right: 0; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; width: 42px; height: 42px; border-radius: 40px; font-size: 0.8rem; background-color: rgba(255, 255, 255, 0.9);}
 .recom-img .low_temp{border: 1px solid #21c1c1; color: #21c1c1;}
 .recom-img .frozen_temp{border: 1px solid #5494de; color: #5494de;}
 .recom-pin span{margin-right: 3px; color: #fff; border-radius: 30px; padding: 0.2rem 0.4rem; font-size: 0.8rem; display: inline-block;}
@@ -211,7 +211,7 @@
 
 .recipe-top-banner{margin: 20px auto;}
 .recipe-list{display: grid; grid-template-columns: repeat(6,1fr); gap: 1rem;}
-.recipe-list ul{border: 1px solid #f5f5f5; border-radius: 0.5rem; overflow: hidden; cursor: pointer; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;}
+.recipe-list ul{border: 1px solid #eee; border-radius: 0.5rem; overflow: hidden; cursor: pointer; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem;}
 .recipe-list ul:hover{border: 1px solid #8ec251;}
 .recipe-name{font-size: 1.1rem; margin: 0.5rem auto;}
 .recipe-pin{margin-top: auto;}
@@ -221,7 +221,7 @@
 
 /* 레시피 뷰 */
 .recipe-view-wrap{width: 96%; margin: auto;}
-.recipe-title{font-size: 1.5rem; font-weight: 600; position: relative; border-bottom: 1px solid #f5f5f5; padding: 1rem 0; border-bottom: 1px solid #f5f5f5; margin-bottom: 2rem;}
+.recipe-title{font-size: 1.5rem; font-weight: 600; position: relative; border-bottom: 1px solid #eee; padding: 1rem 0; margin-bottom: 2rem;}
 .recipe-title p{position: absolute; left: 0; top: 50%; transform: translateY(-50%);}
 .recipe-detail{display: grid; grid-template-columns: 1fr 2fr; gap:1rem 3rem;}
 .recipe-table-box .sort-icons{display: flex; align-items: center; margin-bottom: 1rem;}
@@ -398,7 +398,7 @@
 .pay-item-wrap>div::-webkit-scrollbar-thumb { background-color: #ccc;}
 .pay-item-wrap>div::-webkit-scrollbar-button {display: none;}
 .pay-item-wrap .empty{background-color: #333; color: #fff; padding: 0.8rem 2rem; border-radius: 0.5rem;}
-.pay-item-table{border-collapse: separate; border-spacing: 0;}
+.pay-item-table{border-collapse: separate; border-spacing: 0; border-left: 1px solid #eee;}
 .pay-item-table thead{position: sticky; top: 0;}
 .pay-item-table tfoot{position: sticky; bottom: 0;}
 
@@ -438,7 +438,7 @@
 .pay_how dl dd{display: inline-block; width: 80%;}
 #settle_finance_vbank{font-size: 1.1rem; font-weight: 500; line-height: 1.4rem;}
 #od_finance_deposit_name{border: 1px solid #8ec251; padding: 0.5rem; border-radius: 0.3rem;}
-.pay_btns p{color: #da2727; margin-bottom: 1rem;}
+.pay_btns p{color: #da2727; margin-bottom: 1rem; text-align: left;}
 .pay_btns p img{width: 1.5rem; margin-right: 4px;}
 .pay_btns ul{display: flex; justify-content: center; align-items: center; gap: 1rem;}
 .pay_btns button{font-size: 1.3rem; padding: 0.8rem 4rem;}
@@ -453,7 +453,7 @@
 .pay-result-table .red{color:#da2727; font-weight: 600;}
 
 /* 주문내역 상세 내 테이블 */
-.pay-info-wrap{background-color: #f9f9f9; padding: 0.5rem 2rem; border-radius: 1rem;}
+.pay-info-wrap{background-color: #f5f5f5; padding: 0.5rem 2rem; border-radius: 1rem;}
 .pay-info-wrap .pay-result-table{width: auto; border-radius: 0.5rem;}
 /* 보유장비 */
 .equip-list{border: 1px solid #000; width: 100%;}
@@ -661,7 +661,7 @@
   .sub-title-wrap h4{font-size: 1.2rem;}
   .st-right #scale{display: none;}
 
-  .prd-list{grid-template-columns: repeat(5,1fr);}
+  .prd-list{grid-template-columns: repeat(5, minmax(0, 1fr));}
   .prd-list.type-row .prd-box{grid-template-columns: 1fr 3fr 2fr 2.5fr 2fr;}
   .prd-list.type-row .Qua-equip{flex-direction: column;}
   .prd-name .ea{font-size: 0.9rem;}
@@ -858,13 +858,13 @@
 @media screen and (max-width: 680px){
   .st-left button{padding: 0.2rem; border-radius: 0.2rem;}
   .st-left ul{font-size: 0.9rem;}
-  .st-right select{width: 70px; border-radius: 0.2rem; padding: 0.2rem;}
+  .st-right select{width: 80px; border-radius: 0.2rem; padding: 0.2rem; font-size: 0.9rem;}
   .st-right #scale{display: none;}
   .st-right img{width: 1.4rem;}
   #cateList li a{padding: 0.3rem 0.6rem; width: 120px; display: flex; align-items: center; gap: 0.3rem;}
   .cate-details2 li a{padding: 0.5rem; min-width: 90px;}
 
-  .prd-list{grid-template-columns: repeat(3,1fr);}
+  .prd-list{grid-template-columns: repeat(3,1fr); gap: 0.5rem;}
   .recipe-list{grid-template-columns: repeat(3,1fr);}
   .charge-list{grid-template-columns: repeat(2,1fr);}
 
@@ -879,12 +879,15 @@
 	.prd-img .room_temp,.prd-img .low_temp,.prd-img .frozen_temp{top: 4px; right: 4px; width: 34px; height: 34px; font-size: 0.7rem;}
 	.room_temp>img,.low_temp>img,.frozen_temp>img{width: 17px;} 
 
+  .pm-wrap{gap: 0.3rem;}
+  .Qua-equip{flex-direction: column;}
   .Qua-equip>p{font-size: 0.9rem; padding: 0.3rem 0; gap: 1px;}
   .Qua-equip>p>img{width: 14px;}
   .sit_qty_plus img{width: 0.92rem;}
   .sit_btn{gap: 0.3rem;}
-  .Qua .add-to-cart{font-size: 0.95rem;}
-  .price-view-detail{border: 1px solid #ddd; border-radius: 0.5rem; padding: 0 1rem 1rem 1rem;}
+  .Qua .add-to-cart{font-size: 0.95rem; padding: 0.6rem;}
+  .Qua #numberUpDown input{width: 1.6rem;}
+
 
   .prd-row-head ul{grid-template-columns: 5fr 2fr;}
   .prd-row-head.simple ul{grid-template-columns: 73px 5fr 2.5fr;}
@@ -912,6 +915,7 @@
   .prd-list.type-row .equip .prd-price h5{align-items: start;}
   .prd-list.type-row .Qua-equip{grid-column: 3 / span 1; grid-row: 1 / span 2;}
   .prd-view-img .sold-out:after{font-size: 3.2rem;}
+  .price-view-detail{border: 1px solid #ddd; border-radius: 0.5rem; padding: 0 1rem 1rem 1rem;}
   .prd-view-more{padding-top: 1rem;}
   .prd-view-more p{width: 100%; max-height: 400px;}
 
@@ -924,6 +928,8 @@
   .recipe-btn{display: none;}
   .recipe-pin span{padding: 0.1rem; font-size: 0.85rem;}
   .recipe-title p{display: none;}
+
+  .simple-all-btn{padding: 0.3rem 0.4rem;}
 
   /* 마이페이지 */
   .mypage-date{display: block; text-align: left;}
@@ -949,6 +955,7 @@
   .cart-table-ea .flex-between{gap: 0.3rem; flex-direction: column;}
   .cart-table-title div img{width: 38px;}
   .cart-table .ct-soldout{font-size: 0.9rem;}
+  .cart-table-title i{font-size: 0.8rem;}
 
   .odr-table1 td .btn1{font-size: 0.8rem;}
   .odr-table2 img{width: 35px;}
@@ -962,6 +969,7 @@
   .odr-list-item img{width: 60px;}
   .odr-list-title h6 span{font-size: 0.9rem;}
   .odr-payment{grid-template-columns: 4fr 3fr;}
+  .odr-cart{margin-top: 1.5rem; padding: 1.2rem 1rem;}
   .pw-check-box #mb_password{width: 180px;}
   .mypoint span{font-size: 1rem;}
 
@@ -996,6 +1004,8 @@
   .pay_btns ul{gap: 0.5rem;}
   .pay_btns p img{width: 1.8rem;}
   .regi-table1 .txt-red{margin-top: 0.2rem;}
+  .pay-info-wrap{padding: 1rem;}
+  .pay-info-wrap .pay-result-table{margin: auto; padding: 0.2rem;}
 
   /* 고객센터 */
   .ask-table{font-size: 0.9rem;}
@@ -1032,10 +1042,10 @@
   .mobile-card thead{display: none;}
   .mobile-card,.mobile-card tbody,.mobile-card tr,.mobile-card td {display: block; width: 100%;}
   .mobile-card tr {background: #fff; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; border: 1px solid #ccc;}
-  .mobile-card td {display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border: none; font-size: 1.05rem;}
+  .mobile-card td {display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border: none; font-size: 1rem;}
   .mobile-card td::before {content: attr(data-label); color: #555; font-size: 1rem;}
   .mobile-card td[data-label="날짜"] {font-weight: 600; padding-bottom: 0.7rem; border-bottom: 1px solid #ddd; margin-bottom: 0.5rem;}
-  .mobile-card td[data-label="합계"] { font-weight: 700; border-top: 1px solid #ddd; margin-top: 0.5rem; padding-top: 0.7rem;}
+  .mobile-card td[data-label="합계"] {font-weight: 600; border-top: 1px solid #ddd; margin-top: 0.5rem; padding-top: 0.7rem;}
   .mobile-card .c-hide{display: none;}
 }
 

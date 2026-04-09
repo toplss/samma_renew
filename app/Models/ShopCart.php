@@ -76,6 +76,11 @@ class ShopCart extends Model
         'ct_select',
         'ct_select_time',
         'ct_admin_data',
+        'branch_ca_id',
+        'branch_ca_id2',
+        'branch_ca_id3',
+        'branch_ca_id4',
+        'branch_ca_id5',
     ];
 
 

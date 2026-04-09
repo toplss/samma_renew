@@ -158,6 +158,11 @@ class ShopOrderModel extends Model
         'pt_cur_reserve',
         'pt_cur_balance',
         'od_test',
+        'branch_ca_id',
+        'branch_ca_id2',
+        'branch_ca_id3',
+        'branch_ca_id4',
+        'branch_ca_id5',
     ];
 
 

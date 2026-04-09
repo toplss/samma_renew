@@ -113,26 +113,27 @@ $(document).ready(function(){
     ]
   });
 
-$(".sale-item-tab li").click(function () {
+  $(".sale-item-tab li").click(function () {
 
-  const $con = $(this).closest(".main-container");
-  const tabId = $(this).data("tab");
+    const $con = $(this).closest(".main-container");
+    const tabId = $(this).data("tab");
 
-  if ($(this).hasClass("active")) return;
+    if ($(this).hasClass("active")) return;
 
-  // 탭 active
-  $(this).addClass("active").siblings().removeClass("active");
-  // 현재 컨텐츠
-  $con.find(".sale-item-slide, .no-item").removeClass("active");
-  // 다음 컨텐츠
-  const $next = $con.find("#" + tabId);
-  $next.addClass("active");
+    // 탭 active
+    $(this).addClass("active").siblings().removeClass("active");
+    // 현재 컨텐츠
+    $con.find(".sale-item-slide, .no-item").removeClass("active");
+    // 다음 컨텐츠
+    const $next = $con.find("#" + tabId);
+    $next.addClass("active");
 
-  if ($next.hasClass("slick-initialized")) {
-    $next.slick("setPosition");
-  }
+    if ($next.hasClass("slick-initialized")) {
+      $next.slick("setPosition");
+    }
 
-});
+  });
+
 
   if ($(window).width() <= 1024) {
     $('.m-pop-slide').slick({
@@ -228,8 +229,6 @@ $(".sale-item-tab li").click(function () {
       },      
     ]
   });
-
-
 
 
 

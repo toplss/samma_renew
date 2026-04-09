@@ -177,7 +177,7 @@
                 <p class="pin">
                     <span class="{{ $timpArr[$row['it_storage']] }}">{{ $row['it_storage_label'] }}</span>
                     @if($row['it_return_use'] == '1')
-                    <span class="return_o">{{ $row['it_return_label'] }}</span>
+                    <span class="{{ $row['it_return_label'] == '반품가능' ? 'return_o' : 'return_x' }}">{{ $row['it_return_label'] }}</span>
                     @endif
                 </p>
             </li>
@@ -198,6 +198,15 @@
         </ul>
       @endforeach
       </div>
+
+      @if ( count($relation) < 1 )
+        <div style="margin-top: 20px;">
+            <ul>
+                <li>상품이 없습니다.</li>
+            </ul>
+        </div>
+      @endif
+
     </div>
 
   </div>

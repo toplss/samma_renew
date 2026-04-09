@@ -83,21 +83,21 @@
         }
         @endphp
 
-        @if($it_price_piece > 0 && $items['it_price_piece_use'])
         <table>
+        @if($it_price_piece > 0 && $items['it_price_piece_use'])
           <tr>
             <th><i>개당단가</i></th>
             <td>{{ number_format($it_price_piece) }}원</td>
           </tr>
-          @endif
+        @endif
 
-          @if($items['it_cust_price'] > 0 && $items['it_cust_price_use'])
+        @if($items['it_cust_price'] > 0 && $items['it_cust_price_use'])
           <tr>
             <th><i>소비판매가</i></th>
             <td>{{ number_format($items['it_cust_price']) }}원</td>
           </tr>
-        </table>
         @endif
+        </table>
 
       </div>
       @endif
@@ -112,7 +112,7 @@
             
             $onkey_press_event = 'oninput="isNumberKeyView(this)" inputmode="numeric"';
         }
-        @endphp
+      @endphp
       <div class="price-view-opt">
         <div class="sit_opt">
               

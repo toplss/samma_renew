@@ -125,6 +125,7 @@ class MyPageController extends Controller
                     'so.od_group_code',
                     'so.od_delivery_date',
                     'so.od_delivery_step',
+                    'soc.cnt as order_cnt',
                     'so.level_ca_id2',
                     'so.od_status',               
                     DB::raw('SUM(so.pt_sales) as sum_pt_sales'),
@@ -158,7 +159,7 @@ class MyPageController extends Controller
                     'so.pt_prev_reserve',
                     'so.pt_prev_charge',
                     'so.pt_prev_balance',
-                    'soc.cnt as order_cnt',
+                    
                     DB::raw('IFNULL(sc.cnt, 0) as ct_cnt'),
                     'sc.it_name',
                     'si.it_img1',
@@ -183,9 +184,9 @@ class MyPageController extends Controller
                         WHEN so.od_delivery_step IN (90, 99) THEN so.od_delivery_date
                     END DESC
                 ")
-                ->orderBy('so.od_delivery_step', 'ASC')
-                ->orderByRaw("so.od_gubun IN ('기초잔액추가', '잔액조정') ASC")
                 ->orderBy('so.od_delivery_date', 'DESC')
+                ->orderBy('so.od_delivery_step', 'ASC')
+                ->orderByRaw("so.od_gubun IN ('기초잔액추가', '잔액조정') ASC")                
                 ->orderBy('so.od_idx', 'DESC')
 
                 ->paginate($perPage);
