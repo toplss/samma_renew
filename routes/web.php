@@ -280,7 +280,7 @@ Route::middleware(['block.ip'])->group(function () {
 
 
 
-            /********** 주문상세내역 **********/
+            /********** 주문내역 **********/
             Route::get('/mypage/orderinquiry', [MyPageController::class, 'orderinquiry'])->name('orderinquiry');
             
 

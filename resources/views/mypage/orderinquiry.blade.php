@@ -164,8 +164,8 @@
             {!! $infoMsg !!}
         </h6>
         <p>
-          <button type="button" class="btn2 hide-1024" onclick="window.open('/mypage/orderinquiry_pop?ogc={{ $row->od_group_code }}','주문상세','width=600,height=800');">상세보기</button>
-          <button type="button" class="btn3" onclick="location.href='/mypage/orderinquiryview?oid={{ $row->od_id }}&ogc={{ $row->od_group_code }}';">주문정보</button>
+          <button type="button" class="btn2 hide-1024" onclick="window.open('/mypage/orderinquiry_pop?ogc={{ $row->od_group_code }}&ods={{ $row->od_delivery_step }}','주문상세','width=600,height=800');">상세보기</button>
+          <button type="button" class="btn3" onclick="location.href='/mypage/orderinquiryview?oid={{ $row->od_id }}&ogc={{ $row->od_group_code }}&ods={{ $row->od_delivery_step }}';">주문정보</button>
           @if($row->od_delivery_step >= 90)
             @php 
               $url = "https://samma-erp.com/erp/sales/mall_sales_statement_order_transaction.html?view_type=group&mb_code=" . $activeMember['mb_code'] . "&od_group_code=" . $row->od_group_code;
@@ -215,8 +215,8 @@
         @if(($row->sum_pt_outofstock_deposit))  <li><u>결품입금</u><span class="txt-blue" id="amt_pt_outofstock_deposit">{{ number_format($row->sum_pt_outofstock_deposit).'원' }}</span></li>@endif
         @if(($row->sum_pt_damage_staff))        <li><u>기사파손</u><span class="txt-red" id="amt_pt_damage_staff">{{ number_format($row->sum_pt_damage_staff).'원' }}</span></li>@endif
         @if(($row->sum_pt_damage_logistic))     <li><u>물류파손</u><span class="txt-red" id="amt_pt_damage_logistic">{{ number_format($row->sum_pt_damage_logistic).'원' }}</span></li>@endif
-        @if(($row->pt_refund))                  <li><u>환불처리</u><span class="txt-red" id="amt_pt_refund">{{ number_format($row->pt_refund).'원' }}</span></li>@endif
-        @if(($row->pt_refund_done))             <li><u>환불금액</u><span id="amt_pt_refund_done">{{ number_format($row->pt_refund_done).'원' }}</span></li>@endif
+        @if(($row->sum_pt_refund))                  <li><u>환불처리</u><span class="txt-red" id="amt_pt_refund">{{ number_format($row->sum_pt_refund).'원' }}</span></li>@endif
+        @if(($row->sum_pt_refund_done))             <li><u>환불금액</u><span id="amt_pt_refund_done">{{ number_format($row->sum_pt_refund_done).'원' }}</span></li>@endif
       </ul>
       <ul class="odr-list3">
          

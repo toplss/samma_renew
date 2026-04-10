@@ -39,7 +39,7 @@ class MyPageController extends Controller
      * History :
      *   - 2026-01-20 : Initial creation
      */
-    public function orderinquiry(Request $request)
+    public function old_orderinquiry(Request $request)
     {
         $page    = $request->get('page', 1);
         $desc    = $request->get('desc', '');
@@ -151,8 +151,8 @@ class MyPageController extends Controller
                     DB::raw('SUM(so.pt_outofstock) as sum_pt_outofstock'),
                     DB::raw('SUM(so.pt_outofstock_deposit) as sum_pt_outofstock_deposit'),
                     DB::raw('SUM(so.pt_subtotal) as sum_pt_subtotal'),
-                    'so.pt_refund',
-                    'so.pt_refund_done',
+                    DB::raw('SUM(so.pt_refund) as sum_pt_refund'),
+                    DB::raw('SUM(so.pt_refund_done) as sum_pt_refund_done'),
                     'so.pt_cur_charge',
                     'so.pt_cur_reserve',
                     'so.pt_cur_balance',
@@ -205,6 +205,205 @@ class MyPageController extends Controller
         return view('mypage.orderinquiry', ['items' => $items]);
 
     }
+
+
+
+    /**
+     * method Name : orderinquiry
+     * Description : 주문내역조회
+     * Author : Kim Hairyong 
+     * Created Date : 2026-01-20
+     * Params : Params
+     * History :
+     *   - 2026-01-20 : Initial creation
+     */
+    public function orderinquiry(Request $request)
+    {
+        $page    = $request->get('page', 1);
+        $desc    = $request->get('desc', '');
+        $perPage = $request->get('scale', 20);
+
+        $service = app(MallShopService::class);
+        $member = $service->getMemberInfo(session('ss_mb_code'));
+
+        $start_date = $request->input('start_date', '');
+        $end_date = $request->input('end_date', '');
+
+        $result = DB::table('g5_shop_order as so')
+
+            ->selectRaw("
+                so.od_id,
+                so.od_gubun,
+                so.mb_code,
+                COALESCE(
+                    NULLIF(
+                        CONCAT_WS('#',
+                            IF(so.pt_sales_delivery > 0, '매출', NULL),
+                            IF(so.pt_cancel > 0, '취소', NULL),
+                            IF(so.pt_return > 0, '반품', NULL),
+                            IF(so.pt_return_receivable > 0, '반품채권', NULL),
+                            IF(so.pt_outofstock > 0, '결품', NULL),
+                            IF(so.pt_outofstock_deposit > 0, '결품채권', NULL),
+                            IF(so.pt_damage_staff > 0, '기사파손', NULL),
+                            IF(so.pt_damage_logistic > 0, '물류파손', NULL),
+                            IF(so.od_delivery_step = 8, '잔액이관', NULL)
+                        ),''
+                    ),
+                    so.od_gubun
+                ) AS current_gubun,
+
+                so.od_group_code,
+                so.od_delivery_date,
+                so.od_delivery_step,
+                so.level_ca_id2,
+                so.od_status,
+
+                
+        soc.sum_pt_sales,
+        soc.sum_pt_delivery,
+        soc.sum_pt_sales_delivery,
+        soc.sum_pt_charge,
+        soc.sum_pt_reserve,
+        soc.sum_pt_buy_charge,
+        soc.sum_pt_buy_reserve,
+        soc.sum_pt_cash,
+        soc.sum_pt_bank,
+        soc.sum_pt_card,
+        soc.sum_pt_diff_pay,
+        soc.sum_pt_incentive,
+        soc.sum_pt_dc,
+        soc.sum_pt_discount,
+        soc.sum_pt_support,
+        soc.sum_pt_damage_staff,
+        soc.sum_pt_damage_logistic,
+        soc.sum_pt_return,
+        soc.sum_pt_return_receivable,
+        soc.sum_pt_cancel,
+        soc.sum_pt_outofstock,
+        soc.sum_pt_outofstock_deposit,
+        soc.sum_pt_subtotal,
+        soc.sum_pt_refund,
+        soc.sum_pt_refund_done,
+
+
+                so.pt_cur_charge,
+                so.pt_cur_reserve,
+                so.pt_cur_balance,
+                so.pt_prev_reserve,
+                so.pt_prev_charge,
+                so.pt_prev_balance,
+
+                soc.cnt as order_cnt,
+                (select count(*) from g5_shop_cart where od_id = so.od_id) as ct_cnt,
+                sc.it_name,
+                si.it_img1
+            ")
+
+            // 서브쿼리 JOIN
+            ->leftJoinSub(
+                DB::table('g5_shop_order')
+                    ->selectRaw("
+                        COUNT(*) as cnt,
+                        od_group_code,
+                        od_delivery_step,
+
+
+SUM(pt_sales) as sum_pt_sales,
+SUM(pt_delivery) as sum_pt_delivery,
+SUM(pt_sales_delivery) as sum_pt_sales_delivery,
+SUM(pt_charge) as sum_pt_charge,
+SUM(pt_reserve) as sum_pt_reserve,
+SUM(pt_buy_charge) as sum_pt_buy_charge,
+SUM(pt_buy_reserve) as sum_pt_buy_reserve,
+SUM(pt_cash) as sum_pt_cash,
+SUM(pt_bank) as sum_pt_bank,
+SUM(pt_card) as sum_pt_card,
+SUM(pt_diff_pay) as sum_pt_diff_pay,
+SUM(pt_incentive) as sum_pt_incentive,
+SUM(pt_dc) as sum_pt_dc,
+SUM(pt_discount) as sum_pt_discount,
+SUM(pt_support) as sum_pt_support,
+SUM(pt_damage_staff) as sum_pt_damage_staff,
+SUM(pt_damage_logistic) as sum_pt_damage_logistic,
+SUM(pt_return) as sum_pt_return,
+SUM(pt_return_receivable) as sum_pt_return_receivable,
+SUM(pt_cancel) as sum_pt_cancel,
+SUM(pt_outofstock) as sum_pt_outofstock,
+SUM(pt_outofstock_deposit) as sum_pt_outofstock_deposit,
+SUM(pt_subtotal) as sum_pt_subtotal,
+SUM(pt_refund) as sum_pt_refund,
+SUM(pt_refund_done) as sum_pt_refund_done      
+
+
+                    ")
+                    ->where('mb_code', $member['mb_code'])
+                    ->groupBy('od_group_code', DB::raw("
+                        CASE 
+                            WHEN od_delivery_step IN (90, 99) THEN 99
+                            ELSE od_delivery_step
+                        END
+                    ")),
+                'soc',
+                function ($join) {
+                    $join->on('so.od_group_code', '=', 'soc.od_group_code')
+                        ->on('so.od_delivery_step', '=', 'soc.od_delivery_step');
+                }
+            )
+
+            ->leftJoin('g5_shop_cart as sc', 'so.od_group_code', '=', 'sc.od_group_code')
+            ->leftJoin('g5_shop_item as si', 'sc.it_id', '=', 'si.it_id')
+
+            ->where('so.mb_code', $member['mb_code'])
+            ->when($start_date && $end_date, function($query) use($start_date, $end_date) {
+                $query->whereBetween(DB::raw('DATE(so.od_delivery_date)'), [$start_date, $end_date]);
+            })
+
+            // GROUP BY
+            ->groupBy(
+                'so.od_group_code',
+                DB::raw("
+                    CASE 
+                        WHEN so.od_delivery_step IN (90, 99) THEN 99
+                        ELSE so.od_delivery_step
+                    END
+                ")
+            )
+
+            // ORDER BY
+            ->orderByRaw("
+                CASE 
+                    WHEN so.od_delivery_step = 8 THEN 2
+                    WHEN so.od_delivery_step IN (90, 99) THEN 1
+                    ELSE 0
+                END ASC
+            ")
+            ->orderByRaw("
+                CASE 
+                    WHEN so.od_delivery_step IN (90, 99) THEN so.od_delivery_date
+                END DESC
+            ")
+            ->orderBy('so.od_delivery_step', 'ASC')
+            ->orderByRaw("so.od_gubun IN ('기초잔액추가', '잔액조정') ASC")
+            ->orderBy('so.od_delivery_date', 'DESC')
+            ->orderBy('so.od_idx', 'DESC')
+
+                ->paginate($perPage);
+
+        $items = new LengthAwarePaginator(
+            $result,
+            $result->total(),
+            $perPage,
+            $page,
+            [
+                'path'  => Paginator::resolveCurrentPath(),
+                'query' => $request->query(),
+            ]
+        );
+
+        return view('mypage.orderinquiry', ['items' => $items]);
+
+    }
+
 
 
     /**
@@ -376,16 +575,21 @@ class MyPageController extends Controller
     {
         $request->validate([
             'ogc' => 'required|exists:g5_shop_order,od_group_code',
+            'ods' => 'required|exists:g5_shop_order,od_delivery_step',
             'oid' => 'required|exists:g5_shop_order,od_id',
         ], [
             'ogc.required' => '(:attribute) 필수 파라미터가 누락 되었습니다.',
             'ogc.exists' => '(:attribute) 조회 데이터가 없습니다.',
+            'ods.required' => '(:attribute) 필수 파라미터가 누락 되었습니다.',
+            'ods.exists' => '(:attribute) 조회 데이터가 없습니다.',
             'oid.required' => '(:attribute) 필수 파라미터가 누락 되었습니다.',
             'oid.exists' => '(:attribute) 조회 데이터가 없습니다.',
         ]);
 
         $ogc = $request->input('ogc');
+        $ods = $request->input('ods');
         $oid = $request->input('oid');
+
 
         $order_list = DB::table('g5_shop_order')
                 ->selectRaw("ROW_NUMBER() OVER (ORDER BY order_date ASC) AS row_num")
@@ -419,6 +623,7 @@ class MyPageController extends Controller
                     'od_delivery_step'
                 )
                 ->where('od_group_code', $ogc)
+                ->where('od_delivery_step', $ods)
                 ->get();
 
         $order_info = DB::table('g5_shop_order')
