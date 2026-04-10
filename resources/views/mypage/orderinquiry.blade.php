@@ -8,10 +8,6 @@
     use App\Models\ShopOrderModel;
 @endphp
 
-<style>
-.odr-bg{border-radius: 0.5rem; background-color:#FBF7F2; border: 2px dashed #a8a094;}
-</style>
-
 <div class="sub-container">
   <div class="sub-title-wrap">
     <h4>주문내역</h4>  
@@ -33,7 +29,8 @@
 
       $point = ShopOrderModel::realTimeOrderPoints(
           $row->mb_code,
-          $row->od_group_code
+          $row->od_group_code,
+          $row->od_delivery_step
       );
 
       

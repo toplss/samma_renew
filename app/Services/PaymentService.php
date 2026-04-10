@@ -73,6 +73,16 @@ class PaymentService
                     throw new \Exception('결제 금액이 0원 이하일 수 없습니다.');
                 }
 
+
+                $order_exists = DB::table('g5_shop_order')
+                ->where('od_id', $od_id)
+                ->exists();
+                
+                if ($order_exists) {
+                    throw new \Exception('주문이 이미 완료 되었습니다.', 200);
+                }
+                
+
                 // 상품이 없는 경우
                 $cart_exists = DB::table('g5_shop_cart')
                 ->where('od_id', $od_id)

@@ -180,6 +180,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TelescopeServiceProvider::class,
         App\Providers\ViewServiceProvider::class, // 공통관리 provider
         App\Providers\SsoServiceProvider::class, // sso관리 provider
     ],

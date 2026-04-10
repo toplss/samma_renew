@@ -11,7 +11,8 @@
 
       $point = ShopOrderModel::realTimeOrderPoints(
           $items->mb_code,
-          $items->od_group_code
+          $items->od_group_code,
+          $items->od_delivery_step
       );
 
       

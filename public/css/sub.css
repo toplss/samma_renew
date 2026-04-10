@@ -295,8 +295,13 @@
 .odr-list-item span{color: #da2727; border: 1px solid #da2727; padding: 0.2rem; margin-left: 5px;}
 .odr-list-item h6{font-size: 1.2rem;}
 .odr-list-item p{text-align: left;}
-.odr-content{margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding: 0.5rem;}
-.odr-bg{border-radius: 0.5rem; background-color: #FBF7F2; border: 2px dashed #a8a094;}
+/* .odr-content{margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding: 0.5rem;}
+.odr-bg{border-radius: 0.5rem; background-color: #FBF7F2; border: 2px dashed #a8a094;} */
+.odr-content{border-radius: 0.5rem; background-color: #FBF7F2; padding: 1rem; margin-bottom: 1.5rem;}
+.odr-bg{border: 2px dashed #b44646;}
+
+
+
 .odr-content ul{display: grid; grid-template-columns: repeat(6,1fr); border-left: 1px solid #999; border-right: 1px solid #999; border-top: 1px solid #999;}
 .odr-content ul li{border-right: 1px solid #999; text-align: left; margin-bottom: -1px;}
 .odr-content ul li:last-of-type{border-right: none;}

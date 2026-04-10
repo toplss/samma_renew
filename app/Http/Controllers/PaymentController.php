@@ -260,6 +260,10 @@ class PaymentController extends Controller
                 // 결재정보 저장
                 $res = $service->execute($request);
 
+                if ($res['code'] == '200') {
+                    return redirect()->route('payment.view', ['od_id' => $oid]);
+                }
+
                 if ($res['code'] == '409') {
                     throw new Exception($res['message'], 409);
                 }

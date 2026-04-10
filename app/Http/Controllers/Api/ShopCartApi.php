@@ -613,11 +613,11 @@ class ShopCartApi extends Controller
                         'level_ca_id5' => $member['level_ca_id5'],
                         'mb_level'     => $member['mb_level'],
 
-                        'branch_ca_id'  => $member['branch_ca_id'],
-                        'branch_ca_id2' => $member['branch_ca_id2'],
-                        'branch_ca_id3' => $member['branch_ca_id3'],
-                        'branch_ca_id4' => $member['branch_ca_id4'],
-                        'branch_ca_id5' => $member['branch_ca_id5'],
+                        // 'branch_ca_id'  => $member['branch_ca_id'],
+                        // 'branch_ca_id2' => $member['branch_ca_id2'],
+                        // 'branch_ca_id3' => $member['branch_ca_id3'],
+                        // 'branch_ca_id4' => $member['branch_ca_id4'],
+                        // 'branch_ca_id5' => $member['branch_ca_id5'],
 
                         'it_id'        => $it_id,
                         'it_mb_num'    => $item['it_mb_num'],
@@ -793,11 +793,11 @@ class ShopCartApi extends Controller
                     'ct_select_time' => date('Y-m-d H:i:s'),
                     'ct_admin_data'=> 'n',
 
-                    'branch_ca_id'  => $member['branch_ca_id'],
-                    'branch_ca_id2' => $member['branch_ca_id2'],
-                    'branch_ca_id3' => $member['branch_ca_id3'],
-                    'branch_ca_id4' => $member['branch_ca_id4'],
-                    'branch_ca_id5' => $member['branch_ca_id5'],
+                    // 'branch_ca_id'  => $member['branch_ca_id'],
+                    // 'branch_ca_id2' => $member['branch_ca_id2'],
+                    // 'branch_ca_id3' => $member['branch_ca_id3'],
+                    // 'branch_ca_id4' => $member['branch_ca_id4'],
+                    // 'branch_ca_id5' => $member['branch_ca_id5'],
                 ];
 
                 if (ShopCart::create($add_cart)) {

@@ -167,7 +167,7 @@ class ShopOrderModel extends Model
 
 
 
-    public static function realTimeOrderPoints($mb_code, $od_group_code)
+    public static function realTimeOrderPoints($mb_code, $od_group_code, $od_delivery_step)
     {
         $points = DB::select("
             SELECT 
@@ -274,14 +274,19 @@ class ShopOrderModel extends Model
 
                         FROM g5_shop_order
                         WHERE mb_code = ?
-                        GROUP BY od_group_code
+                        GROUP BY od_group_code,    
+							CASE 
+								WHEN od_delivery_step IN (90, 99) THEN 99
+								ELSE od_delivery_step
+							END
                     ) b
                 ) c
                 ORDER BY c.od_delivery_date DESC, c.od_idx DESC 
             ) A
             WHERE od_group_code = ?
+                AND od_delivery_step = ?
             LIMIT 1
-            ", [$mb_code, $od_group_code]);
+            ", [$mb_code, $od_group_code, $od_delivery_step]);
 
         return collect($points)->first();
     }
