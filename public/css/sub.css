@@ -295,19 +295,18 @@
 .odr-list-item span{color: #da2727; border: 1px solid #da2727; padding: 0.2rem; margin-left: 5px;}
 .odr-list-item h6{font-size: 1.2rem;}
 .odr-list-item p{text-align: left;}
-/* .odr-content{margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding: 0.5rem;}
-.odr-bg{border-radius: 0.5rem; background-color: #FBF7F2; border: 2px dashed #a8a094;} */
-.odr-content{border-radius: 0.5rem; background-color: #FBF7F2; padding: 1rem; margin-bottom: 1.5rem;}
-.odr-bg{border: 2px dashed #b44646;}
+.odr-content{margin-bottom: 1.7rem;}
+.odr-bg{border-radius: 0.5rem;  padding: 0.7rem; background-color: #FBF7F2; border: 2px dashed #a8a094;}
+
 
 
 
 .odr-content ul{display: grid; grid-template-columns: repeat(6,1fr); border-left: 1px solid #999; border-right: 1px solid #999; border-top: 1px solid #999;}
 .odr-content ul li{border-right: 1px solid #999; text-align: left; margin-bottom: -1px;}
 .odr-content ul li:last-of-type{border-right: none;}
-.odr-content ul u{text-decoration: none; background-color: #f5f5f5; padding: 0.6rem 0.3rem; display: inline-block; width: 80px; margin-bottom: 1px; white-space: nowrap;}
+.odr-content ul u{text-decoration: none; background-color: #f5f5f5; padding: 0.6rem 0.3rem; display: inline-block; width: 80px; margin-bottom: 1px; white-space: nowrap; text-align: center;}
 .odr-content ul span{display: inline-block; padding: 0.6rem 0.3rem;}
-.odr-list3{border-bottom: 1px solid #999;}
+.odr-list3{border-bottom: 2px solid #333; background-color: #f5f5f5;}
 .odr-list3 u{background-color: #333 !important; color: #fff;}
 #amt_pt_subtotal{color: #4e73df; font-weight: 600;}
 #amt_pt_cur_charge{color: #da2727; font-weight: 600;}
@@ -690,7 +689,7 @@
   .odr-list-title h6 span{margin-top: 0.4rem;}
   .odr-content ul{grid-template-columns: repeat(3,1fr);}
   .odr-content ul li{border-right: none;}
-  .odr-content ul li:nth-of-type(-n+3){border-bottom: 1px solid #eee;}
+  .odr-content ul:has(li:nth-of-type(4)) li:nth-of-type(-n+3) {border-bottom: 1px solid #eee;}
 
   .pay-point-table .my-point input[type=text]{width: 10vw;}
 

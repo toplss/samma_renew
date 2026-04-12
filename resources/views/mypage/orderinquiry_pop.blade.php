@@ -1,6 +1,9 @@
 @php
   use App\Models\ShopOrderModel;
 
+// @dd($items);  
+
+
   $image_url = 'images/item/'.$items->it_img1;
 
   $date_gubun = ($items->od_gubun == '매출') ? '배송일' : '등록일';
@@ -238,9 +241,9 @@
         </tr>
         <tr>
           <th>환불처리</th>
-          <td id="amt_pt_refund">{{ ($items->pt_refund) ? number_format($items->pt_refund).'원' : '0원' }}</td>            
+          <td id="amt_pt_refund">{{ ($items->sum_pt_refund) ? number_format($items->sum_pt_refund).'원' : '-' }}</td>            
           <th>환불금액</th>
-          <td id="amt_pt_refund_done">{{ ($items->pt_refund_done) ? number_format($items->pt_refund_done).'원' : '0원' }}</td>
+          <td id="amt_pt_refund_done">{{ ($items->sum_pt_refund_done) ? number_format($items->sum_pt_refund_done).'원' : '-' }}</td>
         </tr>
 
         @if($items->od_delivery_step >= 90)

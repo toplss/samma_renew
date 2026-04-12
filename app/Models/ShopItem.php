@@ -53,6 +53,9 @@ class ShopItem extends Model
                 $it_price = $member['field_it_price'];
             }
 
+            # 비바쿡과 마이그랑 메뉴만 it_type_order asc / 나머지 메뉴는 it_order asc 정렬 적용을 위한 코드 추가
+            $sort_column = in_array($ca_id, ['vivacook', 'mygrang']) ? 'it_type_order' : 'it_order';
+
             # DB 조회 (한 명만)
             $data = ShopItem::where('it_use', '1')
                 ->when($strlen == '2' && !in_array($ca_id, $except), function($query) use($ca_id){
@@ -152,9 +155,10 @@ class ShopItem extends Model
                     if ($request->desc == '5') {
                         $query->orderBy('g5_shop_item.it_insert_time', 'DESC');
                     }
-                }, function($query) {
+                }, function($query) use ($sort_column) {
                     $query->orderBy('it_multi_cate_code', 'asc')
-                    ->orderBy('it_order', 'asc')
+                    ->orderByRaw("{$sort_column} = 0 ASC")
+                    ->orderBy($sort_column, 'asc')
                     ->orderBy('it_time', 'desc')
                     ->orderBy('idx', 'desc');
                 })

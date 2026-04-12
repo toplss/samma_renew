@@ -4,7 +4,7 @@
 
 <div class="sub-container">
   <div class="sub-title-wrap">
-    <h4>주문번호 [ {{ request('oid') }} ]</h4>  
+    <h4>주문번호 [ {{ request('oid') }} ]</h4>
   </div>
 
   <div class="order-info-wrap">
@@ -12,6 +12,7 @@
       <thead>
         <tr>
           <th class="hide-680">No</th>
+          <th>배송일</th>
           <th>주문일시</th>
           <th>결제수단</th>
           <th>주문금액</th>
@@ -133,12 +134,17 @@
       |--------------------------------------------
       */                  
 
+      $days = ['일', '월', '화', '수', '목', '금', '토'];
+      $str_week = $days[date("w", strtotime($row->od_delivery_date))];      
 
         @endphp
 
        <tr data-oid="{{ $row->od_id }}" class="{{ ($row->od_id == request('oid')) ? 'active' : '' }}" style="cursor: pointer;">
           <td class="hide-680">{{ $row->row_num }}</td>
+          {{-- <td>{{ $row->od_delivery_date }} ({{ $str_week }})</td> --}}
+          <td>{{ date('Y/m/d', strtotime($row->od_delivery_date)) }}({{ $str_week }})</td>
           <td>{{ $row->order_date }}</td>
+          {{-- <td>{{ date('Y/m/d h:i:s', strtotime($row->order_date)) }}</td> --}}
           <td>{{ (substr($row->level_ca_id2, -1) == '2') ? '여신' : $row->od_settle_case }}</td>
           <td>{{ number_format($row->pt_sales_delivery) }}</td>
           <td><button type="button" class="btn2 {{ $color }}">{{ $str_od_status }}</button></td>

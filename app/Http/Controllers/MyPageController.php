@@ -45,9 +45,6 @@ class MyPageController extends Controller
         $desc    = $request->get('desc', '');
         $perPage = $request->get('scale', 20);
 
-        $service = app(MallShopService::class);
-        $member = $service->getMemberInfo(session('ss_mb_code'));
-
         $start_date = $request->input('start_date', '');
         $end_date = $request->input('end_date', '');
 
@@ -82,11 +79,11 @@ class MyPageController extends Controller
                 IFNULL(SUM(pt_refund), 0 ) as sum_pt_refund,
                 IFNULL(SUM(pt_refund_done), 0 ) as sum_pt_refund_done
             ")
-            ->where('mb_code', $member['mb_code'])
+            ->where('mb_code', session('ss_mb_code'))
             ->groupByRaw("
                 od_group_code,
                 CASE 
-                    WHEN od_delivery_step IN (90, 99) THEN 99
+                    WHEN od_delivery_step IN (90, 99) THEN 90
                     ELSE od_delivery_step
                 END
             ");
@@ -104,6 +101,7 @@ class MyPageController extends Controller
                     )) AS it_img1,
 
                     so.mb_code,
+                    so.level_ca_id2,
                     so.od_group_code,
                     COUNT(*) AS order_cnt,
                     so.od_id,
@@ -175,7 +173,7 @@ class MyPageController extends Controller
                         ->on('so.od_delivery_step', '=', 'sub_so.od_delivery_step');
                 })
 
-                ->where('so.mb_code', $member['mb_code'])
+                ->where('so.mb_code', session('ss_mb_code'))
 
                 ->when($start_date && $end_date, function ($query) use ($start_date, $end_date) {
                     $query->whereBetween(DB::raw('DATE(so.od_delivery_date)'), [$start_date, $end_date]);
@@ -187,7 +185,7 @@ class MyPageController extends Controller
                 ->groupByRaw("
                     so.od_group_code,
                     CASE 
-                        WHEN so.od_delivery_step IN (90, 99) THEN 99
+                        WHEN so.od_delivery_step IN (90, 99) THEN 90
                         ELSE so.od_delivery_step
                     END
                 ")
@@ -242,149 +240,144 @@ class MyPageController extends Controller
      */
     public function OrderInquiryPop(Request $request)
     {
-        $odGroupCode = $request->input('ogc');
+        $request->validate([
+            'ogc' => 'required|exists:g5_shop_order,od_group_code',
+            'ods' => 'required|exists:g5_shop_order,od_delivery_step',
+        ], [
+            'ogc.required' => '(:attribute) 필수 파라미터가 누락 되었습니다.',
+            'ogc.exists' => '(:attribute) 조회 데이터가 없습니다.',
+            'ods.required' => '(:attribute) 필수 파라미터가 누락 되었습니다.',
+            'ods.exists' => '(:attribute) 조회 데이터가 없습니다.',
+        ]);
 
-        if (!$request->filled('ogc')) {
-            return response(
-                "<script>alert('필수 파라미터가 누락 되었습니다.'); window.close();</script>"
-            );
-        }
+        $ogc = $request->input('ogc');
+        $ods = $request->input('ods');
+        $mb_code = session('ss_mb_code');
 
-        $service = app(MallShopService::class);
-        $member = $service->getMemberInfo(session('ss_mb_code'));
-        $items = DB::table('g5_shop_order as so')
-                ->select([
-                    'so.od_id',
-                    'so.od_gubun',
-                    'so.mb_code',
-                    DB::raw("
-                        COALESCE(
-                            NULLIF(
-                                CONCAT_WS('#',
-                                    IF(so.pt_sales_delivery > 0, '매출', NULL),
-                                    IF(so.pt_cancel > 0, '취소', NULL),
-                                    IF(so.pt_return > 0, '반품', NULL),
-                                    IF(so.pt_return_receivable > 0, '반품채권', NULL),
-                                    IF(so.pt_outofstock > 0, '결품', NULL),
-                                    IF(so.pt_outofstock_deposit > 0, '결품채권', NULL),
-                                    IF(so.pt_damage_staff > 0, '기사파손', NULL),
-                                    IF(so.pt_damage_logistic > 0, '물류파손', NULL),
-                                    IF(so.od_delivery_step = 8, '잔액이관', NULL)
-                                ), ''
-                            ),
-                            so.od_gubun
-                        ) AS current_gubun
-                    "),                                        
-                    'so.od_group_code',
-                    'so.od_delivery_date',
-                    'so.od_delivery_step',
-                    'so.level_ca_id2',
-                    'so.od_status',
-                    'so.od_settle_case',
-                    DB::raw('SUM(so.od_receipt_price) as sum_od_receipt_price'),
-                    DB::raw('SUM(so.pt_buy_charge) as sum_pt_buy_charge'),
-                    DB::raw('SUM(so.pt_buy_reserve) as sum_pt_buy_reserve'),
-                    DB::raw('SUM(IFNULL(so.od_temp_point, 0)) AS charge_sum'),
-                    DB::raw('SUM(IFNULL(so.od_temp_point_reserve, 0)) AS reserve_sum'),                
-                    DB::raw('SUM(so.pt_cash) as sum_pt_cash'),
-                    DB::raw("SUM(CASE 
-                        WHEN so.od_settle_case IN ('금융권가상계좌','무통장입금') 
-                        THEN so.od_receipt_price ELSE 0 END) AS bank_sum"),
-                    DB::raw("SUM(CASE 
-                        WHEN so.od_settle_case = '신용카드' 
-                        THEN so.od_receipt_price ELSE 0 END) AS card_sum"),                
-                    DB::raw('SUM(so.pt_diff_pay) as sum_pt_diff_pay'),
-                    DB::raw('SUM(so.pt_incentive) as sum_pt_incentive'),
-                    DB::raw('SUM(so.pt_dc) as sum_pt_dc'),
-                    DB::raw('SUM(so.pt_discount) as sum_pt_discount'),
-                    DB::raw('SUM(so.pt_support) as sum_pt_support'),
-                    DB::raw('SUM(so.pt_damage_staff) as sum_pt_damage_staff'),
-                    DB::raw('SUM(so.pt_damage_logistic) as sum_pt_damage_logistic'),
-                    DB::raw('SUM(so.pt_return) as sum_pt_return'),
-                    DB::raw('SUM(so.pt_return_receivable) as sum_pt_return_receivable'),
-                    DB::raw('SUM(so.pt_cancel) as sum_pt_cancel'),
-                    DB::raw('SUM(so.pt_outofstock) as sum_pt_outofstock'),
-                    DB::raw('SUM(so.pt_outofstock_deposit) as sum_pt_outofstock_deposit'),
-                    DB::raw('SUM(so.pt_sales) as sum_pt_sales'),
-                    DB::raw('SUM(so.pt_delivery) as sum_pt_delivery'),
-                    DB::raw('SUM(so.pt_sales_delivery) as sum_pt_sales_delivery'),
-                    DB::raw('SUM(so.pt_charge) as sum_pt_charge'),
-                    DB::raw('SUM(so.pt_reserve) as sum_pt_reserve'),
-                    DB::raw('SUM(so.pt_subtotal) as sum_pt_subtotal'),
-                    'so.pt_refund',
-                    'so.pt_refund_done',
-                    'so.pt_cur_charge',
-                    'so.pt_cur_reserve',
-                    'so.pt_cur_balance',
-                    'so.pt_prev_reserve',
-                    'so.pt_prev_charge',
-                    'so.pt_prev_balance',
-                    'soc.cnt as order_cnt',
-                    DB::raw('IFNULL(sc.cnt, 0) as ct_cnt'),
-                    'sc.it_name',
-                    'si.it_img1',
-                ])
+        $sql = "
+            SELECT
+                (SELECT it_name FROM g5_shop_item WHERE it_id = (
+                    SELECT it_id FROM g5_shop_cart WHERE od_id = so.od_id ORDER BY it_id LIMIT 1
+                )) AS it_name,
 
-                // 주문 건수 서브쿼리
-                ->leftJoinSub(
-                    DB::table('g5_shop_order')
-                        ->selectRaw('COUNT(*) as cnt, od_group_code')
-                        ->where('mb_code', $member['mb_code'])
-                        ->groupBy('od_group_code'),
-                    'soc',
-                    function ($join) {
-                        $join->on('so.od_group_code', '=', 'soc.od_group_code');
-                    }
-                )
+                (SELECT it_img1 FROM g5_shop_item WHERE it_id = (
+                    SELECT it_id FROM g5_shop_cart WHERE od_id = so.od_id ORDER BY it_id LIMIT 1
+                )) AS it_img1,
 
-                //카트정보 - 납품 / 취소 / 반품... 순으로 한다
-                ->leftJoinSub(
-                    DB::table('g5_shop_cart')
-                        ->selectRaw("
-                            it_id,
-                            it_name,
-                            od_group_code,
-                            COUNT(*) OVER (PARTITION BY od_group_code) AS cnt,
-                            ROW_NUMBER() OVER (
-                                PARTITION BY od_group_code
-                                ORDER BY 
-                                    CASE ct_cate
-                                        WHEN '납품'     THEN 1
-                                        WHEN '취소'     THEN 2
-                                        WHEN '반품'     THEN 3
-                                        WHEN '반품채권' THEN 4
-                                        WHEN '결품'     THEN 5
-                                        WHEN '결품입금' THEN 6
-                                        WHEN '기사파손' THEN 7
-                                        WHEN '물류파손' THEN 8
-                                    END
-                            ) AS row_num
-                        ")
-                        ->where('mb_code', $member['mb_code'])
-                        ->where('ct_status', '!=', '쇼핑'),
-                    'sc',
-                    function ($join) {
-                        $join->on('so.od_group_code', '=', 'sc.od_group_code')
-                         ->where('sc.row_num', 1);
-                    }
-                )
+                so.mb_code,
+                so.level_ca_id2,
+                so.od_group_code,
+                COUNT(*) AS order_cnt,
+                so.od_id,
 
-                // 상품 테이블
-                ->leftJoin('g5_shop_item as si', 'sc.it_id', '=', 'si.it_id')
+                (
+                    SELECT COUNT(*)
+                    FROM g5_shop_cart
+                    WHERE od_id IN (
+                        SELECT od_id
+                        FROM g5_shop_order
+                        WHERE od_group_code = so.od_group_code
+                        AND od_delivery_step = so.od_delivery_step
+                    )
+                ) AS ct_cnt,
 
-                ->where('so.mb_code', $member['mb_code'])
-                ->where('so.od_group_code', $odGroupCode)
+                (SELECT it_id FROM g5_shop_cart WHERE od_id = so.od_id ORDER BY it_id LIMIT 1) AS it_id,
 
-                ->groupBy('so.od_group_code')
+                so.od_delivery_step,
+                so.od_delivery_date,
+                so.od_gubun,
+                so.od_settle_case,
 
-                ->orderByRaw("so.od_gubun IN ('기초잔액추가','잔액조정') ASC")
-                ->orderByDesc('so.od_delivery_date')
-                ->orderByDesc('so.od_idx')
+                COALESCE(
+                    NULLIF(
+                        CONCAT_WS('#',
+                            IF(so.pt_sales_delivery > 0, '매출', NULL),
+                            IF(so.pt_cancel > 0, '취소', NULL),
+                            IF(so.pt_return > 0, '반품', NULL),
+                            IF(so.pt_return_receivable > 0, '반품채권', NULL),
+                            IF(so.pt_outofstock > 0, '결품', NULL),
+                            IF(so.pt_outofstock_deposit > 0, '결품채권', NULL),
+                            IF(so.pt_damage_staff > 0, '기사파손', NULL),
+                            IF(so.pt_damage_logistic > 0, '물류파손', NULL),
+                            IF(so.od_delivery_step = 8, '잔액이관', NULL)
+                        ), ''
+                    ),
+                    so.od_gubun
+                ) AS current_gubun,
 
-                ->first();
+                sub_so.*
+
+            FROM g5_shop_order so
+
+            JOIN (
+                SELECT
+                    od_group_code,
+                    CASE 
+                        WHEN od_delivery_step IN (90, 99) THEN 90
+                        ELSE od_delivery_step
+                    END AS od_delivery_step,
+
+                    IFNULL(SUM(od_temp_point), 0 ) as charge_sum,
+                    IFNULL(SUM(od_temp_point_reserve), 0 ) as reserve_sum,
+
+                    IFNULL(SUM(CASE 
+                        WHEN od_settle_case IN ('금융권가상계좌','무통장입금') 
+                        THEN od_receipt_price ELSE 0 END), 0 ) AS bank_sum,
+
+                    IFNULL(SUM(CASE 
+                        WHEN od_settle_case = '신용카드'
+                        THEN od_receipt_price ELSE 0 END), 0 ) AS card_sum,
+
+                    IFNULL(SUM(pt_sales), 0 ) as sum_pt_sales,
+                    IFNULL(SUM(pt_delivery), 0 ) as sum_pt_delivery,
+                    IFNULL(SUM(pt_sales_delivery), 0 ) as sum_pt_sales_delivery,
+                    IFNULL(SUM(pt_charge), 0 ) as sum_pt_charge,
+                    IFNULL(SUM(pt_reserve), 0 ) as sum_pt_reserve,
+                    IFNULL(SUM(pt_buy_charge), 0 ) as sum_pt_buy_charge,
+                    IFNULL(SUM(pt_buy_reserve), 0 ) as sum_pt_buy_reserve,
+                    IFNULL(SUM(pt_cash), 0 ) as sum_pt_cash,
+                    IFNULL(SUM(pt_bank), 0 ) as sum_pt_bank,
+                    IFNULL(SUM(pt_card), 0 ) as sum_pt_card,
+                    IFNULL(SUM(pt_diff_pay), 0 ) as sum_pt_diff_pay,
+                    IFNULL(SUM(pt_incentive), 0 ) as sum_pt_incentive,
+                    IFNULL(SUM(pt_dc), 0 ) as sum_pt_dc,
+                    IFNULL(SUM(pt_discount), 0 ) as sum_pt_discount,
+                    IFNULL(SUM(pt_support), 0 ) as sum_pt_support,
+                    IFNULL(SUM(pt_damage_staff), 0 ) as sum_pt_damage_staff,
+                    IFNULL(SUM(pt_damage_logistic), 0 ) as sum_pt_damage_logistic,
+                    IFNULL(SUM(pt_return), 0 ) as sum_pt_return,
+                    IFNULL(SUM(pt_return_receivable), 0 ) as sum_pt_return_receivable,
+                    IFNULL(SUM(pt_cancel), 0 ) as sum_pt_cancel,
+                    IFNULL(SUM(pt_outofstock), 0 ) as sum_pt_outofstock,
+                    IFNULL(SUM(pt_outofstock_deposit), 0 ) as sum_pt_outofstock_deposit,
+                    IFNULL(SUM(pt_subtotal), 0 ) as sum_pt_subtotal,
+                    IFNULL(SUM(pt_refund), 0 ) as sum_pt_refund,
+                    IFNULL(SUM(pt_refund_done), 0 ) as sum_pt_refund_done
+
+                FROM g5_shop_order
+                WHERE mb_code = ?
+                GROUP BY od_group_code,
+                    CASE 
+                        WHEN od_delivery_step IN (90, 99) THEN 90
+                        ELSE od_delivery_step
+                    END
+            ) sub_so
+            ON so.od_group_code = sub_so.od_group_code
+            AND so.od_delivery_step = sub_so.od_delivery_step
+
+            WHERE so.od_group_code = ?
+            AND so.od_delivery_step = ?
+
+            LIMIT 1
+        ";
+
+        $items = DB::selectOne($sql, [$mb_code, $ogc, $ods]);
 
         return view('mypage.orderinquiry_pop', ['items' => $items]);
     }
+
+
+
 
 
     /**
@@ -443,6 +436,7 @@ class MyPageController extends Controller
                     'od_status',
                     'level_ca_id2',
                     'order_date',
+                    'od_delivery_date',
                     'od_settle_case',
                     'pt_sales_delivery',
                     'od_delivery_step'
