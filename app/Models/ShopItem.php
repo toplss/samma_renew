@@ -50,7 +50,7 @@ class ShopItem extends Model
             $it_price = 'it_price';
             if (session()->has('ss_mb_code')) {
                 $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
-                $it_price = $member['field_it_price'];
+                $it_price = $member['field_it_price'];                
             }
 
             # 비바쿡과 마이그랑 메뉴만 it_type_order asc / 나머지 메뉴는 it_order asc 정렬 적용을 위한 코드 추가

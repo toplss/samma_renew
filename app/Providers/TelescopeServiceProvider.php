@@ -33,7 +33,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
             // 쿼리만 필터
             if ($entry->type === 'query') {
-                return $entry->content['time'] > 1000; // 500ms 이상만
+                return $entry->content['time'] > 1000; // 1000ms 이상만
             }
 
             // 필요하면 에러는 유지

@@ -214,6 +214,7 @@ class ShopController extends Controller
         })
         ->whereNotIn('it_id_type', [4, 6, 8])
         ->where('g5_shop_item.it_use', '1')
+        ->where('g5_shop_item.it_gubun2', '1')
         ->paginate($perPage)->withQueryString();
 
 
@@ -633,6 +634,7 @@ class ShopController extends Controller
             $join->on('g5_shop_item.it_id', '=', 'tcp.it_id');
         })
         ->where('g5_shop_item.it_use', '1')
+        ->where('g5_shop_item.it_gubun2', '2')
         ->where('tcp.t_state', '2')
         ->when($request->filled('desc') && $request->desc == '4' && $saleJoin, function($query) use ($saleJoin) {
             $query->leftJoinSub($saleJoin, 'shop_sales', function($join) {

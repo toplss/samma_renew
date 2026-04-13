@@ -230,8 +230,6 @@ $(document).ready(function(){
     ]
   });
 
-
-
   // 서브 상단 타이틀바
   $('#cateBtn').click(function(){
     $('#cateList').toggle();
@@ -347,8 +345,23 @@ $(document).ready(function(){
     $btn.text(isOpen ? '보기' : '접기');
   });
 
+  // footer 패딩 조절
+  function updatePadding() {
+    const $fbox = $('.f-box3');
+    if (!$fbox.length) return;
 
+    if ($(window).width() <= 1024 && !$('#mCartQuickBtn').length) {
+      $fbox.css('padding-bottom', '2rem');
+    } else {
+      $fbox.css('padding-bottom', '');
+    }
+  }
+  $(window).on('load resize', updatePadding);
+  // DOM 변경 감지
+  const observer = new MutationObserver(updatePadding);
+  observer.observe(document.body, {childList: true, subtree: true});
 
+  
   // 찾아오시는길  
   /* 지점 선택 */
   $('.brnach-list a').on('click', function (e) {

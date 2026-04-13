@@ -37,9 +37,11 @@ class ShopCartService
         $perPage = $request->get('scale', 60);
 
         $it_price = 'it_price';
+        $chain_ca_id2 = null;
         if (session('ss_mb_code')) {
             $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
             $it_price = $member['field_it_price'];
+            $chain_ca_id2 = $member['chain_ca_id2'];
         }
 
         $idxList = ShopItem::getShopItems(
@@ -73,6 +75,12 @@ class ShopCartService
         ->groupBy('stock_it_id');
 
         $items = ShopItem::whereIn('idx', $pagedIdx)
+        ->when(!$chain_ca_id2, function($query) {
+            $query->where('g5_shop_item.it_gubun2', '1');
+        }, function($query) use ($chain_ca_id2) {
+            $query->where('g5_shop_item.it_affiliate_code', $chain_ca_id2)
+            ->orWhere('g5_shop_item.it_affiliate_code', '');
+        })
         ->leftJoinSub($shopGroup, 'shop_group', function($join) {
             $join->on('g5_shop_item.stock_it_id', '=', 'shop_group.stock_it_id');
         })
@@ -243,7 +251,6 @@ class ShopCartService
             $query->orderByRaw("FIELD(idx, $orderField)");
         })
         ->get()->toArray();
-
 
 
         return new LengthAwarePaginator(
