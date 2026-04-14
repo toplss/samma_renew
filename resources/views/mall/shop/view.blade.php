@@ -146,7 +146,7 @@
           @if($items['ca_id'] !== 'd0')
           <button type="button" id="sit_btn_cart" class="add-to-cart-view btn3" >장바구니 담기</button>
           @else
-          <button type="button" id="" class="btn3 qa_btn" >전화문의</button>
+          <button type="button" id="" class="btn3 qa_btn" >구매문의</button>
           @endif
         </div>
       </div>

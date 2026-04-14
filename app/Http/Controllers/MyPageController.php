@@ -600,8 +600,18 @@ class MyPageController extends Controller
         $end_date   = $request->input('end_date');
 
         if (!$start_date || !$end_date) {
-            $end_date   = \Carbon\Carbon::today()->format('Y-m-d');
-            $start_date = \Carbon\Carbon::today()->subMonths(2)->format('Y-m-d');
+
+            // 시작일 (2개월 전 1일)
+            $start_date = \Carbon\Carbon::today()
+                ->subMonths(2)
+                ->startOfMonth()
+                ->format('Y-m-d');
+
+            // 종료일 (이달 마지막일)
+            $end_date = \Carbon\Carbon::today()
+                ->endOfMonth()
+                ->format('Y-m-d');
+
         }
 
         $result = DB::table('g5_shop_order')
@@ -689,8 +699,18 @@ class MyPageController extends Controller
         $end_date   = $request->input('end_date');
 
         if (!$start_date || !$end_date) {
-            $start_date = \Carbon\Carbon::today()->subMonths(2)->format('Y-m-d');
-            $end_date   = Carbon::now()->endOfMonth()->format('Y-m-d');
+
+            // 시작일 (2개월 전 1일)
+            $start_date = \Carbon\Carbon::today()
+                ->subMonths(2)
+                ->startOfMonth()
+                ->format('Y-m-d');
+
+            // 종료일 (이달 마지막일)
+            $end_date = \Carbon\Carbon::today()
+                ->endOfMonth()
+                ->format('Y-m-d');
+
         }
 
         $result = DB::table('g5_shop_order')
@@ -703,9 +723,7 @@ class MyPageController extends Controller
                     when pt_buy_reserve > 0 then 'increase'
                     when pt_cancel > 0 then 'increase'
                     when pt_return > 0 then 'increase'
-                    when pt_return_receivable > 0 then 'bond'
                     when pt_outofstock > 0 then 'increase'
-                    when pt_outofstock_deposit > 0 then 'bond'
                     when pt_damage_staff > 0 then 'increase'
                     when pt_damage_logistic > 0 then 'increase'
                     when pt_incentive > 0 then 'increase'
@@ -718,9 +736,7 @@ class MyPageController extends Controller
                     IF(pt_buy_reserve > 0 AND od_delivery_step <> 8, 'pt_buy_reserve', NULL),
                     IF(pt_cancel > 0, 'pt_cancel', NULL),
                     IF(pt_return > 0, 'pt_return', NULL),
-                    IF(pt_return_receivable > 0, 'pt_return_receivable', NULL),
                     IF(pt_outofstock > 0, 'pt_outofstock', NULL),
-                    IF(pt_outofstock_deposit > 0, 'pt_outofstock_deposit', NULL),
                     IF(pt_damage_staff > 0, 'pt_damage_staff', NULL),
                     IF(pt_damage_logistic > 0, 'pt_damage_logistic', NULL),
                     IF(pt_incentive > 0, 'pt_incentive', NULL),
@@ -739,16 +755,13 @@ class MyPageController extends Controller
                 END as change_point,    
                 
                 (pt_buy_reserve + pt_cancel + pt_return + pt_outofstock + pt_damage_staff + pt_damage_logistic + pt_incentive + pt_dc) as increase_point,
-                (pt_return_receivable + pt_outofstock_deposit) as bond_point,
                 pt_reserve as decrease_point,
 
                 pt_reserve,
                 pt_buy_reserve,
                 pt_cancel,
                 pt_return,
-                pt_return_receivable,
                 pt_outofstock,
-                pt_outofstock_deposit,
                 pt_damage_staff,
                 pt_damage_logistic,
                 pt_incentive,
@@ -759,14 +772,13 @@ class MyPageController extends Controller
                 od_delivery_date
             ")
             ->where('mb_code', $mb_code)
+            ->whereRaw("RIGHT(level_ca_id2, 1) = 1")
             ->where(function($q) {
                 $q->where('pt_reserve', '>', 0)
                 ->orWhere('pt_buy_reserve', '>', 0)
                 ->orWhere('pt_cancel', '>', 0)
                 ->orWhere('pt_return', '>', 0)
-                ->orWhere('pt_return_receivable', '>', 0)
                 ->orWhere('pt_outofstock', '>', 0)
-                ->orWhere('pt_outofstock_deposit', '>', 0)
                 ->orWhere('pt_damage_staff', '>', 0)
                 ->orWhere('pt_damage_logistic', '>', 0)
                 ->orWhere('pt_incentive', '>', 0)
@@ -880,8 +892,6 @@ class MyPageController extends Controller
 
             })->filter();
 
-// dd($groups);
-
         return view('mypage.my_point_reserve_detail_pop', [
             'mode' => $mode,
             'po_action' => $po_action,
@@ -917,15 +927,19 @@ class MyPageController extends Controller
         $end_date   = $request->input('end_date');
 
         if (!$start_date || !$end_date) {
-            $end_date   = \Carbon\Carbon::today()->format('Y-m-d');
-            $start_date = \Carbon\Carbon::today()->subMonths(2)->format('Y-m-d');
+
+            // 시작일 (2개월 전 1일)
+            $start_date = \Carbon\Carbon::today()
+                ->subMonths(2)
+                ->startOfMonth()
+                ->format('Y-m-d');
+
+            // 종료일 (이달 마지막일)
+            $end_date = \Carbon\Carbon::today()
+                ->endOfMonth()
+                ->format('Y-m-d');
+
         }
-
-        $service = app(MallShopService::class);
-        $member = $service->getMemberInfo(session('ss_mb_code'));        
-
-        //후불업체 여부
-        $is_hubul = ($member['level_ca_id2_name'] == '후불');
 
         $result = DB::table('g5_shop_order')
                     ->select([
@@ -934,28 +948,22 @@ class MyPageController extends Controller
                         'od_id',
                         'od_group_code',
                         'od_company',
-                        'level_ca_id2_name',
+                        'level_ca_id2',
                         'od_gubun',
                         'pt_cash',
                         'pt_bank',
                         'pt_card',
                         'pt_return_receivable',
                         'pt_outofstock_deposit',
+                        'pt_return',
+                        'pt_outofstock',
+                        'pt_cancel',
+                        'pt_incentive',
+                        'pt_dc',
+                        'pt_damage_staff',
+                        'pt_damage_logistic',
                         'od_delivery_date'
                     ])
-
-                    // 후불일 때만 컬럼 추가
-                    ->when($is_hubul, function ($query) {
-                        $query->addSelect([
-                            'pt_incentive',
-                            'pt_dc',
-                            'pt_damage_staff',
-                            'pt_damage_logistic',
-                            'pt_return',
-                            'pt_cancel',
-                            'pt_outofstock',
-                        ]);
-                    })
 
                     ->selectRaw("
                         IFNULL(pt_cash,0) +
@@ -966,7 +974,7 @@ class MyPageController extends Controller
 
                         (
                             CASE 
-                                WHEN '{$member['level_ca_id2_name']}' = '후불' THEN
+                                WHEN RIGHT(level_ca_id2, 1) = 2 THEN
                                     IFNULL(pt_incentive,0) +
                                     IFNULL(pt_dc,0) +
                                     IFNULL(pt_damage_staff,0) +
@@ -980,24 +988,24 @@ class MyPageController extends Controller
                     ")
 
                     ->where('mb_code', $mb_code)
-                    ->where(function ($q) use ($is_hubul) {
+                    ->where(function ($q) {
                         $q->where('pt_cash', '>', 0)
                         ->orWhere('pt_bank', '>', 0)
                         ->orWhere('pt_card', '>', 0)
                         ->orWhere('pt_return_receivable', '>', 0)
-                        ->orWhere('pt_outofstock_deposit', '>', 0);
-
-                        //후불업체인 경우만
-                        if ($is_hubul) {
-                            $q->orWhere('pt_incentive', '>', 0)
-                            ->orWhere('pt_dc', '>', 0)
-                            ->orWhere('pt_damage_staff', '>', 0)
-                            ->orWhere('pt_damage_logistic', '>', 0)
-                            ->orWhere('pt_return', '>', 0)
-                            ->orWhere('pt_cancel', '>', 0)
-                            ->orWhere('pt_outofstock', '>', 0);
-                        }
-                        
+                        ->orWhere('pt_outofstock_deposit', '>', 0)
+                        ->orWhere(function ($q2) {
+                            $q2->whereRaw("RIGHT(level_ca_id2, 1) = '2'")
+                                ->where(function ($q3) {
+                                    $q3->where('pt_return', '>', 0)
+                                        ->orWhere('pt_outofstock', '>', 0)
+                                        ->orWhere('pt_cancel', '>', 0)
+                                        ->orWhere('pt_incentive', '>', 0)
+                                        ->orWhere('pt_dc', '>', 0)
+                                        ->orWhere('pt_damage_staff', '>', 0)
+                                        ->orWhere('pt_damage_logistic', '>', 0);
+                                });
+                        });
                     })
 
                     ->when($start_date && $end_date, function($query) use($start_date, $end_date) {

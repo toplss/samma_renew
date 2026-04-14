@@ -12,7 +12,7 @@
 	</ul>
 	<div class="f-box3">
 		<img src="{{ asset('images/common/logo2.png') }}">
-		<div class="mf-toggle show-820">
+		<div class="mf-toggle">
 			<h6>고객센터 <b>1899-3153</b></h6>
 			<p>삼마몰 정보 확인<img src="{{ asset('images/icon/square-down.svg') }}"></p>
 		</div>

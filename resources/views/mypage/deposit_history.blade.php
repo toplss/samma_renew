@@ -22,18 +22,13 @@
             <th>카드입금</th>
             <th>반품입금</th>
             <th>결품입금</th>
-
-            <!-- 후불업체인 경우만 표기 -->
-            @if( $activeMember['level_ca_id2_name'] == '후불' )
-              <th>장려금</th>
-              <th>DC</th>
-              <th>기사파손</th>
-              <th>물류파손</th>
-              <th>반품</th>            
-              <th>취소</th>
-              <th>결품</th>            
-            @endif
-            
+            <th>반품</th>
+            <th>결품</th>
+            <th>취소</th>
+            <th>장려금</th>
+            <th>DC</th>
+            <th>기사파손</th>
+            <th>물류파손</th>
             <th>합계</th>
           </tr>
         </thead>
@@ -48,18 +43,13 @@
             <td class="txt-blue" data-label="카드입금">{{ ( $row->pt_card > 0 ) ? number_format($row->pt_card) . '원' : '-' }}</td>
             <td class="txt-blue" data-label="반품입금">{{ ( $row->pt_return_receivable > 0 ) ? number_format($row->pt_return_receivable) . '원' : '-' }}</td>
             <td class="txt-blue" data-label="결품입금">{{ ( $row->pt_outofstock_deposit > 0 ) ? number_format($row->pt_outofstock_deposit) . '원' : '-' }}</td>
-
-            <!-- 후불업체인 경우만 표기 -->
-            @if( $activeMember['level_ca_id2_name'] == '후불' )            
-              <td class="txt-blue" data-label="장려금">{{ ( $row->pt_incentive > 0 ) ? number_format($row->pt_incentive) . '원' : '-' }}</td>
-              <td class="txt-blue" data-label="DC">{{ ( $row->pt_dc > 0 ) ? number_format($row->pt_dc) . '원' : '-' }}</td>
-              <td class="txt-blue" data-label="기사파손">{{ ( $row->pt_damage_staff > 0 ) ? number_format($row->pt_damage_staff) . '원' : '-' }}</td>
-              <td class="txt-blue" data-label="물류파손">{{ ( $row->pt_damage_logistic > 0 ) ? number_format($row->pt_damage_logistic) . '원' : '-' }}</td>
-              <td class="txt-blue" data-label="반품">{{ ( $row->pt_return > 0 ) ? number_format($row->pt_return) . '원' : '-' }}</td>            
-              <td class="txt-blue" data-label="취소">{{ ( $row->pt_cancel > 0 ) ? number_format($row->pt_cancel) . '원' : '-' }}</td>
-              <td class="txt-blue" data-label="결품">{{ ( $row->pt_outofstock > 0 ) ? number_format($row->pt_outofstock) . '원' : '-' }}</td>            
-            @endif
-            
+            <td class="txt-blue" data-label="반품">{{ ( $row->pt_return > 0 ) && substr($row->level_ca_id2, -1) == '2' ? number_format($row->pt_return) . '원' : '-' }}</td>            
+            <td class="txt-blue" data-label="결품">{{ ( $row->pt_outofstock > 0 ) && substr($row->level_ca_id2, -1) == '2' ? number_format($row->pt_outofstock) . '원' : '-' }}</td>            
+            <td class="txt-blue" data-label="취소">{{ ( $row->pt_cancel > 0 ) ? number_format($row->pt_cancel) . '원' : '-' }}</td>
+            <td class="txt-blue" data-label="장려금">{{ ( $row->pt_incentive > 0 ) ? number_format($row->pt_incentive) . '원' : '-' }}</td>
+            <td class="txt-blue" data-label="DC">{{ ( $row->pt_dc > 0 ) ? number_format($row->pt_dc) . '원' : '-' }}</td>
+            <td class="txt-blue" data-label="기사파손">{{ ( $row->pt_damage_staff > 0 ) ? number_format($row->pt_damage_staff) . '원' : '-' }}</td>
+            <td class="txt-blue" data-label="물류파손">{{ ( $row->pt_damage_logistic > 0 ) ? number_format($row->pt_damage_logistic) . '원' : '-' }}</td>
             <td class="txt-blue" data-label="합계">{{ ( $row->row_total > 0 ) ? number_format($row->row_total) . '원' : '-' }}</td>
           </tr>
           @endforeach

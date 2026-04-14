@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Log;
 use Debugbar;
 use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Continue_;
 
@@ -49,9 +50,12 @@ class ShopCartApi extends Controller
             /***** 장바구니 검수  *****/
             if ($mode !== 'all_cart_delete' && $mode !== 'cart_delete' && $mode !== 'cart_selected_delete'  && $mode !== 'show') 
             {
-                if (!$it_id) {
-                    throw new \Exception("상품이 존재하지 않습니다.");
-                }
+                $request->validate([
+                    'it_id' => 'required|exists:g5_shop_item,it_id'
+                ], [
+                    'it_id.required' => '상품코드가 존재하지 않습니다.',
+                    'it_id.exists' => '존재하지 않는 상품 입니다.',
+                ]);
 
                 if ($request->input('it_id')) {
                     $cnt_exists = ShopItem::where('it_id', $it_id)
@@ -186,6 +190,24 @@ class ShopCartApi extends Controller
                     'siteInfo' => $this->getSiteInfo(),
                 ],
                 'res' => $res ?? ''
+            ]);
+
+        } catch (ValidationException $e) {
+            return $this->convertResponseData([
+                'status'=> 'fail', 
+                'message' => $e->validator->errors()->first(),
+                'data' => [
+                    'cartList'       => $cartList = $this->getCartList($request, $member),
+                    'member'         => $member,
+                    'infomation'     => $service->payInfomation($member),
+                    'deilivery_cost' => $this->deliveryCost(
+                        $member, 
+                        array_sum(array_column($cartList, 'pt_sales'))
+                    ),
+                    'waitInfo' => $this->wait_infos($member),
+                    'siteInfo' => $this->getSiteInfo(),
+                ],
+                'res' => ''
             ]);
         
         } catch (QueryException $e) {

@@ -227,20 +227,16 @@ class PaymentService
             return (array) $row;
         });
 
-        $gubunArr = ['box' => '박스', 'pack' => '팩', 'pcs' => '낱개'];
-
         foreach ($cartItems as $key => $row) {
             if ($row['it_qty_system_stock'] <= 0) {
+                ShopItem::where('it_id', $row['it_id'])->update(['it_soldout' => '1']);
+
                 $message = '['.$row['it_name'].'] 상품은 현재 품절입니다.';
 
             } else if ($row['ct_qty_tot'] > $row['it_qty_system_stock']) {
-                $buyGroup = $this->ProductUnit($row['it_id'], $row['it_qty_'.$row['it_gubun']] * $row['ct_qty']);
-                $stockGroup = $this->ProductUnit($row['it_id'], $row['it_qty_system_stock']);
+                ShopItem::where('it_id', $row['it_id'])->update(['it_soldout' => '1']);
 
-                $message  = '<b>['.$row['it_name'].']</b>';
-                $message .= '<br>요청하신 수량은 '.$buyGroup[$row['it_gubun']].$gubunArr[$row['it_gubun']].' 총 (<span style="color:red;">'.number_format($row['ct_qty_tot']) .'</span>개)입니다. ';
-                $message .= '<br>현재 구매 가능한 재고는 낱개 기준<span style="color:red;">'.number_format($row['it_qty_system_stock']) .'</span>개 입니다. ';
-                $message .= '<br><br>구매 가능 수량으로 조정하신 후 다시 주문해 주시기 바랍니다.';
+                $message  = '['.$row['it_name'].'] 구매 가능한 재고가 부족합니다';
 
                 $ret = [
                     'status'  => 'reject',
@@ -787,6 +783,8 @@ class PaymentService
 
     public function checkSystemStockAjaxDt($oid)
     {
+
+    
         $cartItems = DB::table('g5_shop_cart')
         ->leftJoin('g5_shop_item', 'g5_shop_cart.it_id', '=', 'g5_shop_item.it_id')
         ->where('ct_status', '쇼핑')
@@ -816,29 +814,25 @@ class PaymentService
         $message = '';
 
         foreach ($cartItems as $key => $row) {
+
             if ($row['it_qty_system_stock'] <= 0 || $row['it_soldout'] == '1' || $row['it_force_soldout'] == '10') {
 
                 $isIssue = true;
                 $title = '품절상품이 포함되어 있습니다.';
-                $message .= '<span class="txt-red">'.$row['it_name'].'</span> <br>';
+                $message = '<span class="txt-red">'.$row['it_name'].'</span> <br>';
             } 
-            
+
             if ($row['ct_qty_tot'] > $row['it_qty_system_stock']) {
                 
-                $isIssue = true;
-                $title = '알림';
-
-                $buyGroup = $this->ProductUnit($row['it_id'], $row['it_qty_'.$row['it_gubun']] * $row['ct_qty']);
-                $stockGroup = $this->ProductUnit($row['it_id'], $row['it_qty_system_stock']);
-
-                $message  = '<b>['.$row['it_name'].']</b>';
-                $message .= '<br>요청하신 수량은 '.$buyGroup[$row['it_gubun']].$gubunArr[$row['it_gubun']].' 총 (<span style="color:red;">'.number_format($row['ct_qty_tot']) .'</span>개)입니다. ';
-                $message .= '<br>재고 수량은 '.$stockGroup[$row['it_gubun']].$gubunArr[$row['it_gubun']].' 총 (<span style="color:red;">'.number_format($row['it_qty_system_stock']) .'</span>개)입니다. ';
-                $message .= '<br><br>구매 가능 수량으로 조정하신 후 다시 주문해 주시기 바랍니다.';
+               $isIssue = true;
+                $title = '품절상품이 포함되어 있습니다.';
+                $message = '<span class="txt-red">'.$row['it_name'].'</span> <br>';
 
             }
             
         }
+
+
 
         if ($isIssue === true) {
             $ret = [

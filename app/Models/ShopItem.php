@@ -21,12 +21,20 @@ class ShopItem extends Model
     {
         $ca_id = $request->input('ca_id');
 
+        $it_price = 'it_price';
+        $chain_ca_id2 = null;
+        if (session()->has('ss_mb_code')) {
+            $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
+            $it_price = $member['field_it_price'];                
+            $chain_ca_id2 = (empty($member['chain_ca_id2']) || $member['chain_ca_id2'] == '1001') ? null : $member['chain_ca_id2'];
+        }
+
         if ($request->has('category')) {
-            $key   = "shop:items:{$ca_id}:category:".$request->input('category').':desc.'.$request->desc;
-            $lock  = "lock:shop:items:{$ca_id}:category:".$request->input('category').':desc.'.$request->desc;
+            $key   = "shop:items:{$ca_id}:category:".$request->input('category').':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2;
+            $lock  = "lock:shop:items:{$ca_id}:category:".$request->input('category').':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2;
         } else {
-            $key   = "shop:items:{$ca_id}".':desc.'.$request->desc;
-            $lock  = "lock:shop:items:{$ca_id}".':desc.'.$request->desc;
+            $key   = "shop:items:{$ca_id}".':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2;
+            $lock  = "lock:shop:items:{$ca_id}".':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2;
         }
 
         $strlen = strlen($ca_id);
@@ -36,7 +44,7 @@ class ShopItem extends Model
             return $data;
         }
 
-        return Cache::lock($lock, 5)->block(3, function () use ($key, $ca_id, $strlen, $request) { // 5락 유지시간, 3락 대기시간
+        return Cache::lock($lock, 5)->block(3, function () use ($key, $ca_id, $strlen, $request, $it_price, $chain_ca_id2) { // 5락 유지시간, 3락 대기시간
 
             # 캐시 조회
             if ($data = Cache::get($key)) {
@@ -47,30 +55,56 @@ class ShopItem extends Model
                 'vivacook', 'mygrang', 'hit', 'recom', 'new', 'best', 'sale', 'free', 'auction', 'etc', 'event'
             ];
 
-            $it_price = 'it_price';
-            if (session()->has('ss_mb_code')) {
-                $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
-                $it_price = $member['field_it_price'];                
-            }
+            // $it_price = 'it_price';
+            // $chain_ca_id2 = null;
+            // if (session()->has('ss_mb_code')) {
+            //     $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
+            //     $it_price = $member['field_it_price'];                
+            //     $chain_ca_id2 = (empty($member['chain_ca_id2']) || $member['chain_ca_id2'] == '1001') ? null : $member['chain_ca_id2'];
+            // }
 
             # 비바쿡과 마이그랑 메뉴만 it_type_order asc / 나머지 메뉴는 it_order asc 정렬 적용을 위한 코드 추가
             $sort_column = in_array($ca_id, ['vivacook', 'mygrang']) ? 'it_type_order' : 'it_order';
 
             # DB 조회 (한 명만)
             $data = ShopItem::where('it_use', '1')
-                ->when($strlen == '2' && !in_array($ca_id, $except), function($query) use($ca_id){
+                ->when($strlen == '2' && !in_array($ca_id, $except), function($query) use($ca_id, $chain_ca_id2){
                     $query->where(function($query) use($ca_id) {
                         $query->where('ca_id', $ca_id)
-                        ->orWhere('it_multi_cate_code', 'LIKE', '%'.$ca_id.'%');
+                              ->orWhere('it_multi_cate_code', 'LIKE', '%'.$ca_id.'%');
+                    })
+                    ->where(function($q) use ($chain_ca_id2) {
+                        if (!$chain_ca_id2) {
+                            $q->where('it_gubun2', '1')
+                              ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                        } else {
+                            $q->where(function($qq) use ($chain_ca_id2) {
+                                $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                   ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                   ->orWhere('it_affiliate_code', '');
+                            });
+                        }
                     });
                 })
-                ->when($strlen == '4' && !in_array($ca_id, $except), function($query) use($ca_id){
+                ->when($strlen == '4' && !in_array($ca_id, $except), function($query) use($ca_id, $chain_ca_id2){
                     $query->where(function($query) use($ca_id) {
                         $query->where('ca_id2', $ca_id)
                         ->orWhere('it_multi_cate_code', 'LIKE', '%'.$ca_id.'%');
+                    })
+                    ->where(function($q) use ($chain_ca_id2) {
+                        if (!$chain_ca_id2) {
+                            $q->where('it_gubun2', '1')
+                              ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                        } else {
+                            $q->where(function($qq) use ($chain_ca_id2) {
+                                $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                   ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                   ->orWhere('it_affiliate_code', '');
+                            });
+                        }
                     });
                 })
-                ->when($ca_id == 'vivacook' ,function($query) use($request) {
+                ->when($ca_id == 'vivacook' ,function($query) use($request, $chain_ca_id2) {
                     $query->where('ca_id', '!=', '10')->where('it_type8', '1');
 
                     if ($request->input('category') && strlen($request->input('category')) == 2) {
@@ -79,8 +113,21 @@ class ShopItem extends Model
                     if ($request->input('category') && strlen($request->input('category')) == 4) {
                         $query->where('ca_id2', $request->input('category'));
                     }
+
+                    $query->where(function($q) use ($chain_ca_id2) {
+                        if (!$chain_ca_id2) {
+                            $q->where('it_gubun2', '1')
+                              ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                        } else {
+                            $q->where(function($qq) use ($chain_ca_id2) {
+                                $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                   ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                   ->orWhere('it_affiliate_code', '');
+                            });
+                        }
+                    });
                 })
-                ->when($ca_id == 'mygrang' ,function($query) use($request) {
+                ->when($ca_id == 'mygrang' ,function($query) use($request, $chain_ca_id2) {
                     $query->where('ca_id', '!=', '10')->where('it_type9', '1');
 
                     if ($request->input('category') && strlen($request->input('category')) == 2) {
@@ -89,60 +136,241 @@ class ShopItem extends Model
                     if ($request->input('category') && strlen($request->input('category')) == 4) {
                         $query->where('ca_id2', $request->input('category'));
                     }
+
+                    $query->where(function($q) use ($chain_ca_id2) {
+                        if (!$chain_ca_id2) {
+                            $q->where('it_gubun2', '1')
+                              ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                        } else {
+                            $q->where(function($qq) use ($chain_ca_id2) {
+                                $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                   ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                   ->orWhere('it_affiliate_code', '');
+                            });
+                        }
+                    });
                 })
-                ->when($ca_id == 'hit' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type1', '1');
+                ->when($ca_id == 'hit' ,function($query, $chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type1', '1')
+                        ->where(function($q) use ($chain_ca_id2) {
+                            if (!$chain_ca_id2) {
+                                $q->where('it_gubun2', '1')
+                                ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                            } else {
+                                $q->where(function($qq) use ($chain_ca_id2) {
+                                    $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', '');
+                                });
+                            }
+                        });
                 })
-                ->when($ca_id == 'recom' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type2', '1');
+                ->when($ca_id == 'recom' ,function($query, $chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type2', '1')
+                        ->where(function($q) use ($chain_ca_id2) {
+                            if (!$chain_ca_id2) {
+                                $q->where('it_gubun2', '1')
+                                ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                            } else {
+                                $q->where(function($qq) use ($chain_ca_id2) {
+                                    $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', '');
+                                });
+                            }
+                        });
                 })
-                ->when($ca_id == 'new' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type3', '1');
+                ->when($ca_id == 'new' ,function($query, $chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type3', '1')
+                        ->where(function($q) use ($chain_ca_id2) {
+                            if (!$chain_ca_id2) {
+                                $q->where('it_gubun2', '1')
+                                ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                            } else {
+                                $q->where(function($qq) use ($chain_ca_id2) {
+                                    $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', '');
+                                });
+                            }
+                        });
                 })
-                ->when($ca_id == 'best' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type4', '1');
+                ->when($ca_id == 'best' ,function($query, $chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type4', '1')
+                        ->where(function($q) use ($chain_ca_id2) {
+                            if (!$chain_ca_id2) {
+                                $q->where('it_gubun2', '1')
+                                ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                            } else {
+                                $q->where(function($qq) use ($chain_ca_id2) {
+                                    $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', '');
+                                });
+                            }
+                        });
                 })
-                ->when($ca_id == 'sale' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type5', '1');
+                ->when($ca_id == 'sale' ,function($query, $chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type5', '1')
+                        ->where(function($q) use ($chain_ca_id2) {
+                            if (!$chain_ca_id2) {
+                                $q->where('it_gubun2', '1')
+                                ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                            } else {
+                                $q->where(function($qq) use ($chain_ca_id2) {
+                                    $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', '');
+                                });
+                            }
+                        });
                 })
-                ->when($ca_id == 'event' ,function($query) {
+                ->when($ca_id == 'event' ,function($query) use ($chain_ca_id2) {
                     $query->where('ca_id', '!=', '10')
                     ->where('it_type5', '1')
-                    ->where('it_display_use', '1');
+                    ->where('it_display_use', '1')
+                    ->where(function($q) use ($chain_ca_id2) {
+                        if (!$chain_ca_id2) {
+                            $q->where('it_gubun2', '1')
+                            ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                        } else {
+                            $q->where(function($qq) use ($chain_ca_id2) {
+                                $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', '');
+                            });
+                        }
+                    });
                 })
-                ->when($ca_id == 'free' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type6', '1');
+                ->when($ca_id == 'free' ,function($query) use ($chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type6', '1')
+                        ->where(function($q) use ($chain_ca_id2) {
+                            if (!$chain_ca_id2) {
+                                $q->where('it_gubun2', '1')
+                                ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                            } else {
+                                $q->where(function($qq) use ($chain_ca_id2) {
+                                    $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', '');
+                                });
+                            }
+                        });
                 })
-                ->when($ca_id == 'auction' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type7', '1');
+                ->when($ca_id == 'auction' ,function($query) use ($chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type7', '1')
+                        ->where(function($q) use ($chain_ca_id2) {
+                            if (!$chain_ca_id2) {
+                                $q->where('it_gubun2', '1')
+                                ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                            } else {
+                                $q->where(function($qq) use ($chain_ca_id2) {
+                                    $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', '');
+                                });
+                            }
+                        });
                 })
-                ->when($ca_id == 'etc' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type10', '1');
+                ->when($ca_id == 'etc' ,function($query) use ($chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type10', '1')
+                        ->where(function($q) use ($chain_ca_id2) {
+                            if (!$chain_ca_id2) {
+                                $q->where('it_gubun2', '1')
+                                ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                            } else {
+                                $q->where(function($qq) use ($chain_ca_id2) {
+                                    $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                    ->orWhere('it_affiliate_code', '');
+                                });
+                            }
+                        });
                 })
                 
                 //메인 슬라이드 - 초특가상품
-                ->when($ca_id == 'MainSlideSuperSale' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type1', '1')->where('it_display_use', '1');
+                ->when($ca_id == 'MainSlideSuperSale' ,function($query) use ($chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type1', '1')->where('it_display_use', '1')
+                    ->where(function($q) use ($chain_ca_id2) {
+                        if (!$chain_ca_id2) {
+                            $q->where('it_gubun2', '1')
+                            ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                        } else {
+                            $q->where(function($qq) use ($chain_ca_id2) {
+                                $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', '');
+                            });
+                        }
+                    });
                 })
 
                 //메인 슬라이드 - 이번주 추천상품(신상품)
-                ->when($ca_id == 'MainSlideNew' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type3', '1')->where('it_display_use', '1');
+                ->when($ca_id == 'MainSlideNew' ,function($query) use ($chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type3', '1')->where('it_display_use', '1')
+                    ->where(function($q) use ($chain_ca_id2) {
+                        if (!$chain_ca_id2) {
+                            $q->where('it_gubun2', '1')
+                            ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                        } else {
+                            $q->where(function($qq) use ($chain_ca_id2) {
+                                $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', '');
+                            });
+                        }
+                    });
                 })
 
                 //메인 슬라이드 - 지난주 베스트
-                ->when($ca_id == 'MainSlideBest' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type4', '1')->where('it_display_use', '1');
+                ->when($ca_id == 'MainSlideBest' ,function($query) use ($chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type4', '1')->where('it_display_use', '1')
+                    ->where(function($q) use ($chain_ca_id2) {
+                        if (!$chain_ca_id2) {
+                            $q->where('it_gubun2', '1')
+                            ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                        } else {
+                            $q->where(function($qq) use ($chain_ca_id2) {
+                                $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', '');
+                            });
+                        }
+                    });
                 })
 
                 //메인 슬라이드 - 비바쿡 할인상품
-                ->when($ca_id == 'MainSlideVivacook' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type8', '1')->where('it_display_use', '1');
+                ->when($ca_id == 'MainSlideVivacook' ,function($query) use ($chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type8', '1')->where('it_display_use', '1')
+                    ->where(function($q) use ($chain_ca_id2) {
+                        if (!$chain_ca_id2) {
+                            $q->where('it_gubun2', '1')
+                            ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                        } else {
+                            $q->where(function($qq) use ($chain_ca_id2) {
+                                $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', '');
+                            });
+                        }
+                    });
                 })
 
                 //메인 슬라이드 - 마이그랑 할인상품
-                ->when($ca_id == 'MainSlideMygrang' ,function($query) {
-                    $query->where('ca_id', '!=', '10')->where('it_type9', '1')->where('it_display_use', '1');
+                ->when($ca_id == 'MainSlideMygrang' ,function($query) use ($chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type9', '1')->where('it_display_use', '1')
+                    ->where(function($q) use ($chain_ca_id2) {
+                        if (!$chain_ca_id2) {
+                            $q->where('it_gubun2', '1')
+                            ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                        } else {
+                            $q->where(function($qq) use ($chain_ca_id2) {
+                                $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', '');
+                            });
+                        }
+                    });
                 })
                 
                 ->when($request->filled('desc'), function($query) use($request, $it_price) {

@@ -172,9 +172,11 @@ class ShopController extends Controller
         $service = app(MallMainServices::class);
 
         $it_price = 'it_price';
+        $chain_ca_id2 = null;
         if (session('ss_mb_code')) {
             $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
             $it_price = $member['field_it_price'];
+            $chain_ca_id2 = $member['chain_ca_id2'];
         }
         
         // 판매량순 구하기
@@ -186,7 +188,20 @@ class ShopController extends Controller
         $shopGroup = ShopItem::selectRaw('it_qty_system_stock AS cnt, stock_it_id')
         ->groupBy('stock_it_id');
 
-        $items = ShopItem::stockLeftJoinSub()
+
+        $query = ShopItem::stockLeftJoinSub()
+        ->where(function($q) use ($chain_ca_id2) {
+            if (!$chain_ca_id2) {
+                $q->where('g5_shop_item.it_gubun2', '1')
+                  ->orWhere('g5_shop_item.it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+            } else {
+                $q->where(function($qq) use ($chain_ca_id2) {
+                    $qq->where('g5_shop_item.it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                       ->orWhere('g5_shop_item.it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                       ->orWhere('g5_shop_item.it_affiliate_code', '');
+                });
+            }
+        })
         ->when($request->filled('desc') && $request->desc == '4' && $saleJoin, function($query) use ($saleJoin) {
             $query->leftJoinSub($saleJoin, 'shop_sales', function($join) {
                 $join->on('g5_shop_item.it_id', '=', 'shop_sales.it_id');
@@ -213,10 +228,9 @@ class ShopController extends Controller
             }
         })
         ->whereNotIn('it_id_type', [4, 6, 8])
-        ->where('g5_shop_item.it_use', '1')
-        ->where('g5_shop_item.it_gubun2', '1')
-        ->paginate($perPage)->withQueryString();
+        ->where('g5_shop_item.it_use', '1');
 
+        $items = $query->paginate($perPage)->withQueryString();
 
         $banner = $service->getBanner('renew_item_page', 1);
         $other['banner']   = $service->makeBannerDiv($banner, 'N');
@@ -642,10 +656,10 @@ class ShopController extends Controller
             });
         })
         ->when($chain_ca_id2, function($query) use ($chain_ca_id2) {
-            $query->where(function ($q) use ($chain_ca_id2) {
-                $q->where('it_multi_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
-                  ->orWhere('tcp.chain_ca_id2', 'LIKE', '%'.$chain_ca_id2.'%');
-            });
+            $query->where('g5_shop_item.it_multi_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                ->orWhere('g5_shop_item.it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                ->orWhere('g5_shop_item.it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                ->orWhere('tcp.chain_ca_id2', 'LIKE', '%'.$chain_ca_id2.'%');
         }, function($query) {
             $query->whereRaw('0 = 1');
         })

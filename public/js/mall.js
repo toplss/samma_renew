@@ -351,7 +351,7 @@ $(document).ready(function(){
     if (!$fbox.length) return;
 
     if ($(window).width() <= 1024 && !$('#mCartQuickBtn').length) {
-      $fbox.css('padding-bottom', '2rem');
+      $fbox.css('padding-bottom', '2.5rem');
     } else {
       $fbox.css('padding-bottom', '');
     }

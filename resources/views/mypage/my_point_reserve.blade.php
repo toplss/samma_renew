@@ -19,10 +19,9 @@
       <colgroup>
         <col style="width:10%;" class="hide-820">
         <col style="width:15%;">
-        <col style="width:15%;">
-        <col style="width:20%;">
-        <col style="width:20%;">
-        <col style="width:20%;">
+        <col style="width:22%;">
+        <col style="width:22%;">
+        <col style="width:22%;">
       </colgroup>
       <thead>
         <tr>
@@ -30,7 +29,6 @@
           <th>날짜</th>
           <th>구분</th>
           <th>적립</th>
-          <th>채권</th>
           <th>사용</th>
         </tr>
       </thead>
@@ -43,8 +41,6 @@
                 $gubun = '잔액';
               } elseif ($row->po_point_type == 'increase'){
                 $gubun = '적립';
-              } elseif ($row->po_point_type == 'bond'){
-                $gubun = '입금';
               } elseif ($row->po_point_type == 'decrease'){
                 $gubun = '사용';              
               }
@@ -61,9 +57,7 @@
                   "pt_buy_reserve"=>"관리자 충전",
                   "pt_cancel"=>"주문취소",
                   "pt_return"=>"반품",
-                  "pt_return_receivable"=>"반품입금",
                   "pt_outofstock"=>"결품",
-                  "pt_outofstock_deposit"=>"결품입금",
                   "pt_damage_staff"=>"기사파손",
                   "pt_damage_logistic"=>"물류파손",
                   "pt_incentive"=>"장려금",
@@ -75,9 +69,7 @@
                   "pt_reserve"=>$row->pt_reserve,
                   "pt_cancel"=>$row->pt_cancel,
                   "pt_return"=>$row->pt_return,
-                  "pt_return_receivable"=>$row->pt_return_receivable,
                   "pt_outofstock"=>$row->pt_outofstock,
-                  "pt_outofstock_deposit"=>$row->pt_outofstock_deposit,
                   "pt_damage_staff"=>$row->pt_damage_staff,
                   "pt_damage_logistic"=>$row->pt_damage_logistic,
                   "pt_incentive"=>$row->pt_incentive,
@@ -120,19 +112,6 @@
                   <span style="cursor:pointer"
                         onclick="point_reserve_showDetail('increase', '{{ $row->po_action }}', '{{ $row->od_id }}', '{{ $row->increase_point }}')">
                         {{ number_format($row->increase_point) }}원
-                  </span>
-                @else
-                  -
-                @endif
-
-              </td>
-
-              <td class="{{ ( $row->bond_point > 0 ) ? 'txt-blue' : '' }}">
-
-                @if($row->bond_point > 0)
-                  <span style="cursor:pointer"
-                        onclick="point_reserve_showDetail('bond', '{{ $row->po_action }}', '{{ $row->od_id }}', '{{ $row->bond_point }}')">
-                        {{ number_format($row->bond_point) }}원
                   </span>
                 @else
                   -

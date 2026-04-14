@@ -226,13 +226,7 @@ class MallShopApi extends Controller
     {
 
         $od_id = $request->oid;     
-
-// dd($od_id);
-
         $resDt = app(PaymentService::class)->checkSystemStockAjaxDt($od_id);
-
-
-// dd($resDt);
 
         return response()->json($resDt);
 
