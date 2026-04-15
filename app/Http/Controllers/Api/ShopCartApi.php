@@ -1079,4 +1079,28 @@ class ShopCartApi extends Controller
         }
     }
 
+
+    //장바구니 구매버튼 클릭 시 품절상품 체크
+    public function check_soldout_cnt(Request $request)
+    {
+
+        $mb_code = $request->mb_code;     
+
+        $sold_out_cnt = DB::table('g5_shop_cart as sc')
+            ->join('g5_shop_item as si', 'sc.it_id', '=', 'si.it_id')
+            ->where('sc.mb_code', $mb_code)
+            ->where('sc.ct_status', '쇼핑')
+            ->where(function ($query) {
+                $query->where('si.it_qty_system_stock', '<', 1)
+                    ->orWhere('si.it_soldout', 1)
+                    ->orWhere('si.it_force_soldout', 10);
+            })
+            ->count();        
+
+
+        return response()->json($sold_out_cnt);
+
+    }
+
+
 }

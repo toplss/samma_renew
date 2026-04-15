@@ -687,10 +687,14 @@
 
 		<script type="text/javascript">
 		function common_chkform_cart(act) {
+
+ 
+
 				var frm = $('#common_frm_cart')[0];
 				var cnt = $('#common_records').val();
 
 				if (act == "common_buy") {
+					var mb_code = {{ $activeMember['mb_code'] }}
 					var manager_staff_hp = '';
 					var manager_staff_info_str = '';
 
@@ -719,6 +723,29 @@
 					var min_order_amount  = $('#min_order_amount').val();
 
 					var confirm_content = '';
+
+
+
+
+
+					$.ajax({
+					url : "{{ route('check_soldout_cnt') }}",
+					type : "POST",
+					data : {
+						"mb_code" : mb_code
+					},
+					dataType : "json",
+					success : function(result) {
+
+				console.log(result)		
+
+					},
+					error: function(e) {
+							console.log('에러 발생:', e);
+					}
+					});
+
+
 
 					if (level_ca_id2 == '20' && mb_credit_type == '1' && mb_credit_amount > 0 && total_amount > mb_credit_amount) {
 						if (mb_manager_staff_code) {

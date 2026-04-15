@@ -462,6 +462,9 @@ Route::middleware(['block.ip'])->group(function () {
     # 장바구니 기능
     Route::post('/mall/proc_query_cart', [ShopCartApi::class, 'execute'])->middleware('auth.session');
 
+    # 장바구니 구매전 품절체크
+    Route::post('check_soldout_cnt', [ShopCartApi::class, 'check_soldout_cnt'])->name('check_soldout_cnt');
+
 
     # 메인상품 팝업용
     Route::post('/mall/item/show', [MainProductItemController::class, 'show']);
