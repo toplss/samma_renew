@@ -146,23 +146,38 @@ class PaymentController extends Controller
             $goodname = $firstName;
         }
 
-        // 주문번호로 총 결제금액 조회 ( 품절상품 제외 )
-
-        // $total = DB::table('g5_shop_cart')
-        // ->where('od_id', $orderNo)
-        // ->selectRaw('SUM(ct_price * ct_qty) as total')
-        // ->value('total');
+        // 주문번호로 조회
+        $base_query = DB::table('g5_shop_cart as sc')
+        ->leftJoin('g5_shop_item as si', 'sc.it_id', '=', 'si.it_id')
+        ->where('sc.od_id', $orderNo);
 
 
-// dd($orderInfo);
+        // 품절상품 제외 계산금액
+        $priceObj = (clone $base_query)->where('si.it_soldout', '<>', 1)
+        ->where('si.it_force_soldout', '<>', 10)
+        ->selectRaw("
+            SUM(sc.ct_price * sc.ct_qty) as total_price,
+            SUM(CASE WHEN si.it_gubun1 = 1 THEN sc.ct_price * sc.ct_qty ELSE 0 END) as gubun1_price,
+            SUM(CASE WHEN si.it_gubun1 <> 1 THEN sc.ct_price * sc.ct_qty ELSE 0 END) as etc_price
+        ")
+        ->first();
 
-        $total = DB::table('g5_shop_cart as sc')
-            ->leftJoin('g5_shop_item as si', 'sc.it_id', '=', 'si.it_id')
-            ->where('sc.od_id', $orderNo)
-            ->where('si.it_soldout', '<>', 1)
-            ->where('si.it_force_soldout', '<>', 10)
-            ->sum(DB::raw('sc.ct_price * sc.ct_qty'));        
-            
+        // 품절포함 상품리스트
+        $itemObj = (clone $base_query)->select([
+            'si.it_img1', 'si.it_name', 'si.it_basic', 'si.it_soldout', 'si.it_force_soldout',
+            'sc.ct_price', 'sc.ct_qty', 'si.it_gubun1'
+        ])
+        ->get();
+
+        $total = $priceObj->total_price;
+
+        $item_data = [
+            'price' => $total,
+            'temp_ambient_price' => $priceObj->gubun1_price,
+            'temp_chilled_price' => $priceObj->etc_price,
+            'temp_ambient_items' => $itemObj->where('it_gubun1', '1')->values(),
+            'temp_chilled_items' => $itemObj->where('it_gubun1', '!=', '1')->values(),
+        ];
 
         if ($total <= 0) {
             return redirect()->route('/')->with('error', '주문금액이 올바르지 않습니다.');
@@ -183,7 +198,10 @@ class PaymentController extends Controller
             'order_info'  => $orderInfo,
             'popupUrl'  => !$isMobile ? route('payment.popup') : null,
             'closeUrl'  => !$isMobile ? route('payment.close') : null,
+            'item_data' => $item_data,
         ]);
+
+        // dd($payData);
 
         $payData['status']  = $request->status  ?? '';
         $payData['message'] = $request->message ?? '';

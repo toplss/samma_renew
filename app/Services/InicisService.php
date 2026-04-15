@@ -162,6 +162,7 @@ class InicisService
             'cardQuotaBase' => $cardQuotaBase,
             'orderInfo'  => $params['order_info'],
             'hashData'   => $hashData,
+            'item_data'  => $params['item_data'],
         ];
 
 

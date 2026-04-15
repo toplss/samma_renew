@@ -148,7 +148,7 @@ if (isset($activeMember['mb_level_type'])) {
                 <!-- 없을때 -->
                 <!-- <p class="empty">장바구니에 담긴 상품이 없습니다</p> -->
                 
-                @if(isset($orderInfo['cart_items'][1]))
+                @if(isset($item_data['temp_ambient_items']))
                 <!-- 상온 -->
                 <div>
                 <table class="pay-item-table">
@@ -165,29 +165,27 @@ if (isset($activeMember['mb_level_type'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($orderInfo['cart_items'][1] as $key => $row)
+                        @foreach($item_data['temp_ambient_items'] as $key => $row)
                         @php
-                        $image_url  = 'images/item/'.$row['it_img1'];
+                        $image_url  = 'images/item/'.$row->it_img1;
                         @endphp
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>
-                                @if(file_exists(public_path($image_url)) && $row['it_img1'])
+                                @if(file_exists(public_path($image_url)) && $row->it_img1)
                                 <img src="{{ asset($image_url) }}" alt="">
                                 @else
                                 <img src="{{ asset('images/common/no_image.gif') }}" alt="">
                                 @endif
                             </td>
-                            <td class="pi-name">{{ $row['it_name'] }}<span>{{ $row['it_basic'] }}</span></td>
-
+                            <td class="pi-name">{{ $row->it_name }}<span>{{ $row->it_basic }}</span></td>
                             
-                            
-                            @if($row['it_soldout'] == '1' || $row['it_force_soldout'] == '10')
+                            @if($row->it_soldout == '1' || $row->it_force_soldout == '10')
                                 <td class="pi-soldout"><span class="txt-red">품절</span></td>
                                 <td>-</td>
                             @else
-                                <td>{{ $row['ct_qty'] }}</td>
-                                <td>{{ number_format($row['ct_price'] * $row['ct_qty']) }}원</td>
+                                <td>{{ $row->ct_qty }}</td>
+                                <td>{{ number_format($row->ct_price * $row->ct_qty) }}원</td>
                             @endif
                         </tr>
                         @endforeach
@@ -195,31 +193,18 @@ if (isset($activeMember['mb_level_type'])) {
                     <tfoot>
                         <tr>
                             <th colspan="3">합계</th>
-                            @php
-                            $storage_1_total_cnt = collect($orderInfo['cart_items'][1])
-                                ->where('it_soldout', '!=', 1)
-                                ->where('it_force_soldout', '!=', '10')                                
-                                ->sum(function ($row) {
-                                    return $row['ct_qty'];
-                                })                            
-                            @endphp
-                            <th>{{ $storage_1_total_cnt }}</th>
-                            @php
-                            $storage_1_total = collect($orderInfo['cart_items'][1])
-                                ->where('it_soldout', '!=', 1)
-                                ->where('it_force_soldout', '!=', '10')                                                                
-                                ->sum(function ($row) {
-                                    return $row['ct_price'] * $row['ct_qty'];
-                                })
-                            @endphp
-                            <th>{{ number_format($storage_1_total) }}원</th>
+                            <th>{{ $item_data['temp_ambient_items']->where('it_soldout', '!=', 1)
+                                ->where('it_force_soldout', '!=', 10)
+                                ->sum('ct_qty') }}
+                            </th>
+                            <th>{{ number_format($item_data['temp_ambient_price']) }}원</th>
                         </tr>
                     </tfoot>
                 </table>
                 </div>
                 @endif
 
-                @if(isset($orderInfo['cart_items'][2]))
+                @if(isset($item_data['temp_chilled_items']))
                 <!-- 저온 -->
                 <div>
                 <table class="pay-item-table">
@@ -236,55 +221,40 @@ if (isset($activeMember['mb_level_type'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($orderInfo['cart_items'][2] as $key => $row)
+                        @foreach($item_data['temp_chilled_items'] as $key => $row)
                         @php
-                        $image_url  = 'images/item/'.$row['it_img1'];
+                        $image_url  = 'images/item/'.$row->it_img1;
                         @endphp
                         <tr>
                             <td>{{ ++$key }}</td>
                             <td>
-                                @if(file_exists(public_path($image_url)) && $row['it_img1'])
+                                @if(file_exists(public_path($image_url)) && $row->it_img1)
                                 <img src="{{ asset($image_url) }}" alt="">
                                 @else
                                 <img src="{{ asset('images/common/no_image.gif') }}" alt="">
                                 @endif
                             </td>
-                            <td class="pi-name">{{ $row['it_name'] }}<span>{{ $row['it_basic'] }}</span></td>
-
-                            @if($row['it_soldout'] == '1' || $row['it_force_soldout'] == '10')
+                            <td class="pi-name">{{ $row->it_name }}<span>{{ $row->it_basic }}</span></td>
+                            
+                            @if($row->it_soldout == '1' || $row->it_force_soldout == '10')
                                 <td class="pi-soldout"><span class="txt-red">품절</span></td>
                                 <td>-</td>
                             @else
-                                <td>{{ $row['ct_qty'] }}</td>
-                                <td>{{ number_format($row['ct_price'] * $row['ct_qty']) }}원</td>
+                                <td>{{ $row->ct_qty }}</td>
+                                <td>{{ number_format($row->ct_price * $row->ct_qty) }}원</td>
                             @endif
                         </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
-
                         <tr>
                             <th colspan="3">합계</th>
-                            @php
-                            $storage_2_total_cnt = collect($orderInfo['cart_items'][2])
-                                ->where('it_soldout', '!=', 1)
-                                ->where('it_force_soldout', '!=', '10')                                                                
-                                ->sum(function ($row) {
-                                    return $row['ct_qty'];
-                                })                            
-                            @endphp
-                            <th>{{ $storage_2_total_cnt }}</th>
-                            @php
-                            $storage_2_total = collect($orderInfo['cart_items'][2])
-                                ->where('it_soldout', '!=', 1)
-                                ->where('it_force_soldout', '!=', '10')                                                                
-                                ->sum(function ($row) {
-                                    return $row['ct_price'] * $row['ct_qty'];
-                                })
-                            @endphp
-                            <th>{{ number_format($storage_2_total) }}원</th>
+                            <th>{{ $item_data['temp_chilled_items']->where('it_soldout', '!=', 1)
+                                ->where('it_force_soldout', '!=', 10)
+                                ->sum('ct_qty') }}
+                            </th>
+                            <th>{{ number_format($item_data['temp_chilled_price']) }}원</th>
                         </tr>
-
                     </tfoot>
                 </table>
                 </div>
@@ -295,9 +265,9 @@ if (isset($activeMember['mb_level_type'])) {
             <table class="pay-price-table">
                 <tr>
                     <th>상온 합계</th>
-                    <td>{{ number_format($storage_1_total ?? 0) }}원</td>
+                    <td>{{ number_format($item_data['temp_ambient_price'] ?? 0) }}원</td>
                     <th>저온 합계</th>
-                    <td>{{ number_format($storage_2_total ?? 0) }}원</td>
+                    <td>{{ number_format($item_data['temp_chilled_price'] ?? 0) }}원</td>
                 </tr>
                 <tr>
                     <th>배송비 합계</th>
