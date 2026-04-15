@@ -1025,7 +1025,7 @@ class ShopCartApi extends Controller
             }
 
             // 단위 계산 (기존 ProductUnit 함수 재사용)
-            $qtyGroup = $this->ProductUnit($it_id, $newQty);
+            $qtyGroup = $this->ProductUnit($it_id, $tot);
 
             // 장바구니 업데이트
             return DB::table('g5_shop_cart')
