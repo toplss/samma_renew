@@ -1086,19 +1086,29 @@ class ShopCartApi extends Controller
 
         $mb_code = $request->mb_code;     
 
-        $sold_out_cnt = DB::table('g5_shop_cart as sc')
+        $result = DB::table('g5_shop_cart as sc')
             ->join('g5_shop_item as si', 'sc.it_id', '=', 'si.it_id')
-            ->where('sc.mb_code', $mb_code)
+            ->selectRaw('
+                count(*) over() as sold_out_cnt,
+                sc.od_group_code,
+                sc.od_id,
+                sc.it_name,
+                sc.ct_qty,
+                sc.ct_cate,
+                si.it_qty_system_stock,
+                si.it_soldout,
+                si.it_force_soldout
+            ')
+            ->where('sc.mb_code', 1261)
             ->where('sc.ct_status', '쇼핑')
             ->where(function ($query) {
                 $query->where('si.it_qty_system_stock', '<', 1)
                     ->orWhere('si.it_soldout', 1)
                     ->orWhere('si.it_force_soldout', 10);
             })
-            ->count();        
+            ->get()->toArray();
 
-
-        return response()->json($sold_out_cnt);
+        return response()->json($result);
 
     }
 

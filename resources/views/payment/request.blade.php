@@ -389,12 +389,7 @@ if (isset($activeMember['mb_level_type'])) {
                             </label>
                         </li>
                         @if (request('order_type') == 'items' && $payment_type == '선불')
-                        @php 
-                        $payments = !empty($activeMember['mb_payment'])
-                                        ? explode('||', $activeMember['mb_payment']) 
-                                        : [];
-                        @endphp
-                        @if (in_array("3", $payments))
+                        @if ($activeMember['mb_code'] == '1261')
                         <li class="od_settle_card">
                             <label>
                                 <input type="radio" id="od_settle_card" class="od_settle_case" name="od_settle_case" value="신용카드">신용카드
@@ -874,7 +869,10 @@ function CustomizingAlertMessage(title, message, redirectUrl = null) {
       icon: 'warning',
       title: title,
       html: message,
-      confirmButtonText: '확인'
+      showCancelButton: true,
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+      allowOutsideClick: false
   }).then((result) => {
       if (result.isConfirmed && redirectUrl) {
           window.location.href = redirectUrl;

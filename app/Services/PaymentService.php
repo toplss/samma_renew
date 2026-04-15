@@ -818,14 +818,14 @@ class PaymentService
             if ($row['it_qty_system_stock'] <= 0 || $row['it_soldout'] == '1' || $row['it_force_soldout'] == '10') {
 
                 $isIssue = true;
-                $title = '품절상품이 포함되어 있습니다.';
+                $title = '품절상품이 포함되어 있습니다.<br>장바구니로 이동하시겠습니까?';
                 $message = '<span class="txt-red">'.$row['it_name'].'</span> <br>';
             } 
 
             if ($row['ct_qty_tot'] > $row['it_qty_system_stock']) {
                 
                $isIssue = true;
-                $title = '품절상품이 포함되어 있습니다.';
+                $title = '품절상품이 포함되어 있습니다.<br>장바구니로 이동하시겠습니까?';
                 $message = '<span class="txt-red">'.$row['it_name'].'</span> <br>';
 
             }

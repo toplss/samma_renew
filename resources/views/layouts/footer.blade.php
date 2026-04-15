@@ -728,22 +728,7 @@
 
 
 
-					$.ajax({
-					url : "{{ route('check_soldout_cnt') }}",
-					type : "POST",
-					data : {
-						"mb_code" : mb_code
-					},
-					dataType : "json",
-					success : function(result) {
 
-				console.log(result)		
-
-					},
-					error: function(e) {
-							console.log('에러 발생:', e);
-					}
-					});
 
 
 
@@ -830,20 +815,92 @@
 								focusConfirm: false
 							});
 						} else {
-							Swal.fire({
-								toast : false,
-								title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
-								html: confirm_content,
-								icon: 'question',
-								showCancelButton: true,
-								confirmButtonText: '확인',
-								cancelButtonText: '취소'
-							}).then((result) => {
-								if (result.isConfirmed) {
-									frm.act.value = act;
-									frm.submit();
+
+							// 구매버튼 클릭 시 품절체크 추가 START
+							$.ajax({
+							url : "{{ route('check_soldout_cnt') }}",
+							type : "POST",
+							data : {
+								"mb_code" : mb_code
+							},
+							dataType : "json",
+							success : function(result) {
+
+								if (result.length > 0) {
+									const it_names = result.map(item => item.it_name);
+									const product_list = it_names.join('<br>');
+
+									const sold_out_message = `
+										장바구니에 담긴 상품을 구매하시겠습니까?
+										<br>
+										아래의 품절상품은 자동 삭제 됩니다.
+										<br><br>
+										<span style="line-height:2; color:#e02f30; font-weight:bold;">
+											${product_list}
+										</span>
+									`;
+
+									Swal.fire({
+										toast : false,
+										title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
+										html: sold_out_message,
+										icon: 'question',
+										showCancelButton: true,
+										confirmButtonText: '확인',
+										cancelButtonText: '취소'
+									}).then((result) => {
+										if (result.isConfirmed) {
+											frm.act.value = act;
+											frm.submit();
+										}
+									});
+
+								}else{
+
+									Swal.fire({
+										toast : false,
+										title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
+										html: confirm_content,
+										icon: 'question',
+										showCancelButton: true,
+										confirmButtonText: '확인',
+										cancelButtonText: '취소'
+									}).then((result) => {
+										if (result.isConfirmed) {
+											frm.act.value = act;
+											frm.submit();
+										}
+									});
+
+
 								}
+
+							},
+							error: function(e) {
+								console.log('에러 발생:', e);
+							}
 							});
+
+							// 구매버튼 클릭 시 품절체크 추가 END
+
+
+							// Swal.fire({
+							// 	toast : false,
+							// 	title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
+							// 	html: confirm_content,
+							// 	icon: 'question',
+							// 	showCancelButton: true,
+							// 	confirmButtonText: '확인',
+							// 	cancelButtonText: '취소'
+							// }).then((result) => {
+							// 	if (result.isConfirmed) {
+							// 		frm.act.value = act;
+							// 		frm.submit();
+							// 	}
+							// });
+
+
+
 						}
 					}
 				}
