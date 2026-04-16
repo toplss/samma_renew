@@ -39,7 +39,7 @@
         </ul>
     </div>
     <div class="m-cate2">
-        <button type="button" class="btn2" id="mcateBtn2">세부<img src="{{ asset('images/icon/down.svg') }}"></button>
+        <button type="button" class="btn3" id="mcateBtn2">세부<img src="{{ asset('images/icon/down.svg') }}"></button>
         <ul class="cate-r-ul2">
             @foreach($sub_category as $key => $row)
             @php
@@ -61,6 +61,7 @@
 </div>
 
 <ul class="st-right">
+    <li><button type="button" class="btn1" style="white-space:nowrap;">총 100개</button></li>
     <li>
         <select name="desc" id="desc" onchange="ShopItemOrderByDesc(this.value)">
             <option value="1">정렬</option>
