@@ -1,7 +1,5 @@
 @extends('layouts.header')
 
-@section('title', '개인정보보호방침 페이지')
-
 @section('content')
 
 <div class="sub-container">

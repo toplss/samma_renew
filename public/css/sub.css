@@ -618,6 +618,20 @@
 #coupon_no1,#coupon_no2,#coupon_no3,#coupon_no4{width: 100px;}
 #add-channel-button{display: inline-block; vertical-align: middle; margin-left: 4px;}
 
+/* 이벤트 */
+.event-wrap{margin-top: 1rem;}
+.e-tab{display: flex; align-items: center; justify-content: center; gap: 5px; margin-left: 10px;}
+.e-tab li {cursor: pointer; background-color: #eee; color: #777; padding: 0.2rem 0.4rem; border-radius: 0.3rem;}
+.e-tab li.active {background-color: #333; color: #fff;}
+
+.event-board{display: none; grid-template-columns: repeat(4,1fr); gap: 1.3rem;}
+.event-board.active{display: grid;}
+.event-board li>a{border-radius: 0.5rem; overflow: hidden; position: relative;}
+.event-board li.end>a::after{content: "종료된 이벤트입니다";position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex;align-items: center;justify-content: center; background-color: rgba(0, 0, 0, 0.7); background-image: url(/images/icon/face.svg); background-repeat: no-repeat; background-position: center 32%; background-size: 75px; padding-top: 35px; font-weight: 500; color: #fff; font-size: 1.4rem;}
+
+
+
+
 /* footer */
 .map-wrap{margin-top: 2rem; display: none;}
 .map-wrap.show{display: block;}
@@ -661,6 +675,8 @@
   .pv-img .room_temp,.pv-img .low_temp,.pv-img .frozen_temp{top: 9px; right: 9px; width: 70px; height: 70px;}
   .pv-img .room_temp>img,.pv-img .low_temp>img,.pv-img .frozen_temp>img{width: 38px;}
   .recom-img .room_temp,.recom-img .low_temp,.recom-img .frozen_temp{width: 38px; height: 38px;}
+  .event-board{gap: 1rem;}
+  .event-board li.end>a::after{background-size: 60px; font-size: 1.2rem;}
 }
 @media screen and (max-width: 1280px){
   .sub-title-wrap h4{font-size: 1.2rem;}
@@ -726,6 +742,8 @@
   .return-item-table .ri4 input[type=text]{width: 60%;}
   .return-item-table.done tbody{display: grid; grid-template-columns: repeat(2,1fr); gap: 0.6rem;}
   .return-item-table.done tr{border: 2px solid #8ec251;}
+
+  .event-board li.end>a::after{background-size: 50px; font-size: 1.1rem;}
   
   
 }
@@ -1046,6 +1064,10 @@
   .claim-item-table .ci2{text-align: left;}
   .terms-scroll{height: 140px;}
   .board-view{margin: 1rem auto;}
+
+  .e-tab{margin-left: 5px;}
+  .event-board{grid-template-columns: repeat(2,1fr);}
+  .event-board li.end>a::after{background-position:center 30%; padding-top: 20px; background-size: 40px; font-size: 1rem; font-weight: 600;}
 
   /* 모바일 카드형 */
   .mobile-card thead{display: none;}

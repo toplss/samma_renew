@@ -148,11 +148,30 @@
 
 
     <!-- 출시 예정 상품 -->
-    <!-- 상품이 없을 때 -->
-    <div class="no-item" id="si6">
-      <img src="{{ asset('images/icon/box.svg') }}">
-      <p>상품이 존재하지 않습니다</p>
-    </div>
+    @php 
+      //출시 예정 상품 순서 램덤
+      shuffle($MainSlideComming_product);
+    @endphp    
+
+    @if(count($MainSlideComming_product) > 0)
+      <div class="sale-item-slide" id="si6">
+        <!-- 반복 -->
+        @foreach($MainSlideComming_product as $key => $row)
+          <x-main.slide-comming-product
+            :row="$row"
+            :member="$activeMember"
+          />
+        @endforeach
+      <!-- 반복 끝 -->
+      </div>
+    @else    
+      <!-- 상품이 없을 때 -->
+      <div class="no-item" id="si6">
+        <img src="{{ asset('images/icon/box.svg') }}">
+        <p>상품이 존재하지 않습니다</p>
+      </div>
+    @endif
+
 
   </div>
   

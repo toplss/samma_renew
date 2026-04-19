@@ -1,7 +1,5 @@
 @extends('layouts.header')
 
-@section('title', '회사소개 페이지')
-
 @section('content')
 
 <div class="sub-container">

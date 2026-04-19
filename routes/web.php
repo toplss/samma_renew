@@ -162,8 +162,6 @@ Route::middleware(['block.ip'])->group(function () {
         /********** 제휴문의 저장 **********/
         Route::post('/customer_service/alliance/save', [CustomerServiceController::class, 'MyPageAllianceSave'])->name('alliance_save');
 
-
-
         /********** 고객센터 **********/
         Route::get('/customer_service/user_guide', [CustomerServiceController::class, 'MyPageUserGuide']);
 
@@ -210,6 +208,14 @@ Route::middleware(['block.ip'])->group(function () {
         /********** 찾아오시는길 **********/
         Route::get('/customer_service/location', function() { 
             return view('customer_service.location'); 
+        });
+
+        /********** 이벤트 **********/
+        Route::get('/customer_service/event', function () {
+            return view('customer_service.event');
+        });
+        Route::get('/customer_service/event_view', function () {
+            return view('customer_service.event_view');
         });
 
 

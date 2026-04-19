@@ -62,7 +62,7 @@
     @else 
         @if (request('type') !== 'sale' && request('type') !== 'best' && request('type') !== 'new')
         <div>
-            <b>{{ request('skeyword') }}</b> 에 대한 검색결과 총 ({{ $items->total() }}) 개의 상품이 있습니다.
+            <b>{{ request('skeyword') }}</b> 에 대한 검색결과 <b>총 {{ $items->total() }}개</b> 상품이 있습니다.
         </div>
         @else 
         @php
@@ -76,7 +76,7 @@
     @endif
 </div>
 <ul class="st-right">
-    <li><button type="button" class="btn1" style="white-space:nowrap;">총 100개</button></li>
+    <li><button type="button" class="btn2" style="white-space:nowrap;">총 {{ $items->total() }}개</button></li>
     <li>
         <select name="desc" id="desc" onchange="ShopItemOrderByDesc(this.value)">
             <option value="1">정렬</option>

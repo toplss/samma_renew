@@ -386,6 +386,17 @@ $(document).ready(function(){
     }, 200);
   });
 
+
+  // 이벤트
+  $('.e-tab li').on('click', function () {
+    const tab = $(this).data('tab');
+
+    $('.e-tab li').removeClass('active');
+    $(this).addClass('active');
+    $('.event-board').removeClass('active');
+    $('.event-board[data-ul="' + tab + '"]').addClass('active');
+  });
+
   // 키친시스템
   const kc_type = new URLSearchParams(location.search).get('type');
   const kc_text = $('.kitchen-list a[href*="type=' + kc_type + '"]').data('name');

@@ -135,6 +135,7 @@
 						<li><a href="/customer_service/claim">클레임접수</a></li>
 						<li><a href="/customer_service/alliance?gubun=alliance">제휴문의</a></li>
 						<li><a href="/customer_service/alliance?gubun=store">입점문의</a></li>
+						<!-- <li><a href="/customer_service/event">이벤트</a></li> -->
 						<li><a href="/common_board/list">공지사항</a></li>
 					</ul>
 				</div>
@@ -365,6 +366,7 @@
 			</tr>
 			<tr>
 				<td><a href="/customer_service/user_guide">이용안내</a></td>
+				<!-- <td><a href="/customer_service/event">이벤트</a></td> -->
 				<td><a href="/common_board/list">공지사항</a></td>
 				<td><a href="/customer_service/alliance?gubun=alliance">제휴문의</a></td>
 				<td><a href="/customer_service/alliance?gubun=store">입점문의</a></td>

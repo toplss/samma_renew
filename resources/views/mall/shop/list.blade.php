@@ -32,7 +32,7 @@ if (request()->has('page'))  $isDown = false;
             <h4>A/S부속품</h4>
         </div>
         <ul class="st-right">
-            <li><button type="button" class="btn1" style="white-space:nowrap;">총 100개</button></li>
+            <li><button type="button" class="btn2" style="white-space:nowrap;">총 {{ $items->total() }}개</button></li>
             <li>
                 <select name="desc" id="desc" onchange="ShopItemOrderByDesc(this.value)">
                     <option value="1">정렬</option>

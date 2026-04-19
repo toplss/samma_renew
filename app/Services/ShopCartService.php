@@ -244,7 +244,6 @@ class ShopCartService
         })
         ->get()->toArray();
 
-
         return new LengthAwarePaginator(
             $items,
             $total,

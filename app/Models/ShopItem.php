@@ -372,6 +372,36 @@ class ShopItem extends Model
                         }
                     });
                 })
+
+                //메인 슬라이드 - 출시예정 상품
+                ->when($ca_id == 'MainSlideComming' ,function($query) use ($chain_ca_id2) {
+                    $query->where('ca_id', '!=', '10')->where('it_type10', '1')->where('it_display_use', '1')
+                    ->where('it_event_type', '!=', '0')
+                    ->where(function($q) {
+                        $q->where(function($qq) {
+                            $qq->where('it_event_type', '1')
+                            ->whereRaw('it_event_start <= NOW()')
+                            ->whereRaw('it_event_end >= NOW()');
+                        })
+                        ->orWhere(function($qq) {
+                            $qq->where('it_event_type', '2')
+                            ->whereRaw('it_event_start2 <= NOW()')
+                            ->where('it_qty_event_stock', '>', 0);
+                        });
+                    })
+                    ->where(function($q) use ($chain_ca_id2) {
+                        if (!$chain_ca_id2) {
+                            $q->where('it_gubun2', '1')
+                            ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
+                        } else {
+                            $q->where(function($qq) use ($chain_ca_id2) {
+                                $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
+                                ->orWhere('it_affiliate_code', '');
+                            });
+                        }
+                    });
+                })
                 
                 ->when($request->filled('desc'), function($query) use($request, $it_price) {
                     if ($request->desc == '2' && $it_price) {
