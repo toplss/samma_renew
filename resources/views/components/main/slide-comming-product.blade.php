@@ -21,12 +21,15 @@ $image_url = 'images/item/'.$row['it_img1'];
 <div class="sale-item-list">
     <ul>
         @if(file_exists(public_path($image_url)) && $row['it_img1'])
-        <li class="si-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset($image_url) }}"></li>
+        <li class="si-img end" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset($image_url) }}"></li>
         @else
-        <li class="si-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset('images/common/no_image.gif') }}"></li>
+        <li class="si-img end" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset('images/common/no_image.gif') }}"></li>
         @endif
         <li class="si-name">{{ $row['it_name'] }}</li>
-        <li class="si-ea">({{ $row['it_basic'] }}*{{ $row['it_gubun_label'] }})</li>
+        <li class="si-terms"><span>~2026.04.20<i class="hide-1280">까지</i></span></li>
+        <!-- <li class="si-terms"><span>200개 한정</span></li> -->
+         
+        <!-- <li class="si-ea">({{ $row['it_basic'] }}*{{ $row['it_gubun_label'] }})</li>
 
         @if($activeMember)
             @php
@@ -56,6 +59,6 @@ $image_url = 'images/item/'.$row['it_img1'];
                     <p><b>{{ $row['it_cust_rate'] }}% 할인</b></p>
                 </li>
             @endif
-        @endif
+        @endif -->
     </ul>
 </div>

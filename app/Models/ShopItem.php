@@ -27,14 +27,24 @@ class ShopItem extends Model
             $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
             $it_price = $member['field_it_price'];                
             $chain_ca_id2 = (empty($member['chain_ca_id2']) || $member['chain_ca_id2'] == '1001') ? null : $member['chain_ca_id2'];
+
+            // 사원체크 
+            if (isset($member['mb_level_type'])) {
+                if (trim($member['mb_level_type']) == '2' && trim($member['mb_gubun_type']) == 'employee') {
+                    $request->merge(['member_type' => 'emp']);
+                }
+            }
+            
+            // 구매등급 추가
+            $request->merge(['mb_buy' => $member['mb_buy']]);
         }
 
         if ($request->has('category')) {
-            $key   = "shop:items:{$ca_id}:category:".$request->input('category').':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2;
-            $lock  = "lock:shop:items:{$ca_id}:category:".$request->input('category').':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2;
+            $key   = "shop:items:{$ca_id}:category:".$request->input('category').':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2.':mb_buy:'.$request->input('mb_buy');
+            $lock  = "lock:shop:items:{$ca_id}:category:".$request->input('category').':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2.':mb_buy:'.$request->input('mb_buy');
         } else {
-            $key   = "shop:items:{$ca_id}".':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2;
-            $lock  = "lock:shop:items:{$ca_id}".':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2;
+            $key   = "shop:items:{$ca_id}".':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2.':mb_buy:'.$request->input('mb_buy');
+            $lock  = "lock:shop:items:{$ca_id}".':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2.':mb_buy:'.$request->input('mb_buy');
         }
 
         $strlen = strlen($ca_id);
@@ -68,6 +78,9 @@ class ShopItem extends Model
 
             # DB 조회 (한 명만)
             $data = ShopItem::where('it_use', '1')
+                ->when($request->input('mb_buy'), function($query) use ($request) {
+                    $query->where('it_member_group', 'LIKE', '%'.$request->mb_buy.'%');
+                })
                 ->when($strlen == '2' && !in_array($ca_id, $except), function($query) use($ca_id, $chain_ca_id2){
                     $query->where(function($query) use($ca_id) {
                         $query->where('ca_id', $ca_id)
@@ -359,36 +372,6 @@ class ShopItem extends Model
                 //메인 슬라이드 - 마이그랑 할인상품
                 ->when($ca_id == 'MainSlideMygrang' ,function($query) use ($chain_ca_id2) {
                     $query->where('ca_id', '!=', '10')->where('it_type9', '1')->where('it_display_use', '1')
-                    ->where(function($q) use ($chain_ca_id2) {
-                        if (!$chain_ca_id2) {
-                            $q->where('it_gubun2', '1')
-                            ->orWhere('it_multi_other_chain_cate_code', 'LIKE', '%1001%');
-                        } else {
-                            $q->where(function($qq) use ($chain_ca_id2) {
-                                $qq->where('it_multi_other_chain_cate_code', 'LIKE', '%'.$chain_ca_id2.'%')
-                                ->orWhere('it_affiliate_code', 'LIKE', '%'.$chain_ca_id2.'%')
-                                ->orWhere('it_affiliate_code', '');
-                            });
-                        }
-                    });
-                })
-
-                //메인 슬라이드 - 출시예정 상품
-                ->when($ca_id == 'MainSlideComming' ,function($query) use ($chain_ca_id2) {
-                    $query->where('ca_id', '!=', '10')->where('it_type10', '1')->where('it_display_use', '1')
-                    ->where('it_event_type', '!=', '0')
-                    ->where(function($q) {
-                        $q->where(function($qq) {
-                            $qq->where('it_event_type', '1')
-                            ->whereRaw('it_event_start <= NOW()')
-                            ->whereRaw('it_event_end >= NOW()');
-                        })
-                        ->orWhere(function($qq) {
-                            $qq->where('it_event_type', '2')
-                            ->whereRaw('it_event_start2 <= NOW()')
-                            ->where('it_qty_event_stock', '>', 0);
-                        });
-                    })
                     ->where(function($q) use ($chain_ca_id2) {
                         if (!$chain_ca_id2) {
                             $q->where('it_gubun2', '1')
