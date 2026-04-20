@@ -177,6 +177,16 @@ class ShopController extends Controller
             $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
             $it_price = $member['field_it_price'];
             $chain_ca_id2 = $member['chain_ca_id2'];
+
+            // 사원체크 
+            if (isset($member['mb_level_type'])) {
+                if (trim($member['mb_level_type']) == '2' && trim($member['mb_gubun_type']) == 'employee') {
+                    $request->merge(['member_type' => 'emp']);
+                }
+            }
+            
+            // 구매등급 추가
+            $request->merge(['mb_buy' => $member['mb_buy']]);
         }
         
         // 판매량순 구하기
@@ -228,7 +238,21 @@ class ShopController extends Controller
             }
         })
         ->whereNotIn('it_id_type', [4, 6, 8])
-        ->where('g5_shop_item.it_use', '1');
+        ->where(function ($query) use ($request) {
+            // 회원이 관리자 등급이면 상품진열이 진열 또는 전용상품일 경우 
+            if ($request->input('member_type')) {
+                $query->where('g5_shop_item.it_use', '1')
+                    ->orWhere('g5_shop_item.it_only_admin', '1');
+            } 
+            // 회원타입이 없는 경우
+            else {
+                $query->where('g5_shop_item.it_use', '1');
+            }
+        })
+        ->when($request->input('mb_buy'), function($query) use ($request) {
+            // 구매등급 추가
+            $query->where('g5_shop_item.it_member_group', 'LIKE', '%'.$request->mb_buy.'%');
+        });
 
         $items = $query->paginate($perPage)->withQueryString();
 
@@ -708,6 +732,19 @@ class ShopController extends Controller
         $perPage = $request->input('scale', '60');
         $ca_id = $request->input('ca_id', '');
 
+        if (session()->has('ss_mb_code')) {
+            $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
+            // 사원체크 
+            if (isset($member['mb_level_type'])) {
+                if (trim($member['mb_level_type']) == '2' && trim($member['mb_gubun_type']) == 'employee') {
+                    $request->merge(['member_type' => 'emp']);
+                }
+            }
+            // 구매등급 추가
+            $request->merge(['mb_buy' => $member['mb_buy']]);
+        }
+
+
         $shopGroup = ShopItem::selectRaw('it_qty_system_stock AS cnt, stock_it_id')
         ->groupBy('stock_it_id');
 
@@ -722,10 +759,24 @@ class ShopController extends Controller
         ->select(
             app(ShopItemService::class)::selected()
         )
+        ->where(function ($query) use ($request) {
+            // 회원이 관리자 등급이면 상품진열이 진열 또는 전용상품일 경우 
+            if ($request->input('member_type')) {
+                $query->where('g5_shop_item.it_use', '1')
+                    ->orWhere('g5_shop_item.it_only_admin', '1');
+            } 
+            // 회원타입이 없는 경우
+            else {
+                $query->where('g5_shop_item.it_use', '1');
+            }
+        })
+        ->when($request->input('mb_buy'), function($query) use ($request) {
+            // 구매등급 추가
+            $query->where('it_member_group', 'LIKE', '%'.$request->mb_buy.'%');
+        })
         ->where('g5_shop_cart.mb_code', session('ss_mb_code'))
         ->where('g5_shop_cart.ct_status', '!=', '쇼핑')
         ->where('g5_shop_cart.ct_imsi', 'n')
-        ->where('g5_shop_item.it_use', '1')
         ->where('g5_shop_item.ca_id', '!=', '10')
         ->where(function ($query) {
             $query->whereIn('g5_shop_cart.ct_status', ['배송', '완료'])

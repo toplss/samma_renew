@@ -41,10 +41,16 @@ class ShopItem extends Model
 
         if ($request->has('category')) {
             $key   = "shop:items:{$ca_id}:category:".$request->input('category').':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2.':mb_buy:'.$request->input('mb_buy');
+            $key  .= ":member_type:".$request->input('member_type');
+
             $lock  = "lock:shop:items:{$ca_id}:category:".$request->input('category').':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2.':mb_buy:'.$request->input('mb_buy');
+            $lock  .= ":member_type:".$request->input('member_type');
         } else {
             $key   = "shop:items:{$ca_id}".':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2.':mb_buy:'.$request->input('mb_buy');
+            $key  .= ":member_type:".$request->input('member_type');
+
             $lock  = "lock:shop:items:{$ca_id}".':desc.'.$request->desc.':chain_ca_id2:'.$chain_ca_id2.':mb_buy:'.$request->input('mb_buy');
+            $lock  .= ":member_type:".$request->input('member_type');
         }
 
         $strlen = strlen($ca_id);
@@ -65,20 +71,23 @@ class ShopItem extends Model
                 'vivacook', 'mygrang', 'hit', 'recom', 'new', 'best', 'sale', 'free', 'auction', 'etc', 'event'
             ];
 
-            // $it_price = 'it_price';
-            // $chain_ca_id2 = null;
-            // if (session()->has('ss_mb_code')) {
-            //     $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
-            //     $it_price = $member['field_it_price'];                
-            //     $chain_ca_id2 = (empty($member['chain_ca_id2']) || $member['chain_ca_id2'] == '1001') ? null : $member['chain_ca_id2'];
-            // }
-
             # 비바쿡과 마이그랑 메뉴만 it_type_order asc / 나머지 메뉴는 it_order asc 정렬 적용을 위한 코드 추가
             $sort_column = in_array($ca_id, ['vivacook', 'mygrang']) ? 'it_type_order' : 'it_order';
 
             # DB 조회 (한 명만)
-            $data = ShopItem::where('it_use', '1')
+            $data = ShopItem::where(function ($query) use ($request) {
+                    // 회원이 관리자 등급이면 상품진열이 진열 또는 전용상품일 경우 
+                    if ($request->input('member_type')) {
+                        $query->where('it_use', '1')
+                            ->orWhere('it_only_admin', '1');
+                    } 
+                    // 회원타입이 없는 경우
+                    else {
+                        $query->where('it_use', '1');
+                    }
+                })
                 ->when($request->input('mb_buy'), function($query) use ($request) {
+                    // 구매등급 추가
                     $query->where('it_member_group', 'LIKE', '%'.$request->mb_buy.'%');
                 })
                 ->when($strlen == '2' && !in_array($ca_id, $except), function($query) use($ca_id, $chain_ca_id2){
@@ -427,20 +436,47 @@ class ShopItem extends Model
         $key   = "shop:items:{$ca_id}";
         $lock  = "lock:shop:items:{$ca_id}";
 
+        if (session()->has('ss_mb_code')) {
+            $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
+            // 사원체크 
+            if (isset($member['mb_level_type'])) {
+                if (trim($member['mb_level_type']) == '2' && trim($member['mb_gubun_type']) == 'employee') {
+                    $request->merge(['member_type' => 'emp']);
+                }
+            }
+            
+            // 구매등급 추가
+            $request->merge(['mb_buy' => $member['mb_buy']]);
+        }
+
         # 캐시 조회
         if ($data = Cache::get($key)) {
             return $data;
         }
 
         
-        return Cache::lock($lock, 5)->block(3, function () use ($key, $ca_id) { // 5락 유지시간, 3락 대기시간
+        return Cache::lock($lock, 5)->block(3, function () use ($key, $ca_id, $request) { // 5락 유지시간, 3락 대기시간
             # 캐시 조회
             if ($data = Cache::get($key)) {
                 return $data;
             }
 
             # DB 조회 (한 명만)
-            $data = ShopItem::where('it_use', '1')
+            $data = ShopItem::where(function ($query) use ($request) {
+                    // 회원이 관리자 등급이면 상품진열이 진열 또는 전용상품일 경우 
+                    if ($request->input('member_type')) {
+                        $query->where('it_use', '1')
+                            ->orWhere('it_only_admin', '1');
+                    } 
+                    // 회원타입이 없는 경우
+                    else {
+                        $query->where('it_use', '1');
+                    }
+                })
+                ->when($request->input('mb_buy'), function($query) use ($request) {
+                    // 구매등급 추가
+                    $query->where('it_member_group', 'LIKE', '%'.$request->mb_buy.'%');
+                })
                 ->when($ca_id , function($query) use($ca_id){
                     $query->where('ca_id', $ca_id);
                 })
