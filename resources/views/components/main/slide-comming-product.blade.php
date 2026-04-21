@@ -24,9 +24,9 @@ $image_url = 'images/item/'.$row['it_img1'];
 <div class="sale-item-list">
     <ul class="{{ $sold_out ? 'end' : '' }}">
         @if(file_exists(public_path($image_url)) && $row['it_img1'])
-        <li class="si-img" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset($image_url) }}"></li>
+        <li class="si-img" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset($image_url) }}"><p>마감임박! 160개 돌파<img src="{{ asset('images/icon/fire.svg') }}"></p></li>
         @else
-        <li class="si-img" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset('images/common/no_image.gif') }}"></li>
+        <li class="si-img" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset('images/common/no_image.gif') }}"><p>마감임박! 160개 돌파<img src="{{ asset('images/icon/fire.svg') }}"></p></li>
         @endif
         <li class="si-name">{{ $row['it_name'] }}</li>
         <!-- 기간설정일 경우 -->
@@ -36,7 +36,10 @@ $image_url = 'images/item/'.$row['it_img1'];
 
         <!-- 갯수설정일 경우 -->
         @if ($row['it_event_type'] == '2') 
-        <li class="si-terms"><span>{{ $row['it_event_start2'] }} {{ $row['it_qty_event_stock'] }}개 한정</span></li>
+        <li class="si-terms">
+            <span>{{ $row['it_event_start2'] }}</span>
+            <span>{{ $row['it_qty_event_stock'] }}개 한정</span>
+        </li>
         @endif
     </ul>
 </div>

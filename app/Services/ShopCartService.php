@@ -713,8 +713,8 @@ class ShopCartService
         }
 
         return [
-            'field_it_price' => $field_it_price,
-            'field_it_price_unit' => $field_it_price_unit,
+            'field_it_price' => $field_it_price ?? 'it_price1',
+            'field_it_price_unit' => $field_it_price_unit ?? 'it_price_unit1',
         ];
     }
 

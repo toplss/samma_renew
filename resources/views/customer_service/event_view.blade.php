@@ -39,7 +39,7 @@
       @if(file_exists(public_path($image_url)) && $items['it_img1'])
       <div class="pv-img {{ $sold_out ? 'end' : '' }}">
         <img src="{{ asset($image_url) }}">
-        <span class="{{ $timpArr[$items['it_storage']] }}"><img src="{{ asset('images/icon/snow.svg') }}">{{ $items['it_storage_label'] }}</span>
+        <!-- <span class="{{ $timpArr[$items['it_storage']] }}"><img src="{{ asset('images/icon/snow.svg') }}">{{ $items['it_storage_label'] }}</span> -->
       </div>
       @else
       <div class="pv-img {{ $sold_out ? 'end' : '' }}">
@@ -62,7 +62,7 @@
 			</div>
 
       @if($activeMember)
-      <div class="prd-view-price">
+      <div class="prd-view-price" style="display:none;">
         @php
         $cust_price_field = str_replace('it_', 'cust_', $activeMember['field_it_price']);
         $cust_price = (int) str_replace(',', '', $items[$cust_price_field] ?? 0);
@@ -127,14 +127,14 @@
       <div class="price-view-opt">
         <div class="sit_opt">
               
-          <div class="sit_opt_g">
+          <div class="sit_opt_g" style="display:none;">
 
             <input type="hidden" name="min_ct_qty" class="min_ct_qty"  value="{{ $min_cart_ct_qty }}">
             <input type="hidden" name="max_ct_qty" class="max_ct_qty"  value="{{ $max_cart_ct_qty }}">
-            <input type="text"  id="ct_qty" class="ct_qty" value="{{ $min_cart_ct_qty }}" {{ $read_only }} {!! $onkey_press_event !!}>
+            <input type="hidden"  id="ct_qty" class="ct_qty" value="{{ $min_cart_ct_qty }}" {{ $read_only }} {!! $onkey_press_event !!}>
 
           </div>
-          <div id="sit_tot_price">총 금액<span class="sit_tot_price_view">{{ number_format($row_list_field_it_price) }}원</span></div>
+          <!-- <div id="sit_tot_price">총 금액<span class="sit_tot_price_view">{{ number_format($row_list_field_it_price) }}원</span></div> -->
         </div>
         
         <div class="sit_btn">

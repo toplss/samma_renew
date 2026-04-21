@@ -182,7 +182,9 @@ class ShopCartApi extends Controller
                     break;
                 case 'cart_update' : 
                     $res = $this->cart_update($request, $member);
-                    if (!$res) throw new \Exception("수량을 확인 하세요.");
+                    if ($res['status'] == 'fail') throw new \Exception($res['msg']);
+
+                    $res = $res['data'];
                 break;
                 case 'cart_delete' : 
                     $res = $this->cart_delete($request, $member);
@@ -635,13 +637,21 @@ class ShopCartApi extends Controller
                     // 그룹코드 생성
                     $od_group_code = str_replace("-","", date("Ymd"))."_".$mb_code;
 
-                    $tot = $item['it_qty_'.$item['it_gubun']] * $request->input('ct_qty');
+                    // $tot = $item['it_qty_'.$item['it_gubun']] * $request->input('ct_qty');
+
+                    $tot = isset($item['it_qty_'.$item['it_gubun']]) 
+                        ? (int) $item['it_qty_'.$item['it_gubun']] * $request->input('ct_qty')
+                        : 0;
 
                     $qtyGroup = $this->ProductUnit($it_id, $tot);
+
 
                     if ($tot > $item['it_qty_system_stock']) {
                         return false;
                     }
+
+                    $price = (int) ($item[$pay_fields['field_it_price']] ?? 0);
+                    $price_unit = (int) ($item[$pay_fields['field_it_price_unit']] ?? 0);
 
 
                     $add_cart = [
@@ -677,7 +687,7 @@ class ShopCartApi extends Controller
                         'it_sc_minimum'  => $item['it_sc_minimum'],
                         'it_sc_qty'    => $item['it_sc_qty'],
                         'ct_status'    => '쇼핑',
-                        'ct_price'     => $item[$pay_fields['field_it_price']],
+                        'ct_price'     => $price,
                         'ct_point'     => $item['it_point'],
                         'ct_point_use' => '0',
                         'ct_stock_use' => '0',
@@ -685,10 +695,10 @@ class ShopCartApi extends Controller
                         'ct_qty'       => $request->input('ct_qty'),
                         'ct_qty_order' => $request->input('ct_qty'),
                         'ct_cate'      => '납품',
-                        'supply_price' => $item[$pay_fields['field_it_price']],
-                        'supply_price_unit' => $item[$pay_fields['field_it_price_unit']],
+                        'supply_price' => $price,
+                        'supply_price_unit' => $price_unit,
                         'price_unit'   => round($item['it_price_piece']),
-                        'pt_sales'     => $item[$pay_fields['field_it_price']] * $request->input('ct_qty'),
+                        'pt_sales'     => $price * $request->input('ct_qty'),
                         'ct_qty_box'   => $qtyGroup['box'],
                         'ct_qty_pack'  => $qtyGroup['pack'],
                         'ct_qty_pcs'   => $qtyGroup['pcs'],
@@ -1012,7 +1022,10 @@ class ShopCartApi extends Controller
             ->first();
 
             if (!$cartItem) {
-                return false; // 장바구니에 상품이 없으면 종료
+                return [
+                    'status'  => 'fail',
+                    'msg'  => '장바구니에 담긴 상품이 아닙니다.'
+                ];
             }
 
             // 현재 총 수량 계산
@@ -1033,7 +1046,10 @@ class ShopCartApi extends Controller
 
                     // 전산재고 보다 많이 담으면
                     if ($tot > $cartItem->it_qty_system_stock) {
-                        return false;
+                        return [
+                            'status'  => 'fail',
+                            'msg'  => '재고가 부족 합니다.'
+                        ];
                     }
                     break;
 
@@ -1042,19 +1058,26 @@ class ShopCartApi extends Controller
                     $newQty = $cartItem->ct_qty - $min_cart_ct_qty;
 
                     if ($tot <= 0 || $newQty <= 0) {
-                        return false; // 수량이 0 이하이면 처리 중단
+                        return [
+                            'status'  => 'fail',
+                            'msg'  => '최소 주문 수량은 '.$min_cart_ct_qty.'입 입니다.'
+                        ];
                     }
                     break;
 
                 default:
-                    return false; // 정의되지 않은 action
+                    return [
+                        'status'  => 'fail',
+                        'msg'  => '정상적인 접근이 아닙니다.'
+                    ];
             }
 
             // 단위 계산 (기존 ProductUnit 함수 재사용)
             $qtyGroup = $this->ProductUnit($it_id, $tot);
 
-            // 장바구니 업데이트
-            return DB::table('g5_shop_cart')
+            return [
+                'status' => 'success',
+                'data' => DB::table('g5_shop_cart')
                 ->where('it_id', $it_id)
                 ->where('mb_code', $mb_code)
                 ->where('ct_status', '쇼핑')
@@ -1066,7 +1089,8 @@ class ShopCartApi extends Controller
                     'ct_qty_pcs'  => $qtyGroup['pcs'],
                     'ct_qty_tot'  => $tot,
                     'pt_sales'    => $cartItem->ct_price * $newQty
-                ]);
+                ])
+            ];
         });
     }
 

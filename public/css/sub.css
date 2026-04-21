@@ -888,9 +888,10 @@
 }
 
 @media screen and (max-width: 680px){
+  .sub-title-wrap{width: 110%; margin-left: -5%; border-radius: 0; padding: 0.8rem 0.6rem;}
   .st-left button{padding: 0.2rem; border-radius: 0.2rem;}
   .st-left ul{font-size: 0.9rem;}
-  .st-right select{width: 80px; border-radius: 0.2rem; padding: 0.2rem; font-size: 0.9rem;}
+  .st-right select{width: 75px; border-radius: 0.2rem; padding: 0.2rem; font-size: 0.9rem;}
   .st-right #scale{display: none;}
   .st-right img{width: 1.4rem;}
   #cateList li a{padding: 0.3rem 0.6rem; width: 120px; display: flex; align-items: center; gap: 0.3rem;}

@@ -565,6 +565,7 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 	.f-box3 dl{grid-template-columns: 1fr 2fr;}
 	.f-box3 address{grid-column: auto;}
 	#cartQuickWrap{width: 96vw;}
+	#mCartQuickBtn{width: 101%; border-radius: 0; box-shadow: none; border-top: 1px solid #eee;}
 	.item-div{flex-wrap: nowrap;}
 
 	.contact_wrap{width: 96%; right: 2%;}
