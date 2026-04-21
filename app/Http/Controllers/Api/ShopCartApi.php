@@ -1109,9 +1109,6 @@ class ShopCartApi extends Controller
     //장바구니 구매버튼 클릭 시 품절상품 체크
     public function check_soldout_cnt(Request $request)
     {
-
-        $mb_code = $request->mb_code;     
-
         $result = DB::table('g5_shop_cart as sc')
             ->join('g5_shop_item as si', 'sc.it_id', '=', 'si.it_id')
             ->selectRaw('
@@ -1125,7 +1122,7 @@ class ShopCartApi extends Controller
                 si.it_soldout,
                 si.it_force_soldout
             ')
-            ->where('sc.mb_code', 1261)
+            ->where('sc.mb_code', session('ss_mb_code'))
             ->where('sc.ct_status', '쇼핑')
             ->where(function ($query) {
                 $query->where('si.it_qty_system_stock', '<', 1)

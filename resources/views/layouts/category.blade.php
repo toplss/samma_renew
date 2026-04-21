@@ -1,6 +1,6 @@
 @if ($activeCategory)
 <div class="st-left">
-    @if(!request('skeyword') && (request('type') !== 'sale' && request('type') !== 'best' && request('type') !== 'new'))
+    @if(!request('skeyword') && (request('type') !== 'sale' && request('type') !== 'best' && request('type') !== 'new' && request('type') !== 'vivacook' && request('type') !== 'mygrang'))
     <div class="category">
         <button type="button" class="btn3" id="cateBtn">전체<img src="{{ asset('images/icon/down.svg') }}"></button>
         <ul id="cateList">
@@ -60,13 +60,13 @@
 
     
     @else 
-        @if (request('type') !== 'sale' && request('type') !== 'best' && request('type') !== 'new')
+        @if (request('type') !== 'sale' && request('type') !== 'best' && request('type') !== 'new' && request('type') !== 'vivacook' && request('type') !== 'mygrang')
         <div>
             <b>{{ request('skeyword') }}</b> 에 대한 검색결과 <b>총 {{ $items->total() }}개</b> 상품이 있습니다.
         </div>
         @else 
         @php
-        $title = ['sale' => '이달의행사', 'best' => '베스트', 'new' => '신상품'];
+        $title = ['sale' => '이달의행사', 'best' => '베스트', 'new' => '신상품', 'vivacook' => '비바쿡', 'mygrang' => '마이그랑'];
         @endphp
 
         <h4>{{ $title[request('type')] }}</h4>
