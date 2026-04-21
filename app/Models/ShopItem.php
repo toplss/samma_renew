@@ -394,6 +394,11 @@ class ShopItem extends Model
                         }
                     });
                 })
+
+                //메인 슬라이드 - 출시예정 상품
+                ->when($ca_id == 'MainSlideComming' ,function($query) {
+                    $query->where('ca_id', 'i0')->where('it_type10', '1')->where('it_display_use', '1');
+                })
                 
                 ->when($request->filled('desc'), function($query) use($request, $it_price) {
                     if ($request->desc == '2' && $it_price) {

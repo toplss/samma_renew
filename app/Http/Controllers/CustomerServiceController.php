@@ -510,7 +510,18 @@ class CustomerServiceController extends Controller
             'contents.required' => '내용을 입력해주세요.',
         ]);
 
-        //구글봇 자동 등록 방지
+        //봇 자동 등록 방지
+        $input_phone = $request->input('phone1').$request->input('phone2').$request->input('phone3');
+        $input_email = $request->input('email1').$request->input('email2');
+
+        if (substr_count($input_phone, '-') > 2) {
+            return redirect()->route('/');
+        }
+
+        if (substr_count($input_email, '@') > 1) {
+            return redirect()->route('/');
+        }        
+
         if ($request->input('company') == 'google') {
             return redirect()->route('/');
         }                        

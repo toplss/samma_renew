@@ -148,11 +148,6 @@
 
 
     <!-- 이벤트 상품 -->
-    @php 
-      //출시 예정 상품 순서 램덤
-      shuffle($MainSlideComming_product);
-    @endphp    
-
     @if(count($MainSlideComming_product) > 0)
       <div class="sale-item-slide" id="si6">
         <!-- 반복 -->

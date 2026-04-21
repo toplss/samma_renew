@@ -203,6 +203,12 @@ class ShopCartService
             'g5_shop_item.it_img1',
             'g5_shop_item.it_img1_url',
 
+            'g5_shop_item.it_event_type',
+            DB::raw('DATE_FORMAT(g5_shop_item.it_event_start, "%Y-%m-%d %H:%i") AS it_event_start'),
+            DB::raw('DATE_FORMAT(g5_shop_item.it_event_end, "%Y-%m-%d %H:%i") AS it_event_end'),
+            DB::raw('DATE_FORMAT(g5_shop_item.it_event_start2, "%Y-%m-%d %H:%i") AS it_event_start2'),
+            'g5_shop_item.it_qty_event_stock',
+
             'g5_shop_item_cust_log.it_price1 as cust_price1',
             'g5_shop_item_cust_log.it_price2 as cust_price2',
             'g5_shop_item_cust_log.it_price3 as cust_price3',
@@ -549,6 +555,11 @@ class ShopCartService
             'g5_shop_item.it_type3',
             'g5_shop_item.it_type4',
             'g5_shop_item.it_type5',
+            'g5_shop_item.it_type6',
+            'g5_shop_item.it_type7',
+            'g5_shop_item.it_type8',
+            'g5_shop_item.it_type9',
+            'g5_shop_item.it_type10',
             'g5_shop_item.it_cust_rate',
             'g5_shop_item.it_cust_type',
 
@@ -623,6 +634,12 @@ class ShopCartService
             'g5_shop_item.it_img1_url',
             'g5_shop_item.it_explan',
             'g5_shop_item.it_return_use',
+
+            'g5_shop_item.it_event_type',
+            DB::raw('DATE_FORMAT(g5_shop_item.it_event_start, "%Y-%m-%d %H:%i") AS it_event_start'),
+            DB::raw('DATE_FORMAT(g5_shop_item.it_event_end, "%Y-%m-%d %H:%i") AS it_event_end'),
+            DB::raw('DATE_FORMAT(g5_shop_item.it_event_start2, "%Y-%m-%d %H:%i") AS it_event_start2'),
+            'g5_shop_item.it_qty_event_stock',
 
             'g5_shop_item_cust_log.it_price1 as cust_price1',
             'g5_shop_item_cust_log.it_price2 as cust_price2',

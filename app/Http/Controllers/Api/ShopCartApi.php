@@ -68,19 +68,45 @@ class ShopCartApi extends Controller
                         throw new \Exception("품절된 상품 입니다.");
                     }
 
-                    $cnt_exists = ShopItem::where('it_id', $it_id)
-                    ->where('it_use', '1')
-                    ->exists();
-                    if ($cnt_exists == 0) {
-                        throw new \Exception("현재 판매가능한 상품이 아닙니다.");
-                    }
+                    // 이벤트아이템 상태체크
+                    $event_status = $this->event_item_check($it_id);
 
+                    if ($event_status == 'NORMAL') {
+                        $cnt_exists = ShopItem::where('it_id', $it_id)
+                        ->where('it_use', '1')
+                        ->exists();
+                        if ($cnt_exists == 0) {
+                            throw new \Exception("현재 판매가능한 상품이 아닙니다.");
+                        }
 
-                    $it_price = ShopItem::where('it_id', $it_id)
-                    ->value('it_price1');
-                    
-                    if (!$it_price || $it_price <= 0) {
-                        throw new \RuntimeException("구매할 수 없는 상품입니다.");
+                        $it_price = ShopItem::where('it_id', $it_id)
+                        ->value('it_price1');
+                        
+                        if (!$it_price || $it_price <= 0) {
+                            throw new \RuntimeException("구매할 수 없는 상품입니다.");
+                        }
+
+                    } else {
+                        switch ($event_status) {
+                            case 'SOLD_OUT' : 
+                                throw new \Exception("해당 이벤트 상품은 모두 소진되었습니다.");
+                                break;
+                            case 'END' : 
+                                throw new \Exception("해당 이벤트는 종료되었습니다.");
+                                break;
+                            case 'WAIT' : 
+                                throw new \Exception("이벤트 기간이 아직 시작되지 않았습니다.");
+                                break;
+                            case 'RUN' : 
+                                $cnt_exists = DB::table('g5_shop_cart')
+                                ->where('it_id', $it_id)
+                                ->where('mb_code', session('ss_mb_code'))->exists();
+                                
+                                if ($cnt_exists) {
+                                    throw new \Exception("해당 상품은 1개만 구매(또는 담기) 가능합니다.");
+                                }
+                                break;
+                        }
                     }
 
                     if (trim($member['mb_gubun_type']) == 'employee') {
@@ -1113,4 +1139,62 @@ class ShopCartApi extends Controller
     }
 
 
+
+    /** 이벤트상품 상태 체크 */
+    public function event_item_check($it_id)
+    {
+        $item = DB::table('g5_shop_item')
+        ->select(
+            'it_id',
+            'it_event_type',
+            'it_event_start',
+            'it_event_end',
+            'it_event_start2',
+            'it_qty_event_stock',
+
+            DB::raw("
+                CASE
+
+                    WHEN it_event_type = '1'
+                        AND NOW() < it_event_start THEN 'WAIT'
+
+                    WHEN it_event_type = '1'
+                        AND NOW() BETWEEN it_event_start AND it_event_end THEN 'RUN'
+
+                    WHEN it_event_type = '1'
+                        AND NOW() > it_event_end THEN 'END'
+
+                    WHEN it_event_type = '2'
+                        AND NOW() < it_event_start2 THEN 'WAIT'
+
+                    WHEN it_event_type = '2'
+                        AND it_qty_event_stock > 0
+                        AND (
+                            SELECT IFNULL(SUM(ct_qty_tot), 0)
+                            FROM g5_shop_cart
+                            WHERE it_id = g5_shop_item.it_id
+                            AND ct_status != '쇼핑'
+                        ) < it_qty_event_stock
+                    THEN 'RUN'
+
+                    WHEN it_event_type = '2'
+                        AND it_qty_event_stock > 0
+                        AND (
+                            SELECT IFNULL(SUM(ct_qty_tot), 0)
+                            FROM g5_shop_cart
+                            WHERE it_id = g5_shop_item.it_id
+                            AND ct_status != '쇼핑'
+                        ) >= it_qty_event_stock
+                    THEN 'SOLD_OUT'
+
+                    ELSE 'NORMAL'
+
+                END AS event_status
+            ")
+        )
+        ->where('it_id', $it_id)
+        ->first();
+
+        return $item->event_status;
+    }
 }

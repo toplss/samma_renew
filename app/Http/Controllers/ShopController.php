@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Validation\Rule;
 use App\Facades\Sso;
+use App\Http\Controllers\Api\ShopCartApi;
 use App\Services\BannerService;
 use App\Services\RecipeService;
 use Debugbar;
@@ -139,12 +140,28 @@ class ShopController extends Controller
 
         $related_products = ShopItem::getRelationItems($request->merge(['ca_id2' => $items['ca_id2']]));
 
+        if ($items['ca_id'] == 'i0' && $items['it_type10'] == '1') {
+
+            $event_status = app(ShopCartApi::class)->event_item_check($items['it_id']);
             
-        return view('mall.shop.view', [
-            'items' => $items,
-            'recommended_products' => $recommended_products,
-            'related_products' => $related_products,
-        ]);
+            $sales_count = DB::table('g5_shop_cart')->where('it_id', $items['it_id'])
+            ->where('ct_status', '!=', '쇼핑')
+            ->sum('ct_qty_tot');
+
+            return view('customer_service.event_view', [
+                'items' => $items,
+                'event_status' => $event_status,
+                'sales_count'  => $sales_count,
+            ]);
+
+        } else {
+            return view('mall.shop.view', [
+                'items' => $items,
+                'recommended_products' => $recommended_products,
+                'related_products' => $related_products,
+            ]);
+        }
+        
     }
 
 

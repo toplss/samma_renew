@@ -1,5 +1,8 @@
 @php
-$sold_out = $row['it_soldout'] == '1' || $row['it_force_soldout'] == '10' ? true : false;
+$sold_out = false;
+if ($row['event_status'] == 'SOLD_OUT' || $row['event_status'] == 'END') {
+    $sold_out = true;
+}
 $it_id    = $row['it_id'];
 $min_cart_ct_qty = $box_min_qty = $max_cart_ct_qty = 0;
 
@@ -19,46 +22,21 @@ $image_url = 'images/item/'.$row['it_img1'];
 @endphp
 
 <div class="sale-item-list">
-    <ul>
+    <ul class="{{ $sold_out ? 'end' : '' }}">
         @if(file_exists(public_path($image_url)) && $row['it_img1'])
-        <li class="si-img end" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset($image_url) }}"></li>
+        <li class="si-img" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset($image_url) }}"></li>
         @else
-        <li class="si-img end" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset('images/common/no_image.gif') }}"></li>
+        <li class="si-img" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset('images/common/no_image.gif') }}"></li>
         @endif
         <li class="si-name">{{ $row['it_name'] }}</li>
-        <li class="si-terms"><span>~2026.04.20<i class="hide-1280">까지</i></span></li>
-        <!-- <li class="si-terms"><span>200개 한정</span></li> -->
-         
-        <!-- <li class="si-ea">({{ $row['it_basic'] }}*{{ $row['it_gubun_label'] }})</li>
+        <!-- 기간설정일 경우 -->
+        @if ($row['it_event_type'] == '1') 
+        <li class="si-terms"><span>{{ $row['it_event_start'] }} ~ {{ $row['it_event_end'] }}<i class="hide-1280">까지</i></span></li>
+        @endif
 
-        @if($activeMember)
-            @php
-            $cust_price_field = str_replace('it_', 'cust_', $activeMember['field_it_price']);
-            $cust_price = (int) str_replace(',', '', $row[$cust_price_field] ?? 0);
-
-
-            $price = (int) str_replace(',', '', $row[$activeMember['field_it_price']] ?? 0);
-            $qty   = (int) $min_cart_ct_qty;
-
-            $row_list_field_it_price = $price * $qty;
-            $row_list_cust_it_price  = $cust_price * $qty;
-            @endphp
-        
-            @if($cust_price > 0)
-            <li class="si-price">
-                <del>{{ number_format($row_list_cust_it_price) }}원</del>
-                <p><b>{{ $row['it_cust_rate'] }}%</b>{{ number_format($row_list_field_it_price) }}원</p>
-            </li>
-            @else
-            <li class="si-price"><span>{{ number_format($row_list_field_it_price) }}원</span></li>
-            @endif
-        @else
-            {{-- <li class="si-price"><span>{{ number_format($row['it_price2']) }}원</span></li> --}}
-            @if ( $row['it_cust_rate'] > 0)
-                <li class="si-price">
-                    <p><b>{{ $row['it_cust_rate'] }}% 할인</b></p>
-                </li>
-            @endif
-        @endif -->
+        <!-- 갯수설정일 경우 -->
+        @if ($row['it_event_type'] == '2') 
+        <li class="si-terms"><span>{{ $row['it_event_start2'] }} {{ $row['it_qty_event_stock'] }}개 한정</span></li>
+        @endif
     </ul>
 </div>

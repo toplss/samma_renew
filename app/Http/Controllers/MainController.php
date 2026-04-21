@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Api\ShopCartApi;
 use App\Models\ShopCart;
 use App\Models\TbBbsBody;
 use App\Models\TbRecipe;
@@ -158,7 +159,23 @@ class MainController extends Controller
         $resArr['MainSlideMygrang_product'] = app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideMygrang', 'scale' => '20']))->items(); # 메인 슬라이드 - 마이그랑 할인상품
         $resArr['MainSlideBest_product'] = app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideBest', 'scale' => '20']))->items(); # 메인 슬라이드 - 지난주 베스트
         $resArr['MainSlideNew_product'] = app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideNew', 'scale' => '20']))->items(); # 메인 슬라이드 - 이번주 추천상품
-        $resArr['MainSlideComming_product'] = app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideComming', 'scale' => '20']))->items(); # 메인 슬라이드 - 출시예정 상품
+        // $resArr['MainSlideComming_product'] = app(ShopCartService::class)->shopItemList($request->merge(['ca_id' => 'MainSlideComming', 'scale' => '20']))->items(); # 메인 슬라이드 - 출시예정 상품
+
+        $itemsList = app(ShopCartService::class)
+            ->shopItemList(
+                $request->merge([
+                    'ca_id' => 'MainSlideComming',
+                    'scale' => 20
+                ])
+            )
+            ->items();
+
+        foreach ($itemsList as &$items) {
+            $items['event_status'] = app(ShopCartApi::class)
+                ->event_item_check($items['it_id']);
+        }
+
+        $resArr['MainSlideComming_product'] = $itemsList;
 
         return $resArr;
     }
