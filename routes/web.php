@@ -223,23 +223,19 @@ Route::middleware(['block.ip'])->group(function () {
         Route::Post('contact_us', [CustomerServiceController::class, 'ContactUsSave'])->name('contact_us');    
 
 
-
-        /********** 장비구매 **********/
-        Route::get('/mall/shop/list_gubun_equipment', [ShopController::class, 'ShopItemEquipList']);
-
-
-
-        /********** A/S부속품 **********/
-        Route::get('/mall/shop/list_gubun_accessory', [ShopController::class, 'ShopItemEquipList']);
-
-
-
         /********** 로그인 세션 그룹 **********/
         Route::middleware(['auth.session'])->group(function () {
                 
             /********** 메인 **********/
             // Route::get('/', [MainController::class, 'index'])->name('/');
 
+            /********** 장비구매 **********/
+            Route::get('/mall/shop/list_gubun_equipment', [ShopController::class, 'ShopItemEquipList']);
+
+
+
+            /********** A/S부속품 **********/
+            Route::get('/mall/shop/list_gubun_accessory', [ShopController::class, 'ShopItemEquipList']);
 
 
             /********** 레시피 주문 **********/

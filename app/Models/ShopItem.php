@@ -437,10 +437,6 @@ class ShopItem extends Model
      */
     public static function getShopItemEquips($request)
     {
-        $ca_id = $request->input('ca_id');
-        $key   = "shop:items:{$ca_id}";
-        $lock  = "lock:shop:items:{$ca_id}";
-
         if (session()->has('ss_mb_code')) {
             $member = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
             // 사원체크 
@@ -453,6 +449,10 @@ class ShopItem extends Model
             // 구매등급 추가
             $request->merge(['mb_buy' => $member['mb_buy']]);
         }
+
+        $ca_id = $request->input('ca_id');
+        $key   = "shop:items:{$ca_id}:mb_buy:".$request->input('mb_buy').':member_type:'.$request->input('member_type');
+        $lock  = "lock:shop:items:{$ca_id}:mb_buy:".$request->input('mb_buy').':member_type:'.$request->input('member_type');
 
         # 캐시 조회
         if ($data = Cache::get($key)) {

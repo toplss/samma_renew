@@ -113,6 +113,12 @@ class PaymentService
                     }
                 }
 
+                // 이벤트상품 구매시 현재 이벤트 상품상태가 아닌경우
+                if ($this->event_item_validate()) {
+                    throw new \Exception('이벤트 상품 중 현재 구매할 수 없는 상품이 포함되어 있습니다.');
+                }
+                
+
                 // 매출데이터 생성
                 if (!$this->setMakeOrderData($request)) {
                     throw new \Exception('주문 데이터 등록이 실패 하였습니다. 관리자에게 문의 부탁드립니다.');
@@ -880,5 +886,57 @@ class PaymentService
         ->where('od_id', $oid)
         ->selectRaw('SUM(ct_price * ct_qty) as total_price')
         ->value('total_price');
+    }
+
+
+
+    // 현재 구매불가능한 이벤트 상품이 존재하는지 체크
+    private function event_item_validate()
+    {
+        $eventSub = DB::table('g5_shop_item as it')
+            ->selectRaw("
+                it_id,
+                CASE
+                    WHEN it_event_type = '1' AND NOW() < it_event_start THEN 'WAIT'
+                    WHEN it_event_type = '1' AND NOW() BETWEEN it_event_start AND it_event_end THEN 'RUN'
+                    WHEN it_event_type = '1' AND NOW() > it_event_end THEN 'END'
+
+                    WHEN it_event_type = '2' AND NOW() < it_event_start2 THEN 'WAIT'
+
+                    WHEN it_event_type = '2'
+                        AND it_qty_event_stock > 0
+                        AND (
+                            SELECT IFNULL(SUM(ct_qty_tot), 0)
+                            FROM g5_shop_cart
+                            WHERE it_id = it.it_id
+                            AND ct_status != '쇼핑'
+                        ) < it_qty_event_stock
+                    THEN 'RUN'
+
+                    WHEN it_event_type = '2'
+                        AND it_qty_event_stock > 0
+                        AND (
+                            SELECT IFNULL(SUM(ct_qty_tot), 0)
+                            FROM g5_shop_cart
+                            WHERE it_id = it.it_id
+                            AND ct_status != '쇼핑'
+                        ) >= it_qty_event_stock
+                    THEN 'SOLD_OUT'
+
+                    ELSE 'NORMAL'
+                END AS event_status
+            ")
+            ->where('ca_id', 'i0')
+            ->where('it_type10', '1');
+
+        return DB::table('g5_shop_cart as sc')
+            ->rightJoinSub($eventSub, 'et', function ($join) {
+                $join->on('sc.it_id', '=', 'et.it_id');
+            })
+            ->where('sc.mb_code', session('ss_mb_code'))
+            ->where('sc.ct_status', '쇼핑')
+            ->where('et.event_status', '!=', 'RUN')
+            ->select('et.*')
+            ->exists();
     }
 }

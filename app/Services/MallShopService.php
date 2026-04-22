@@ -50,8 +50,10 @@ class MallShopService
             $arr_member = TbMember::where('mb_code', $mb_code)->get()->first();
 
             $reatimeBalance = ShopOrderModel::realTimeOrderTopPoints($mb_code);
+
+            $none_pt_charge =ShopOrderModel::realTimeNonePaymentOrderTopChargePoints($mb_code);
             
-            $arr_member['mb_point'] = $reatimeBalance->put_charge ?? 0;
+            $arr_member['mb_point'] = $reatimeBalance->put_charge - $none_pt_charge ?? 0;
             $arr_member['mb_point_reserve'] = $reatimeBalance->put_reserve ?? 0;
             $arr_member['mb_point_balance'] = $reatimeBalance->put_balance ?? 0;
         }

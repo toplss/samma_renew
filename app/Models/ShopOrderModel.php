@@ -410,4 +410,14 @@ class ShopOrderModel extends Model
 
         return collect($points)->first();
     }
+
+
+    public static function realTimeNonePaymentOrderTopChargePoints($mb_code)
+    {
+        $points = DB::select("
+        SELECT IFNULL(SUM(pt_buy_charge), 0) AS pt_buy_charge FROM g5_shop_order WHERE mb_code = ? AND od_gubun = '충전금구매' AND od_delivery_step NOT IN (8, 90, 99)
+            ", [$mb_code]);
+
+        return collect($points)->first()->pt_buy_charge;
+    }
 }

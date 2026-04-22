@@ -10,6 +10,7 @@ class ShopItemService
     {
         return [
             'g5_shop_item.idx',
+            'g5_shop_item.ca_id',
             'g5_shop_item.it_id',
             'g5_shop_item.it_use',
             'g5_shop_item.it_name',
@@ -52,6 +53,7 @@ class ShopItemService
             'g5_shop_item.it_type3',
             'g5_shop_item.it_type4',
             'g5_shop_item.it_type5',
+            'g5_shop_item.it_type10',
             'g5_shop_item.it_cust_rate',
             'g5_shop_item.it_cust_type',
 

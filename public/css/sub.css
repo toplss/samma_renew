@@ -133,7 +133,7 @@
 .prd-view-title h3{font-size: 1.5rem;}
 .prd-view-title p{color: #777; font-size: 1.1rem; margin: 0.5rem auto;}
 
-.prd-view-title i{display: inline-block; font-style: normal;background-color: #FFF3E0; color: #E65100; font-size: 1.1rem; font-weight: 600; padding: 0.2rem 0.6rem; margin-top: 1rem; border-radius: 4rem;} /* 이벤트상품 */
+.prd-view-title i{display: inline-block; font-style: normal;background-color: #FFF3E0; color: #E65100; font-size: 1.1rem; font-weight: 600; padding: 0.2rem 0.6rem; margin-top: 0.5rem; border-radius: 4rem;} /* 이벤트상품 */
 .prd-view-img{border-radius: 1rem; overflow: hidden; border: 1px solid #eee;}
 .pv-img{padding: 3rem; aspect-ratio: 1 / 1; overflow: hidden; position: relative;}
 .pv-img img{height: 100%; object-fit: contain;}

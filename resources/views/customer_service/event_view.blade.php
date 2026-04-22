@@ -2,6 +2,12 @@
 
 @section('content')
 
+<style>
+  .sit_btn{border-top: 1px solid #eee; padding-top: 14vw;}
+  .prd-view-title h3{margin-bottom: 1rem;}
+  @media screen and (max-width: 820px){.sit_btn{padding-top: 2rem;}}
+</style>
+
 <div class="sub-container">
 
 	<div class="prd-view-wrap" data-item="{{ $items['it_id'] }}">
@@ -56,7 +62,7 @@
         @endif
 
         @if ($items['it_event_type'] == '2') 
-        <i>기간 : {{ $items['it_event_start2'] }}</i>
+        <i>기간 : {{ $items['it_event_start2'] }} ~</i>
 				<i>{{ $items['it_qty_event_stock']}}개 한정 ( {{ $items['it_qty_event_stock'] - $sales_count }} )</i>
         @endif
 			</div>
@@ -152,8 +158,8 @@
       @endif
       
 
-      <div class="price-view-detail">
-        <!-- table>
+      <!-- <div class="price-view-detail">
+        <table>
           <tr>
             <th>제조사</th>
             <td>{{ $items['it_maker'] }}</td>
@@ -180,12 +186,9 @@
             <th>낱개바코드</th>
             <td></td>
           </tr>
-        </table -->
-        <p>
-          + 여러상품을 이용하실 경우 장바구니를 이용하시면 묶음배송이 됩니다.<br>
-					+ 본 사이트의 이미지와 컨텐츠의 불법사용을 금합니다.
-        </p>
-      </div>
+        </table>
+
+      </div> -->
     </div>
 
   </div>

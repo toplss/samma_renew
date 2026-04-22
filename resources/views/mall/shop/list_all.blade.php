@@ -32,7 +32,7 @@
         $sold_out = $row['it_soldout'] == '1' || $row['it_force_soldout'] == '10' ? true : false;
         $it_id    = $row['it_id'];
         $min_cart_ct_qty = $box_min_qty = $max_cart_ct_qty = 0;
-
+        $event_item = $row['ca_id'] == 'i0' && $row['it_type10'] == '1' ? true : false;
         
         if(isset($activeMember['mb_level']) && substr($activeMember['mb_level'], 0, 2) == '30' && $row['agency_it_buy_min_qty'] > 0 || (isset($activeMember['mb_branch_gubun_type']) && $activeMember['mb_branch_gubun_type'] == '3')) {
             $min_cart_ct_qty = $row['agency_it_buy_min_qty']; // 주문최소

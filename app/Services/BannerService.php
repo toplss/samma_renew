@@ -179,14 +179,26 @@ class BannerService
 
     public function getActiveLeftBanner()
     {
-        $redis_key_generate = 'left_pc_banner';
+        // $redis_key_generate = 'left_pc_banner';
 
-        if (Redis::exists($redis_key_generate)) {
+        // if (Redis::exists($redis_key_generate)) {
 
-            $banners = self::getReids($redis_key_generate);
+        //     $banners = self::getReids($redis_key_generate);
 
-        } else {
-            $banners = DB::table('tb_banner')->where('group_id', 'common_left')
+        // } else {
+        //     $banners = DB::table('tb_banner')->where('group_id', 'common_left')
+        //         ->where('banner_display', 'Y')
+        //         ->where('state', '2')
+        //         ->select('banner_img1', 'banner_url', 'banner_display', 'state', 'rank_order', 'url_target')
+        //         ->get()
+        //         ->map(function($row) {
+        //             return (array) $row;
+        //         });
+
+        //     self::setRedis($redis_key_generate, $banners);
+        // }
+
+        $banners = DB::table('tb_banner')->where('group_id', 'common_left')
                 ->where('banner_display', 'Y')
                 ->where('state', '2')
                 ->select('banner_img1', 'banner_url', 'banner_display', 'state', 'rank_order', 'url_target')
@@ -194,9 +206,6 @@ class BannerService
                 ->map(function($row) {
                     return (array) $row;
                 });
-
-            self::setRedis($redis_key_generate, $banners);
-        }
 
         return $banners;
     }
