@@ -359,7 +359,12 @@ if (isset($activeMember['mb_level_type'])) {
                             </label>
                         </li>
                         @if (request('order_type') == 'items' && $payment_type == '선불')
-                        @if ($activeMember['mb_code'] == '1261')
+                        @php 
+                        $payments = !empty($activeMember['mb_payment'])
+                                        ? explode('||', $activeMember['mb_payment']) 
+                                        : [];
+                        @endphp
+                        @if (in_array("3", $payments))
                         <li class="od_settle_card">
                             <label>
                                 <input type="radio" id="od_settle_card" class="od_settle_case" name="od_settle_case" value="신용카드">신용카드

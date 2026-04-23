@@ -852,7 +852,7 @@ class CustomerServiceController extends Controller
             throw new Exception('로그인 사용자가 아닙니다.');
         }        
 
-        //전체 상품정보 (회원이 구매한 상품포함 - Left Join)
+        //최근 3개월 이내 구매이력
         $result = DB::table('g5_shop_order as so')
                 ->join('g5_shop_cart as sc', function ($join) {
                     $join->on('so.od_id', '=', 'sc.od_id')
@@ -875,6 +875,7 @@ class CustomerServiceController extends Controller
                     'sc.od_group_code',
                     'sc.od_date',
                     'sc.ct_qty',
+                    'sc.ct_qty_tot',
                     'sc.ct_price',
                     'sc.ct_status',
                     'sc.ct_cate',

@@ -78,7 +78,7 @@
             <colgroup>
               <col style="width:auto;">
               <col style="width:80px;">
-              <col style="width:80px;">
+              <col style="width:100px;">
               <col style="width:24%;">
               <col style="width:26%;">
               <col style="width:80px;">
@@ -195,9 +195,12 @@ function display_item() {
         ${returnLabelSpan(item.it_return_label)}
       </td>
       <td class="ri3" data-label="수량">
-        <select name="request_qty[${item.it_id}]" id="request_qty[${item.it_id}]" onmousedown="return checkStatus('${item.it_return}', '${item.ct_id}');">
-          ${qtyOptions(item.ct_qty)}
-        </select>
+        <p>
+          <u>박스</u><input type="text" placeholder="0">
+        </p>
+        <p>
+          <u>낱개</u><input type="text" placeholder="0">
+        </p>
       </td>
       <td class="ri4" data-label="사진">
         <input type="file" name="userfile[${item.it_id}]" id="userfile[${item.it_id}]" style="display:none;" onchange="compressReturnImage(this, '#userfile_txt_${item.it_id}')" accept="image/*">
@@ -265,6 +268,8 @@ function qtyOptions(max) {
 
 //반품신청
 function select_item(key,returnYN,ctID) {
+
+  console.log(ctID);
   
   // 중복 접수 체크
   if ($('#complete_item tr.complete-product[data-key="' + key + '"]').length > 0) {

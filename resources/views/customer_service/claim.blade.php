@@ -39,7 +39,7 @@
       </tr>
       <tr>
         <th>업체명</th>
-        <td><input type="text" name="company" id="company" value="{{ $activeMember['mb_company'] }}" style="max-width: 250px;" placeholder="업체명"></td>
+        <td><input type="text" name="company" id="company" value="{{ $activeMember['mb_company'] }}" style="max-width: 250px;" placeholder="업체명" readonly></td>
       </tr>
       <tr style="display:none;">
         <th>담당자명</th>

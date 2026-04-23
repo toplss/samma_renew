@@ -523,6 +523,9 @@
 .return-item-table .ri1 b{display: block; font-weight: 500; margin-top: 0.5rem;}
 .return-item-table .ri2 span:last-of-type{margin-top: 0.3rem;}
 .return-item-table .ri3 select{width: 50px;}
+.return-item-table .ri3 p{display: inline-flex; align-items: center; margin-bottom: 0.5rem; border: 1px solid #eee; border-radius: 0.3rem; overflow: hidden; width: fit-content;}
+.return-item-table .ri3 p>u{text-decoration: none; background-color: #8ec251; color: #fff; padding: 0.3rem 0.4rem; font-size: 0.95rem;}
+.return-item-table .ri3 p>input[type=text]{width: 50px; text-align: center; padding: 0.3rem;}
 .return-item-table .ri4{text-align: left;}
 .return-item-table .ri4 p{margin-top: 0.3rem; font-size: 0.9rem; padding-left: 0.3rem;}
 .return-item-table label{margin-right: 0;}
@@ -1062,6 +1065,8 @@
   .qa-table .qa-0 td::before{display: none;}
 
   .return-table .txt-red{margin-top: 0.3rem;}
+  .return-item-table .ri3 p>u{font-size: 0.9rem;}
+  .return-item-table .ri3 p>input[type=text]{width: 40px;}
 
   .board-list{border: 1px solid #eee;}
   .board-list th, .board-list td{font-size: 1rem; border: none; border-bottom: 1px solid #eee; padding: 0.5rem 0.4rem;}

@@ -100,75 +100,60 @@ class BannerService
         $service = app(MallMainServices::class);
         $member  = app(MallShopService::class)->getMemberInfo(session('ss_mb_code'));
 
-        $redis_key_generate = 'menu_banner';
+        $menu_banners['all'] = $service->getBannerFactory(
+            $service->getBanner('renew_menu_right', 1),
+            'grid-item grid-item--width1,grid-item grid-item--width3', 
+            'renew_menu_right'
+        );
 
-        $menu_banners = [];
+        $menu_banners['renew_menu_low_temp'] = $service->getBannerFactory(
+            $service->getBanner('renew_menu_low_temp', 1),
+            'grid-item',
+            'renew_menu_low_temp'
+        );
 
-        if (Redis::exists($redis_key_generate)) {
-            
-            $menu_banners = $this->getReids($redis_key_generate);
+        $menu_banners['renew_menu_vivacook'] = $service->getBannerFactory(
+            $service->getBanner('renew_menu_vivacook', 1),
+            'grid-item',
+            'renew_menu_vivacook'
+        );
 
-        } else {
-            
-            $menu_banners['all'] = $service->getBannerFactory(
-                $service->getBanner('renew_menu_right', 1),
-                'grid-item grid-item--width1,grid-item grid-item--width3', 
-                'renew_menu_right'
-            );
-    
-            $menu_banners['renew_menu_low_temp'] = $service->getBannerFactory(
-                $service->getBanner('renew_menu_low_temp', 1),
-                'grid-item',
-                'renew_menu_low_temp'
-            );
-    
-            $menu_banners['renew_menu_vivacook'] = $service->getBannerFactory(
-                $service->getBanner('renew_menu_vivacook', 1),
-                'grid-item',
-                'renew_menu_vivacook'
-            );
-    
-            $menu_banners['renew_menu_mygrang'] = $service->getBannerFactory(
-                $service->getBanner('renew_menu_mygrang', 1),
-                'grid-item',
-                'renew_menu_mygrang'
-            );
+        $menu_banners['renew_menu_mygrang'] = $service->getBannerFactory(
+            $service->getBanner('renew_menu_mygrang', 1),
+            'grid-item',
+            'renew_menu_mygrang'
+        );
 
 
-            $menu_banners['renew_menu_best'] = $service->getBannerFactory(
-                $service->getBanner('renew_menu_best', 1),
-                'grid-item',
-                'renew_menu_best'
-            );
+        $menu_banners['renew_menu_best'] = $service->getBannerFactory(
+            $service->getBanner('renew_menu_best', 1),
+            'grid-item',
+            'renew_menu_best'
+        );
 
 
-            $menu_banners['renew_menu_new'] = $service->getBannerFactory(
-                $service->getBanner('renew_menu_new', 1),
-                'grid-item',
-                'renew_menu_new'
-            );
+        $menu_banners['renew_menu_new'] = $service->getBannerFactory(
+            $service->getBanner('renew_menu_new', 1),
+            'grid-item',
+            'renew_menu_new'
+        );
 
 
-            $menu_banners['renew_menu_event'] = $service->getBannerFactory(
-                $service->getBanner('renew_menu_event', 1),
-                'grid-item',
-                'renew_menu_event'
-            );
+        $menu_banners['renew_menu_event'] = $service->getBannerFactory(
+            $service->getBanner('renew_menu_event', 1),
+            'grid-item',
+            'renew_menu_event'
+        );
 
 
-            $menu_banners['renew_menu_chain'] = $service->getBannerFactory(
-                $service->getBanner('renew_menu_chain', 1),
-                'grid-item',
-                'renew_menu_event'
-            );
-            
+        $menu_banners['renew_menu_chain'] = $service->getBannerFactory(
+            $service->getBanner('renew_menu_chain', 1),
+            'grid-item',
+            'renew_menu_event'
+        );
+        
 
-            $menu_banners['all_menu_sub_category'] = $this->getAllMenuSubCategory();
-
-
-            $this->setRedis($redis_key_generate, $menu_banners);
-        }
-
+        $menu_banners['all_menu_sub_category'] = $this->getAllMenuSubCategory();
         $menu_banners['recipe_menu'] = $this->getRecipeSubCategory($member);
         $menu_banners['chain_menu'] = $this->getChainSubCategoryList($member);
 
@@ -179,25 +164,6 @@ class BannerService
 
     public function getActiveLeftBanner()
     {
-        // $redis_key_generate = 'left_pc_banner';
-
-        // if (Redis::exists($redis_key_generate)) {
-
-        //     $banners = self::getReids($redis_key_generate);
-
-        // } else {
-        //     $banners = DB::table('tb_banner')->where('group_id', 'common_left')
-        //         ->where('banner_display', 'Y')
-        //         ->where('state', '2')
-        //         ->select('banner_img1', 'banner_url', 'banner_display', 'state', 'rank_order', 'url_target')
-        //         ->get()
-        //         ->map(function($row) {
-        //             return (array) $row;
-        //         });
-
-        //     self::setRedis($redis_key_generate, $banners);
-        // }
-
         $banners = DB::table('tb_banner')->where('group_id', 'common_left')
                 ->where('banner_display', 'Y')
                 ->where('state', '2')

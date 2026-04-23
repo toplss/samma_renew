@@ -474,119 +474,52 @@ function orderCancel(e) {
   }
 
   if (e == 'all') {
+    var message = `<p style="font-weight:bold;">
+        취소된 상품을 어떻게 처리하시겠습니까?
+      </p>
+      <p style="color:#d33; font-size:15px;">
+        선택 후에는 변경할 수 없습니다.
+      </p>`;
+
+    if (bf_concat_delivery != d_concat_delivery) {
+      message += `
+      <p style="font-weight:bold; color:#d33; font-size:13px;">
+      주문 시 기존 배송일이 ${bf_concat_delivery} 에서 ${d_concat_delivery} 으로 변경됩니다.
+      </p>
+      `;
+    }
+
     Swal.fire({
       toast: false,
-      title: '주문 취소',
-      html: '주문을 취소하시겠습니까?',
-      icon: 'question',
+      title: '주문 취소 후 처리 방법',
+      html: message,
+      icon: 'warning',
+
+      showConfirmButton: true,
+      showDenyButton: true,
       showCancelButton: true,
-      confirmButtonText: '확인',
-      cancelButtonText: '취소'
+
+      confirmButtonText: '장바구니로 이동',
+      denyButtonText: '상품 삭제',
+      cancelButtonText: '취소',
+
+      confirmButtonColor: '#3085d6',
+      denyButtonColor: '#f39c12',
+      cancelButtonColor: '#d33'
+
     }).then((result) => {
-      
-      if (!result.isConfirmed) return;
-
-      cancelLock = true;
-
+      // 장바구니 이동
       if (result.isConfirmed) {
+        requestCancel(od_id, 'yes', '/mypage/cart');
+      }
 
-        var message = `<p style="font-weight:bold;">
-            취소된 상품을 어떻게 처리하시겠습니까?
-          </p>
-          <p style="color:#d33; font-size:15px;">
-            선택 후에는 변경할 수 없습니다.
-          </p>`;
+      // 상품 삭제
+      else if (result.isDenied) {
+        requestCancel(od_id, 'no', '/mypage/orderinquiry');
+      }
 
-        if (bf_concat_delivery != d_concat_delivery) {
-          message += `
-          <p style="font-weight:bold; color:#d33; font-size:13px;">
-          주문 시 기존 배송일이 ${bf_concat_delivery} 에서 ${d_concat_delivery} 으로 변경됩니다.
-          </p>
-          `;
-        }
-
-        Swal.fire({
-          toast: false,
-          title: '주문 취소 후 처리 방법',
-          html: message,
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: '장바구니로 이동',
-          cancelButtonText: '상품 삭제',
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33'
-
-        }).then((result) => {
-          if (result.isConfirmed) {
-            $.post('/mall/order/order_cancel', {
-                inbound_path: 'mall',
-                od_id : od_id,
-                move_type : 'yes'
-            }).done(function(res) {
-              if (res.status === 'success') {
-                  Swal.fire({
-                      toast: false,
-                      title: '알림',
-                      icon: 'success',
-                      html: '주문이 취소되었습니다.',
-                      confirmButtonText: '확인'
-                  }).then((result) => {
-                      if (result.isConfirmed) {
-                          location.href = '/mypage/cart';
-                      }
-                  });
-              } else {
-                  alert(res.message);
-              }
-
-            }).fail(function(xhr) {
-
-              const res = xhr.responseJSON;
-              if (res && res.message) {
-                  alert(res.message);
-              } else {
-                  alert('서버 오류 발생');
-              }
-            }).always(function() {
-              cancelLock = false;
-            });
-
-          } else if (result.isDismissed) {
-
-            $.post('/mall/order/order_cancel', {
-                inbound_path: 'mall',
-                od_id : od_id,
-                move_type : 'no'
-            }).done(function(res) {
-              if (res.status === 'success') {
-                  Swal.fire({
-                      toast: false,
-                      title: '알림',
-                      icon: 'success',
-                      html: '주문이 취소되었습니다.',
-                      confirmButtonText: '확인'
-                  }).then((result) => {
-                      if (result.isConfirmed) {
-                          location.href = '/mypage/orderinquiry';
-                      }
-                  });
-              } else {
-                  alert(res.message);
-              }
-
-            }).fail(function(xhr) {
-
-              const res = xhr.responseJSON;
-              if (res && res.message) {
-                  alert(res.message);
-              } else {
-                  alert('서버 오류 발생');
-              }
-            }).always(function() {
-              cancelLock = false;
-            });
-          }
-        });
+      else if (result.isDismissed) {
+        cancelLock = false;
       }
     });
   }
@@ -601,5 +534,32 @@ function validationAlertMessage(message)  {
       confirmButtonText: '확인'
   });
 }
+
+function requestCancel(od_id, move_type, redirectUrl) {
+  $.post('/mall/order/order_cancel', {
+    inbound_path: 'mall',
+    od_id: od_id,
+    move_type: move_type
+  }).done(function(res) {
+    if (res.status === 'success') {
+      Swal.fire({
+        title: '알림',
+        icon: 'success',
+        html: '주문이 취소되었습니다.',
+        confirmButtonText: '확인'
+      }).then(() => {
+        location.href = redirectUrl;
+      });
+    } else {
+      alert(res.message);
+    }
+  }).fail(function(xhr) {
+    const res = xhr.responseJSON;
+    alert(res?.message || '서버 오류 발생');
+  }).always(function() {
+    cancelLock = false;
+  });
+}
+
 </script>
 @endsection

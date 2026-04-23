@@ -356,6 +356,10 @@ footer{width: 100%; background-color: #f9f9f9; margin-top: 3rem;}
 .ms-box #seach_frm2{margin: 1rem auto;}
 .ms-box li{font-size: 0.9rem; margin-bottom: 0.3rem;}
 
+.swal2-container {
+  transform: none !important;
+}
+
 /* 반응형 */
 @media screen and (max-width: 1760px){
 	.top{width: 70%;}
