@@ -643,15 +643,16 @@ class MyPageController extends Controller
                 od_delivery_date
             ")
             ->where('mb_code', $mb_code)
-            ->where(function ($q) {
-                $q->where('pt_buy_charge', '>', 0)
+            ->where(function($q) {
+                $q->where(function($q2) {
+                    $q2->where('pt_buy_charge', '>', 0)
+                    ->where('od_delivery_step', '>=', 90);
+                })
                 ->orWhere('pt_charge', '>', 0);
             })
-
             ->when($start_date && $end_date, function($query) use($start_date, $end_date) {
                 $query->whereBetween(DB::raw('od_delivery_date'), [$start_date, $end_date]);
             })
-
             ->orderByDesc('od_delivery_date')
             ->orderByDesc('od_id')
             ->paginate($perPage);

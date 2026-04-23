@@ -203,6 +203,10 @@ Route::middleware(['block.ip'])->group(function () {
             return view('public.sub.kitchen_system_05');
         });
 
+        Route::get('/public/sub/kitchen_system_06', function () {
+            return view('public.sub.kitchen_system_06');
+        });
+
 
 
         /********** 찾아오시는길 **********/

@@ -380,6 +380,10 @@ class PaymentService
         switch($od_gubun) {
             case '충전금구매' : 
                 $sub_total = 0;
+                $week = ['일', '월', '화', '수', '목', '금', '토'];
+
+                $yoil = $week[date('w')];
+                $od_delivery_date = date('Y-m-d');
                 break;
             case '매출' : 
                 $pt_sale = (integer) ($request->payment - $request->deilivery_cost);

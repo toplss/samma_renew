@@ -224,10 +224,11 @@ class CustomerServiceController extends Controller
     public function MyPageBoardView(Request $request)
     {
         $request->validate([
-            'bd_num' => 'required|integer',
+            'bd_num' => 'required|integer|exists:tb_bbs_body,bd_num',
         ],[
             'bd_num.required' => '게시글 번호가 존재하지 않습니다.',
             'bd_num.integer' => '게시글 번호가 옳바른 형식이 아닙니다.',
+            'bd_num.exists'   => '존재하지 않는 게시글입니다.',
         ]);
 
         $bd_num = $request->input('bd_num');
@@ -462,13 +463,11 @@ class CustomerServiceController extends Controller
 
 
         $files = TbErpFile::where('table_name', 'tb_bbs_body')->where('idx', $request->input('f_k'))->first();
+        $dir = date('ym', strtotime($files->created_at));
 
         if ($files->exists()) {
-            $path = 'board/files/'.$files->file_name;
-            return Storage::disk('public')->download(
-                $path,
-                $files->file_orgin_name
-            );
+            $path = 'smarteditor/upload/'.$dir.'/'.$files->file_name;
+            return response()->download($path);
         
         } else {
             return redirect()->back()->with('error', '파일이 존재하지 않습니다.');

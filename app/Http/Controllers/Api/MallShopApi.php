@@ -71,6 +71,7 @@ class MallShopApi extends Controller
                 'recipe' => '/home/samma_renew/www/public/images/recipe/', // 레시피 이미지
                 'item'   => '/home/samma_renew/www/public/images/item/', // 상품 이미지
                 'banner' => '/home/samma_renew/www/public/images/common_data/banner/', // 배너 이미지
+                'common_board' => '/home/samma_renew/www/public/smarteditor/upload/', // 게시판 파일업로드
             ];
 
 
