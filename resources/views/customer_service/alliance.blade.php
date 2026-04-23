@@ -139,6 +139,8 @@ function chkform_alliance() {
   if (!company) {
     var message = '업체명을 입력 하세요.';
 
+    $('#company').focus().select();
+
     validationAlertMessage(message);
 
     return false;
@@ -149,6 +151,8 @@ function chkform_alliance() {
 
   if (!name) {
     var message = '담당자명을 입력 하세요.';
+
+    $('#name').focus().select();
 
     validationAlertMessage(message);
 
@@ -184,6 +188,8 @@ function chkform_alliance() {
   if (!email1) {
     var message = '이메일 을 입력 하세요.';
 
+    $('#email1').focus().select();
+
     validationAlertMessage(message);
 
     return false;
@@ -193,6 +199,8 @@ function chkform_alliance() {
 
   if (!email2) {
     var message = '이메일 을 입력 하세요.';
+
+    $('#email2').focus().select();
 
     validationAlertMessage(message);
 

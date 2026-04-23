@@ -640,6 +640,7 @@ class MyPageController extends Controller
                 case
                     when pt_cur_charge > 0 then pt_cur_charge
                 end as current_point,
+                od_time,
                 od_delivery_date
             ")
             ->where('mb_code', $mb_code)
@@ -653,7 +654,7 @@ class MyPageController extends Controller
             ->when($start_date && $end_date, function($query) use($start_date, $end_date) {
                 $query->whereBetween(DB::raw('od_delivery_date'), [$start_date, $end_date]);
             })
-            ->orderByDesc('od_delivery_date')
+            ->orderByDesc('od_time')
             ->orderByDesc('od_id')
             ->paginate($perPage);
 
@@ -770,6 +771,21 @@ class MyPageController extends Controller
                 od_temp_point_reserve,
                 pt_subtotal,
                 pt_cur_reserve,
+
+                case
+                    when pt_reserve > 0 then od_time
+                    when pt_buy_reserve > 0 then od_time
+                    when pt_cancel > 0 then od_delivery_date
+                    when pt_return > 0 then od_delivery_date
+                    when pt_outofstock > 0 then od_delivery_date
+                    when pt_damage_staff > 0 then od_delivery_date
+                    when pt_damage_logistic > 0 then od_delivery_date
+                    when pt_incentive > 0 then od_delivery_date
+                    when pt_dc > 0 then od_delivery_date
+                    when pt_buy_reserve > 0 and od_delivery_step = 8 then od_time
+                end as reserve_date,    
+
+                od_time,
                 od_delivery_date
             ")
             ->where('mb_code', $mb_code)
@@ -787,10 +803,11 @@ class MyPageController extends Controller
             })
 
             ->when($start_date && $end_date, function($query) use($start_date, $end_date) {
-                $query->whereBetween(DB::raw('od_delivery_date'), [$start_date, $end_date]);
+                $query->having('reserve_date', '>=', $start_date)
+                    ->having('reserve_date', '<', date('Y-m-d', strtotime($end_date . ' +1 day')));
             })
 
-            ->orderByDesc('od_delivery_date')
+            ->orderByDesc('reserve_date')
             ->orderByDesc('od_id')
             ->paginate($perPage);
 

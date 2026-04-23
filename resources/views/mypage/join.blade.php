@@ -179,14 +179,14 @@
           </td>
         </tr>
         <tr>
-          <th><sup>&#42;</sup>점장 이름</th>
+          <th>점장 이름</th>
           <td>
             <input type="text" name="manager_name" id="manager_name" value="" placeholder="이름" maxlength="10">
             <label><input type="checkbox" name="sel_same_info" id="sel_same_info" value="1">회원정보와 동일</label>
           </td>
         </tr>
         <tr>
-          <th><sup>&#42;</sup>문자 수신자</th>
+          <th>문자 수신자</th>
           <td>
             <label><input type="radio" name="mb_notice_receive" id="mb_notice_receive" value="1" checked>점주</label>
             <label><input type="radio" name="mb_notice_receive" id="mb_notice_receive" value="2">점장</label>
@@ -230,7 +230,7 @@
           <th colspan="2">환급계좌 정보</th>
         </tr>
         <tr>
-          <th><sup>&#42;</sup>은행</th>
+          <th>은행</th>
           <td>
             @php
               $bank_codes = config('constants.bank_codes');
@@ -244,13 +244,13 @@
           </td>
         </tr>
         <tr>
-          <th><sup>&#42;</sup>계좌번호</th>
+          <th>계좌번호</th>
           <td>
             <input type="text" name="mb_account" id="mb_account" value="" placeholder="계좌번호" maxlength="50">
           </td>
         </tr>
         <tr>
-          <th><sup>&#42;</sup>예금주</th>
+          <th>예금주</th>
           <td>
             <input type="text" name="mb_account_holder" id="mb_account_holder" value="" placeholder="예금주" maxlength="20">
           </td>
@@ -427,6 +427,13 @@
 
 
   });
+
+
+  //비밀번호 영문 + 숫자 + 특수문자 포함, 4~20자
+  function validatePassword(pw) {
+    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?-]).{4,20}$/;
+    return regex.test(pw);
+  }
 
 
   //아이디 중복체크
@@ -622,83 +629,52 @@
   function chkForm() {
 
     if ($("#user_id").val() == "") {
-      validationAlertMessage("아이디를 입력해 주세요.", function() {
-        $("#user_id").focus().select();
-      });
+      $("#user_id").focus().select();
+      validationAlertMessage("아이디를 입력해 주세요.");
       return false;
     }
 
     if ($("#user_id").val().length < 4 || $("#user_id").val().length > 20) {
       $("#user_id").blur();
-      validationAlertMessage("아이디는 4~20자 이내 입력되어야 합니다.", function() {
-        $("#user_id").focus().select();
-      });
+      $("#user_id").focus().select();
+      validationAlertMessage("아이디는 4~20자 이내 입력되어야 합니다.");
       return false;
     }
 
     if ($("#id_checked").val() != 1) {
-      validationAlertMessage("아이디 중복체크를 완료해주세요.", function() {
-        $("#id_check").focus().select();
-      });      
+      $("#id_check").focus().select();
+      validationAlertMessage("아이디 중복체크를 완료해주세요.");      
       return false;
     }
 
     if ($("#user_pass").val() == "") {
-      validationAlertMessage("비밀번호를 입력해주세요.", function() {
-        $("#user_pass").focus().select();
-      });            
+      $("#user_pass").focus().select();
+      validationAlertMessage("비밀번호를 입력해주세요.");            
       return false;
     }
 
-    if ($("#user_pass").val().length < 4 || $("#user_pass").val().length > 20) {
-      validationAlertMessage("비밀번호는 영문, 숫자, 특수문자를 혼용하여 <br>4~20자 이내로 입력되어야 합니다.", function() {
-        $("#user_pass").focus().select();
-      });            
+    const pw = $("#user_pass").val();
+    if (!validatePassword(pw)) {
+      $("#user_pass").focus().select();
+      validationAlertMessage("비밀번호는 영문, 숫자, 특수문자를 혼용하여 <br>4~20자 이내로 입력되어야 합니다.");            
       return false;
     }
-
-
-
-
-// function validatePassword(pw) {
-//   // 영문 + 숫자 + 특수문자 포함, 4~20자
-//   const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?-]).{4,20}$/;
-//   return regex.test(pw);
-// }
-
-// // 사용 예시
-// const pw = document.getElementById('password').value;
-
-// if (!validatePassword(pw)) {
-//   alert('영문, 숫자, 특수문자를 혼용하여 4~20자 이내로 입력해주세요.');
-// }
-
-
-
-
-
-
-
-
 
     if ($("#user_pass_confirm").val() == "") {
-      validationAlertMessage("비밀번호 확인란을 입력해주세요.", function() {
-        $("#user_pass_confirm").focus().select();
-      });                  
+      $("#user_pass_confirm").focus().select();
+      validationAlertMessage("비밀번호 확인란을 입력해주세요.");                  
       return false;
     }
 
     if ($("#user_pass").val() != $("#user_pass_confirm").val()) {
-      validationAlertMessage("입력하신 비밀번호와 <br>비밀번호 확인이 일치하지 않습니다.", function() {
-        $("#user_pass_confirm").focus().select();
-      });                        
+      $("#user_pass_confirm").focus().select();
+      validationAlertMessage("입력하신 비밀번호와 <br>비밀번호 확인이 일치하지 않습니다.");                        
       return false;
     }
 
     if ($("#mb_name").val() == "") {
-      validationAlertMessage("이름을 입력해주세요.", function() {
-        $("#mb_name").focus().select();
-      }); 
+      $("#mb_name").focus().select();
+      validationAlertMessage("이름을 입력해주세요."); 
       return false;
     }
 
@@ -707,68 +683,61 @@
     //   return false;
     // }
 
-    // if ($("#mb_birth").val() == "") {
-    //   validationAlertMessage('생년월일을 선택해주세요.');
-    //   $("#mb_birth").focus();
-    //   return false;
-    // }
+    if ($("#mb_birth").val() == "") {
+      $("#mb_birth").focus().select();
+      validationAlertMessage('생년월일을 선택해주세요.');
+      
+      return false;
+    }
 
     if ($("#email1").val() == "") {
-        validationAlertMessage('이메일 아이디를 입력해주세요.', function() {
-          $('#email1').focus().select();
-        });
-        return false;
+      $('#email1').focus().select();
+      validationAlertMessage('이메일 아이디를 입력해주세요.');
+      return false;
     }
 
     if ($("#email2").val() == "") {
-        validationAlertMessage('이메일 도메인을 입력하거나 선택해주세요.', function() {
-          $('#email2').focus().select();
-        });
-        return false;
+      $('#email2').focus().select();
+      validationAlertMessage('이메일 도메인을 입력하거나 선택해주세요.');
+      return false;
     }
 
     const email = $("#email1").val() + '@' + $("#email2").val();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
-        validationAlertMessage('올바른 이메일 형식이 아닙니다.', function() {
-          $('#email1').focus().select();
-        });
+      $('#email1').focus().select();
+        validationAlertMessage('올바른 이메일 형식이 아닙니다.');
         return false;
     }    
 
     if ($("#mb_addr1").val() == "") {
-      validationAlertMessage("주소를 입력해 주세요.", function() {
-        $("#mb_addr1").focus().select();
-      });
+      $("#mb_addr1").focus().select();
+      validationAlertMessage("주소를 입력해 주세요.");
       return false;
     }
 
     if($("#mb_addr2").val() == ""){
-      validationAlertMessage("상세주소를 입력해 주세요.", function() {
-        $("#mb_addr2").focus().select();
-      });
+      $("#mb_addr2").focus().select();
+      validationAlertMessage("상세주소를 입력해 주세요.");
       return false;
     }
 
     if ($("#mb_hp1").val() == "") {
-      validationAlertMessage("휴대폰번호를 입력해 주세요.", function() {
-        $("#mb_hp1").focus().select();
-      });
+      $("#mb_hp1").focus().select();
+      validationAlertMessage("휴대폰번호를 입력해 주세요.");
       return false;
     }
 
     if ($("#mb_hp2").val() == "") {
-      validationAlertMessage("휴대폰번호를 입력해 주세요.", function() {
-        $("#mb_hp2").focus().select();
-      });
+      $("#mb_hp2").focus().select();
+      validationAlertMessage("휴대폰번호를 입력해 주세요.");
       return false;
     }
 
     if ($("#mb_hp3").val() == "") {
-      validationAlertMessage("휴대폰번호를 입력해 주세요.", function() {
-        $("#mb_hp3").focus().select();
-      });
+      $("#mb_hp3").focus().select();
+      validationAlertMessage("휴대폰번호를 입력해 주세요.");
       return false;
     }
 
@@ -835,9 +804,8 @@
     // }    
 
     if ($("#mb_company").val() == "") {
-      validationAlertMessage("상호명을 입력해 주세요.", function() {
-        $("#mb_company").focus().select();
-      });
+      $("#mb_company").focus().select();
+      validationAlertMessage("상호명을 입력해 주세요.");
       return false;
     }
 
@@ -879,16 +847,14 @@
     */    
 
     if ($("#mb_mypage_password").val() == "") {
-      validationAlertMessage("마이페이지 비밀번호를 입력해 주세요.", function() {
-        $("#mb_mypage_password").focus().select();
-      });
+      $("#mb_mypage_password").focus().select();
+      validationAlertMessage("마이페이지 비밀번호를 입력해 주세요.");
       return false;
     }
 
     if($("#franchise_ca_id").val()==""){
-      validationAlertMessage("가맹점유형을 선택해 주세요.", function() {
-        $("#franchise_ca_id").focus().select();
-      });
+      $("#franchise_ca_id").focus().select();
+      validationAlertMessage("가맹점유형을 선택해 주세요.");
       return false;
     }
 
@@ -914,30 +880,26 @@
 
     if($('input[id="mb_notice_receive"]:checked').val() == "2") {
       if($("#manager_name").val() == ""){
-        validationAlertMessage("점장 이름을 입력해 주세요.", function() {
-          $("#manager_name").focus().select();
-        });
+        $("#manager_name").focus().select();
+        validationAlertMessage("점장 이름을 입력해 주세요.");
         return false;
       }
 
       if($("#manager_tel21").val() == ""){
-        validationAlertMessage("점장 휴대폰번호를 선택해 주세요.", function() {
-          $("#manager_tel21").focus().select();
-        });
+        $("#manager_tel21").focus().select();
+        validationAlertMessage("점장 휴대폰번호를 선택해 주세요.");
         return false;
       }
 
       if($("#manager_tel22").val() == ""){
-        validationAlertMessage("점장 휴대폰번호를 입력해 주세요.", function() {
-          $("#manager_tel22").focus().select();
-        });
+        $("#manager_tel22").focus().select();
+        validationAlertMessage("점장 휴대폰번호를 입력해 주세요.");
         return false;
       }
 
       if($("#manager_tel23").val() == ""){
-        validationAlertMessage("점장 휴대폰번호를 입력해 주세요.", function() {
-          $("#manager_tel23").focus().select();
-        });
+        $("#manager_tel23").focus().select();
+        validationAlertMessage("점장 휴대폰번호를 입력해 주세요.");
         return false;
       }
     }
@@ -1020,25 +982,19 @@
       });      
 
   }
-  
 
 
-  function validationAlertMessage(message, callback = null) {
+
+    function validationAlertMessage(message, callback = null) {
     Swal.fire({
       toast: false,
       icon: 'warning',
       title: '알림',
       html: message,
-      confirmButtonText: '확인',
-      didOpen: () => {
-          document.querySelector('.swal2-input').select();
-        }
-
-
-    }).then(() => {
-      if (callback) callback();
+      confirmButtonText: '확인'
     });
   }			  
+
 
   //DAUM 주소창  
   var themeObj = {

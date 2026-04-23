@@ -813,30 +813,6 @@ class CustomerServiceController extends Controller
 
     /**
      * Constructor
-     * Description : 반품접수
-     * Author : Kim Hairyong 
-     * Created Date : 2026-01-30
-     * Params : Params
-     * History :
-     *   - 2026-01-30 : Initial creation
-     */        
-    // public function MyPageReturnReceptionView(Request $request)
-    // {
-    //     $mb_code = session('ss_mb_code');
-
-    //     if (!$mb_code) {
-    //         throw new Exception('로그인 사용자가 아닙니다.');
-    //     }
-
-    //     $result = app(ShopCartService::class)->MyRecetOrderItems($request);
-
-        
-    //     return view('customer_service.return_reception', compact('result'));
-    // }
-
-
-    /**
-     * Constructor
      * Description : 반품접수 상품검색 List
      * Author : Kim Hairyong 
      * Created Date : 2026-01-30

@@ -4,18 +4,26 @@
 
 <style>
   /* 키친시스템 */
+  .ks-title{text-align: left; position: relative; width: 86%; margin: 2rem auto;}
+  .ks-title small{position: absolute; top: 0; right: 0; font-size: 1.2rem; letter-spacing: -1px;}
+  .ks-title span{font-size: 1.4rem;}
+  .ks-title span>b{font-weight: 600;}
+  .ks-title h3{font-size: 2.1rem; font-weight: 700; margin-top: 0.5rem;}
+  .ks-title h3>i{font-style: normal; color: #8ec251;}
+
   .kitchen-slide{margin: 0 -0.5rem;}
   .kitchen-slide .slick-slide{margin:0 0.5rem;}
-  .kitchen-slide .slick-arrow{background-color: transparent;}
-  .kitchen-slide>.slick-prev{background-image: url(/images/sub/ks-arrow.svg);background-repeat: no-repeat; transform: scaleX(-1);}
-  .kitchen-slide>.slick-next{background-image: url(/images/sub/ks-arrow.svg);background-repeat: no-repeat; }
+  .kitchen-slide .slick-arrow{background-color: transparent; font-size: 0; width: 30px; height: 30px; position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;}
+  .kitchen-slide>.slick-prev{background-image: url(/images/sub/ks-arrow.svg);background-repeat: no-repeat; transform: scaleX(-1); left: 0;}
+  .kitchen-slide>.slick-next{background-image: url(/images/sub/ks-arrow.svg);background-repeat: no-repeat; right: 0;}
   .kitchen-card{background-color: #8ec251; box-shadow: 0 0 6px #8ec251; border-radius: 1.5rem; overflow: hidden; filter: grayscale(0); }
   .kitchen-card.slick-current{}
-  .kitchen-card>img{margin: auto;}
-  .kitchen-card p{background-color: #fff; border: 1px solid #ddd; letter-spacing: -1px; border-radius: 1.5rem 1.5rem 0 0;}
+  .kitchen-card>img{width: 80%; margin: auto;}
+  .kitchen-card p{background-color: #fff; border: 1px solid #ddd; padding: 1.5rem 0.5rem; letter-spacing: -1px; border-radius: 1.5rem 1.5rem 0 0;}
   .kitchen-card i{font-style: normal; font-size: 1.1rem;}
   .kitchen-card strong{font-size: 2.2rem; display: block;}
   .kitchen-card span{font-size: 1.3rem;}
+
 </style>
 
 <script>
@@ -68,6 +76,12 @@ $(function(){
 
   <div class="kitchen-wrap">
 
+
+    <div class="ks-title">
+      <span>근무강도는 <b>낮게</b> 비용절감은 <b>높게</b></span>
+      <h3>비바쿡의 6가지 <i>푸드시스템</i></h3>
+      <small>Kitchen System</small>
+    </div>
     <div class="kitchen-slide">
 			<a class="kitchen-card" href="/public/sub/kitchen_system_01">
 				<img src="{{ asset('images/sub/ks1.png') }}">

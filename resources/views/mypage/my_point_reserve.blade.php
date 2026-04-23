@@ -98,7 +98,7 @@
             @endphp
             <tr>
               <td class="hide-820">{{ $items->firstItem() + $index }}</td>
-              <td>{{ \Carbon\Carbon::parse($row->od_delivery_date)->format('y/m/d') }}</td>
+              <td>{{ \Carbon\Carbon::parse($row->reserve_date)->format('y/m/d') }}</td>
               
               <td>
                 <span class="pt1" onclick="javascript:point_reserve_showDetail('all', '{{ $row->po_action }}', '{{ $row->od_id }}', '{{ $row->change_point }}');">

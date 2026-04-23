@@ -52,7 +52,7 @@
           @endphp
         <tr>
           <td class="hide-820">{{ $items->firstItem() + $key }}</td>
-          <td>{{ \Carbon\Carbon::parse($row->od_delivery_date)->format('y/m/d') }}</td>
+          <td>{{ \Carbon\Carbon::parse($row->od_time)->format('y/m/d') }}</td>
           <td>{{ $po_action }} {{ $gubun }}</td>
           <td class="{{ ($gubun == '적립' or $gubun == '잔액') ? 'txt-red' : '' }}">{{ ($gubun == '적립' or $gubun == '잔액') ? number_format($row->change_point) . '원' : '-' }}</td>
           <td class="{{ ($gubun == '사용') ? 'txt-blue' : '' }}">{{ ($gubun == '사용') ? number_format($row->change_point) . '원' : '-' }}</td>
