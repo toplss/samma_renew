@@ -911,6 +911,7 @@ class CustomerServiceController extends Controller
                     'si.it_buy_min_qty',
                     'si.it_buy_max_qty',
                     'si.it_basic',
+                    'si.it_receive_unit',                    
                     'si.it_price',
                     'si.it_price_purchase',
                     'si.it_price_piece',
@@ -957,13 +958,18 @@ class CustomerServiceController extends Controller
 
         $items = $request->input('items', []);
         $qtys  = $request->input('request_qty', []);
+        $box_qtys  = $request->input('ct_qty_box', []);
+        $pcs_qtys  = $request->input('ct_qty_pcs', []);
         $comments = $request->input('contents', []);
         $files = $request->file('userfile', []);
 
+
         foreach ($items as $it_id => $item) {
 
-            $qty = (int)($qtys[$it_id] ?? 0);
-            if ($qty < 1) continue;
+            $return_qty_box = (int)($box_qtys[$it_id] ?? 0);
+            $return_qty_pcs = (int)($pcs_qtys[$it_id] ?? 0);
+            $return_qty_tot = $return_qty_box * (int)$item['it_receive_unit'] + $return_qty_pcs;
+            
 
             //첨부파일 처리
             $filename = '';
@@ -975,6 +981,8 @@ class CustomerServiceController extends Controller
                 Storage::disk('sftp_remote')
                     ->put($folder.$filename, file_get_contents($file));
             }
+
+
 
             TbReturnReceptionModel::create([
                 'req_id'   => $req_id,
@@ -989,7 +997,9 @@ class CustomerServiceController extends Controller
                 'phone'    => $request->phone1.'-'.$request->phone2.'-'.$request->phone3,
                 'title_no' => $it_id,
                 'title'    => $item['title'],
-                'cnt'      => $qty,
+                'return_qty_box'      => $return_qty_box,
+                'return_qty_pcs'      => $return_qty_pcs,
+                'return_qty_tot'      => $return_qty_tot,
                 'contents' => $comments[$it_id] ?? '',
                 'file1'    => $filename,
                 'addr'     => $request->addr,
@@ -1003,6 +1013,7 @@ class CustomerServiceController extends Controller
                 'reg_date'  => now(),
                 'modify_date' => now(),
             ]);
+
         }
 
         return redirect()->route('return_list')->with('success', '반품접수가 등록되었습니다');

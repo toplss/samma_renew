@@ -76,14 +76,20 @@ class ShopItem extends Model
 
             # DB 조회 (한 명만)
             $data = ShopItem::where(function ($query) use ($request) {
-                    // 회원이 관리자 등급이면 상품진열이 진열 또는 전용상품일 경우 
-                    if ($request->input('member_type')) {
-                        $query->where('it_use', '1')
-                            ->orWhere('it_only_admin', '1');
+                    // 회원이 전용
+                    if ($request->input('member_type') || $request->input('mb_buy')) {
+                       
+                        // 로그인 유저가 관리자 (직원) 인 경우 관리자 전용상품 조회 가능
+                        if ($request->input('member_type') == 'emp') {
+                            $query->where('it_use', '1')->orWhere('it_only_admin', '1');
+                        } else {
+                        // 로그인 유저가 관리자 (직원) 가 아닌 경우 관리자 전용상품 조회 불가
+                            $query->where('it_use', '1')->where('it_only_admin', '!=', '1');
+                        }
                     } 
-                    // 회원타입이 없는 경우
+                    // 비회원 전용
                     else {
-                        $query->where('it_use', '1');
+                        $query->where('it_use', '1')->where('it_only_admin', '!=', '1');
                     }
                 })
                 ->when($request->input('mb_buy'), function($query) use ($request) {
@@ -397,7 +403,9 @@ class ShopItem extends Model
 
                 //메인 슬라이드 - 출시예정 상품
                 ->when($ca_id == 'MainSlideComming' ,function($query) {
-                    $query->where('ca_id', 'i0')->where('it_type10', '1')->where('it_display_use', '1');
+                    $query->where('ca_id', 'i0')
+                    ->where('it_type10', '1')
+                    ->where('it_display_use', '1');
                 })
                 
                 ->when($request->filled('desc'), function($query) use($request, $it_price) {
@@ -475,7 +483,7 @@ class ShopItem extends Model
                     } 
                     // 회원타입이 없는 경우
                     else {
-                        $query->where('it_use', '1');
+                        $query->where('it_use', '1')->where('it_only_admin',  '!=', '1');
                     }
                 })
                 ->when($request->input('mb_buy'), function($query) use ($request) {

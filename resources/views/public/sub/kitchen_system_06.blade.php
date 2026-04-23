@@ -4,14 +4,18 @@
 
 <style>
   /* 키친시스템 */
-  .kitchen-slide{}
-  .kitchen-card{background-color: #8ec251; box-shadow: 0 0 10px #8ec251; border-radius: 2rem; overflow: hidden; filter: grayscale(0);}
+  .kitchen-slide{margin: 0 -0.5rem;}
+  .kitchen-slide .slick-slide{margin:0 0.5rem;}
+  .kitchen-slide .slick-arrow{background-color: transparent;}
+  .kitchen-slide>.slick-prev{background-image: url(/images/sub/ks-arrow.svg);background-repeat: no-repeat; transform: scaleX(-1);}
+  .kitchen-slide>.slick-next{background-image: url(/images/sub/ks-arrow.svg);background-repeat: no-repeat; }
+  .kitchen-card{background-color: #8ec251; box-shadow: 0 0 6px #8ec251; border-radius: 1.5rem; overflow: hidden; filter: grayscale(0); }
   .kitchen-card.slick-current{}
-  .kitchen-card>img{width: 12vw; margin: auto;}
-  .kitchen-card p{background-color: #fff; border: 1px solid #ddd; letter-spacing: -1px;}
-  .kitchen-card i{font-style: normal; font-size: 1.2rem;}
-  .kitchen-card strong{font-size: 2.3rem; display: block;}
-  .kitchen-card span{font-size: 1.4rem;}
+  .kitchen-card>img{margin: auto;}
+  .kitchen-card p{background-color: #fff; border: 1px solid #ddd; letter-spacing: -1px; border-radius: 1.5rem 1.5rem 0 0;}
+  .kitchen-card i{font-style: normal; font-size: 1.1rem;}
+  .kitchen-card strong{font-size: 2.2rem; display: block;}
+  .kitchen-card span{font-size: 1.3rem;}
 </style>
 
 <script>
@@ -20,8 +24,8 @@ $(function(){
 		dots: false,
 		arrows: true,
 		autoplay: false,
-		infinite: false,
-		slidesToShow: 3,
+		infinite: true,
+		slidesToShow: 5,
 		speed: 500,
 		autoplaySpeed: 3000,
 		pauseOnHover : false,
@@ -30,7 +34,7 @@ $(function(){
 		responsive: [
 			{breakpoint: 1024,
 				settings: {
-					slidesToShow: 2,
+					slidesToShow: 3,
 				}
 			},     
 			{breakpoint: 680,
@@ -70,7 +74,7 @@ $(function(){
         <p>
           <i>Kitchen System 01</i>
           <strong>스마트조리기</strong>
-          <span>터치 한번으로 60여가지 메뉴를 빠르게</span>
+          <span>터치 한번으로 <br>60여가지 메뉴를 빠르게</span>
         </p>
 			</a>
 			<a class="kitchen-card" href="/public/sub/kitchen_system_02">
@@ -78,7 +82,7 @@ $(function(){
         <p>
           <i>Kitchen System 02</i>
           <strong>캡슐커피머신</strong>
-          <span>1L 아메리카노를 단 한 개의 캡슐로</span>
+          <span>1L 아메리카노를 <br>단 한 개의 캡슐로</span>
         </p>
 				
 			</a>
@@ -87,7 +91,7 @@ $(function(){
         <p>
           <i>Kitchen System 03</i>
           <strong>탄산디스펜서</strong>
-          <span>업계최초 코카콜라 단독계약</span>
+          <span>업계최초 <br>코카콜라 단독계약</span>
         </p>
 			</a>
 			<a class="kitchen-card" href="/public/sub/kitchen_system_04">
@@ -95,7 +99,7 @@ $(function(){
         <p>
           <i>Kitchen System 04</i>
           <strong>수유식튀김기</strong>
-          <span>고유가시대, 돈 버는 튀김기</span>
+          <span>고유가시대, <br>돈 버는 튀김기</span>
         </p>
 			</a>
 			<a class="kitchen-card" href="/public/sub/kitchen_system_05">
@@ -103,7 +107,7 @@ $(function(){
         <p>
           <i>Kitchen System 05</i>
           <strong>초음파식세기</strong>
-          <span>설거지 끝판왕 담그고 빼면 설거지 끝</span>
+          <span>설거지 끝판왕 <br>담그고 빼면 설거지 끝</span>
         </p>
 			</a>
       <a class="kitchen-card" href="/public/sub/kitchen_system_06">

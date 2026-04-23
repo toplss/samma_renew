@@ -53,13 +53,26 @@ class PaymentService
                     throw new \Exception('충전금 또는 적립금 사용 금액은 결제 예정 금액을 초과할 수 없습니다.');
                 }
 
+                $usePoint   = $request->input('input_od_temp_point', 0);
+                $useReserve = $request->input('input_od_temp_point_reserve', 0);
 
-                if ($request->input('input_od_temp_point', 0) < 0) {
+                if ($usePoint > $member['mb_point']) {
+                    throw new \Exception(
+                        "충전금이 부족합니다.\n(보유: {$member['mb_point']} / 사용 요청: {$usePoint})"
+                    );
+                }
+
+                if ($useReserve > $member['mb_point_reserve']) {
+                    throw new \Exception(
+                        "적립금이 부족합니다.\n(보유: {$member['mb_point_reserve']} / 사용 요청: {$useReserve})"
+                    );
+                }
+
+                if ($usePoint < 0) {
                     throw new \Exception('충전금 사용 금액은 0원 미만일 수 없습니다.');
                 }
 
-
-                if ($request->input('input_od_temp_point_reserve', 0) < 0) {
+                if ($useReserve < 0) {
                     throw new \Exception('적립금 사용 금액은 0원 미만일 수 없습니다.');
                 }
 

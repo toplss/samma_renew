@@ -52,10 +52,16 @@ class MallShopService
             $reatimeBalance = ShopOrderModel::realTimeOrderTopPoints($mb_code);
 
             $none_pt_charge =ShopOrderModel::realTimeNonePaymentOrderTopChargePoints($mb_code);
-            
-            $arr_member['mb_point'] = $reatimeBalance->put_charge - $none_pt_charge ?? 0;
-            $arr_member['mb_point_reserve'] = $reatimeBalance->put_reserve ?? 0;
-            $arr_member['mb_point_balance'] = $reatimeBalance->put_balance ?? 0;
+
+            $arr_member['mb_point'] = 
+                (isset($reatimeBalance->put_charge) ? $reatimeBalance->put_charge : 0)
+                - ($none_pt_charge ?? 0);
+
+            $arr_member['mb_point_reserve'] = 
+                isset($reatimeBalance->put_reserve) ? $reatimeBalance->put_reserve : 0;
+
+            $arr_member['mb_point_balance'] = 
+                isset($reatimeBalance->put_balance) ? $reatimeBalance->put_balance : 0;
         }
 
 

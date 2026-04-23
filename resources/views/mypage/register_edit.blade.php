@@ -87,7 +87,7 @@
           </td>
         </tr>
         <tr>
-          <th><sup>&#42;</sup>전화번호</th>
+          <th>전화번호</th>
           <td>
             <input type="text" name="mb_tel1" id="mb_tel1" maxlength="4" class="middle" value="{{ $items['form_data']['mb_tel'][0] }}"> &#45;
             <input type="text" name="mb_tel2" id="mb_tel2" maxlength="4" class="middle" value="{{ $items['form_data']['mb_tel'][1] }}"> &#45;
@@ -95,7 +95,7 @@
           </td>
         </tr>
         <tr>
-          <th><sup>&#42;</sup>사업자 등록번호</th>
+          <th>사업자 등록번호</th>
           <td>
             {{ $items['member']->mb_company_no }}
           </td>
@@ -157,7 +157,7 @@
           </td>
         </tr>
         <tr>
-          <th><sup>&#42;</sup>점장 휴대폰번호</th>
+          <th>점장 휴대폰번호</th>
           <td>
             <input type="text" name="manager_tel21" id="manager_tel21" value="{{ $items['form_data']['manager_tel2'][0] }}"> &#45;
             <input type="text" name="manager_tel22" id="manager_tel22" value="{{ $items['form_data']['manager_tel2'][1] }}"> &#45;
@@ -215,7 +215,7 @@
           $account_file_hits = $mb_account_files1[0]['hits'];
         @endphp        
         <tr>
-          <th><sup>&#42;</sup>통장사본</th>
+          <th>통장사본</th>
           <td>
             <input 
               type="file" 

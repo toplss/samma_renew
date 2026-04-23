@@ -130,7 +130,7 @@
           </td>
         </tr>
         <tr>
-          <th><sup>&#42;</sup>사업자 등록번호</th>
+          <th>사업자 등록번호</th>
           <td>
             <input type="text" name="mb_company_no" id="mb_company_no" placeholder="사업자등록번호(숫자만 입력)" maxlength="12">
 					<button type="button" id="chk_company_no" class="btn1" onclick="chkCompanyNo();">중복체크</button>
@@ -193,7 +193,7 @@
           </td>
         </tr>
         <tr>
-          <th><sup>&#42;</sup>점장 휴대폰번호</th>
+          <th>점장 휴대폰번호</th>
           <td>
             <input type="text" name="manager_tel21" id="manager_tel21" class="manager_tel_inputs" value="" maxlength="3"> &#45;
             <input type="text" name="manager_tel22" id="manager_tel22" class="manager_tel_inputs" value="" maxlength="4"> &#45;
@@ -259,7 +259,7 @@
           $account_file_k = "1";
         @endphp
         <tr>
-          <th><sup>&#42;</sup>통장사본</th>
+          <th>통장사본</th>
           <td>
             <input type="file" 
                   name="mb_account_files{{ $account_file_k }}[]" 
@@ -651,11 +651,35 @@
     }
 
     if ($("#user_pass").val().length < 4 || $("#user_pass").val().length > 20) {
-      validationAlertMessage("비밀번호는 4~20자 이내 입력되어야 합니다.", function() {
+      validationAlertMessage("비밀번호는 영문, 숫자, 특수문자를 혼용하여 <br>4~20자 이내로 입력되어야 합니다.", function() {
         $("#user_pass").focus().select();
       });            
       return false;
     }
+
+
+
+
+// function validatePassword(pw) {
+//   // 영문 + 숫자 + 특수문자 포함, 4~20자
+//   const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};':"\\|,.<>/?-]).{4,20}$/;
+//   return regex.test(pw);
+// }
+
+// // 사용 예시
+// const pw = document.getElementById('password').value;
+
+// if (!validatePassword(pw)) {
+//   alert('영문, 숫자, 특수문자를 혼용하여 4~20자 이내로 입력해주세요.');
+// }
+
+
+
+
+
+
+
+
 
     if ($("#user_pass_confirm").val() == "") {
       validationAlertMessage("비밀번호 확인란을 입력해주세요.", function() {
@@ -1005,7 +1029,12 @@
       icon: 'warning',
       title: '알림',
       html: message,
-      confirmButtonText: '확인'
+      confirmButtonText: '확인',
+      didOpen: () => {
+          document.querySelector('.swal2-input').select();
+        }
+
+
     }).then(() => {
       if (callback) callback();
     });

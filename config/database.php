@@ -95,7 +95,7 @@ return [
         // 비바쿡
         'vivacook' => [
             'driver' => 'mysql',
-            'host' => env('DB2_HOST', '116.124.133.219'), 
+            'host' => env('DB2_HOST', '175.126.232.36'), 
             'port' => env('DB2_PORT', '3306'),
             'database' => env('DB2_DATABASE', 'vivacook'),
             'username' => env('DB2_USERNAME', 'vivacook'),

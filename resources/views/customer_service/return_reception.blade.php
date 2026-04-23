@@ -158,6 +158,15 @@ $(document).ready(function() {
 
 });
 
+//반품수량 숫자체크
+$(document).on("input", ".return_qty", function () {
+    const value = this.value;
+
+    if (!/^[0-9]*$/.test(value)) {
+        validationAlertMessage('반품수량은 숫자만 입력 가능합니다.');
+        this.value = value.replace(/[^0-9]/g, '');
+    }
+});
 
 //검색 결과
 function display_item() {
@@ -179,6 +188,7 @@ function display_item() {
       <td data-label="상품정보">
         <input type="hidden" name="items[${item.it_id}][title_no]" id="items[${item.it_id}][title_no]" value="${item.it_id}">
         <input type="hidden" name="items[${item.it_id}][title]" id="items[${item.it_id}][title]" value="${item.it_name}">
+        <input type="hidden" name="items[${item.it_id}][it_receive_unit]" id="items[${item.it_id}][it_receive_unit]" value="${item.it_receive_unit}">
         <div class="ri1">
           <img src="${item.it_img1 ? `/images/item/${item.it_img1}` : '/images/common/no_image.gif'}" alt="">
           <p>
@@ -196,10 +206,10 @@ function display_item() {
       </td>
       <td class="ri3" data-label="수량">
         <p>
-          <u>박스</u><input type="text" placeholder="0">
+          <u>박스</u><input type="text" name="ct_qty_box[${item.it_id}]" class="return_qty" id="ct_qty_box[${item.it_id}]" maxLength="4">
         </p>
         <p>
-          <u>낱개</u><input type="text" placeholder="0">
+          <u>낱개</u><input type="text" name="ct_qty_pcs[${item.it_id}]" class="return_qty" id="ct_qty_pcs[${item.it_id}]" maxLength="4">
         </p>
       </td>
       <td class="ri4" data-label="사진">
@@ -210,7 +220,7 @@ function display_item() {
       </td>
       <td data-label="메모"><textarea name="contents[${item.it_id}]" id="contents[${item.it_id}]" placeholder="남기실 말씀"></textarea></td>
       <td data-label="신청">
-        <button type="button" class="btn1" onclick="javascript:select_item('${item.it_id}', '${item.it_return}', '${item.ct_id}');">반품신청</button>
+        <button type="button" class="btn1" onclick="javascript:select_item('${item.it_id}', '${item.it_return}', '${item.it_receive_unit}', '${item.ct_id}', '${item.ct_qty_tot}');">반품신청</button>
       </td>
     </tr>
   `);
@@ -267,9 +277,7 @@ function qtyOptions(max) {
 
 
 //반품신청
-function select_item(key,returnYN,ctID) {
-
-  console.log(ctID);
+function select_item(key,returnYN,ItReceiveUnit,ctID,ctQtyTot) {  
   
   // 중복 접수 체크
   if ($('#complete_item tr.complete-product[data-key="' + key + '"]').length > 0) {
@@ -289,12 +297,29 @@ function select_item(key,returnYN,ctID) {
     return false;
   }
 
-  //반품수량
-  const qty = $('select[name="request_qty[' + key + ']"]');
-  if (qty.val() == '') {
-    var message = '반품하실 수량을 선택해 주세요.';
+  //반품수량 체크
+  const ct_qty_box = $('input[name="ct_qty_box[' + key + ']"]');
+  const ct_qty_pcs = $('input[name="ct_qty_pcs[' + key + ']"]');
+  const boxVal = ct_qty_box.val();
+  const pcsVal = ct_qty_pcs.val();
+  const return_tot = Number(boxVal) * Number(ItReceiveUnit) + Number(pcsVal);
+
+  if (
+    (boxVal == null || boxVal === '' || boxVal < 1 ) &&
+    (pcsVal == null || pcsVal === '' || pcsVal < 1 )
+  ) {
+    var message = '반품하실 수량을 입력해 주세요.';  
+    validationAlertMessage(message, function() {
+      ct_qty_pcs.focus();
+    });
+    return false;
+  }
+
+  
+  if (return_tot > ctQtyTot) {
+    var message = '반품신청 수량은 구매하신 수량을 초과할 수 없습니다.';
     validationAlertMessage(message);
-    return false;            
+    return false;
   }
 
   //첨부파일
@@ -314,10 +339,13 @@ function select_item(key,returnYN,ctID) {
   }
 
   //남기는 말씀
-  const $comment = $('textarea[name="contents[' + key + ']"]');
-  if ($comment.val() == '') {
+  const comment = $('textarea[name="contents[' + key + ']"]');
+  if (comment.val() == '') {
     var message = '남기실 말씀을 작성해 주세요.';
-    validationAlertMessage(message);
+    validationAlertMessage(message, function() {
+      comment.focus();
+    });
+
     return false;            
   }
 
@@ -505,14 +533,17 @@ function chkform_return_reception() {
 }
 
 
-function validationAlertMessage(message)  {
+function validationAlertMessage(message, callback) {
   Swal.fire({
-      toast: false,
-      icon: 'warning',
-      title: '알림',
-      html: message,
-      width: 400,
-      confirmButtonText: '확인'
+    toast: false,
+    icon: 'warning',
+    title: '알림',
+    html: message,
+    width: 400,
+    confirmButtonText: '확인'
+  }).then(() => {
+    if (callback) callback();
+    return false;
   });
 }
 

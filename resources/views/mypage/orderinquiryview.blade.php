@@ -282,7 +282,7 @@
     $od_status = $items['order_info']->od_status;
 
     switch ($items['order_info']->od_settle_case) {
-      case '신용카드': $card_custom_cancel = true; break;
+      case '신용카드': $card_custom_cancel = false; break;
       case '계좌이체': $card_custom_cancel = true; break;
       case '가상계좌': $card_custom_cancel = true; break;
     }
@@ -475,7 +475,7 @@ function orderCancel(e) {
 
   if (e == 'all') {
     var message = `<p style="font-weight:bold;">
-        취소된 상품을 어떻게 처리하시겠습니까?
+        주문하신 상품을 어떻게 처리하시겠습니까?
       </p>
       <p style="color:#d33; font-size:15px;">
         선택 후에는 변경할 수 없습니다.
@@ -501,11 +501,11 @@ function orderCancel(e) {
 
       confirmButtonText: '장바구니로 이동',
       denyButtonText: '상품 삭제',
-      cancelButtonText: '취소',
+      cancelButtonText: '닫기',
 
       confirmButtonColor: '#3085d6',
-      denyButtonColor: '#f39c12',
-      cancelButtonColor: '#d33'
+      denyButtonColor: '#d33',
+      cancelButtonColor: '#333'
 
     }).then((result) => {
       // 장바구니 이동

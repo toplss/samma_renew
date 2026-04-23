@@ -478,6 +478,11 @@ $(document).ready(function() {
             let usedReserve = $('#input_od_temp_point_reserve').val() * 1;
             let remaining = payment - usedReserve;  // 이미 적립금 사용됐다면 나머지 금액만 차감
             let usePoint = Math.min(point, remaining);
+
+            if (usePoint < 0) {
+                validationAlertMessage('충전금은 0원 이하로 사용할 수 없습니다.');
+                return false;
+            }
             $('#input_od_temp_point').val(usePoint);
 
         } else {
@@ -493,6 +498,11 @@ $(document).ready(function() {
             let usedPoint = $('#input_od_temp_point').val() * 1;
             let remaining = payment - usedPoint;  // 이미 충전금 사용됐다면 나머지 금액만 차감
             let useReserve = Math.min(reserve, remaining);
+            
+            if (useReserve < 0) {
+                validationAlertMessage('적립금은 0원 이하로 사용할 수 없습니다.');
+                return false;
+            }
             $('#input_od_temp_point_reserve').val(useReserve);
         } else {
             $('#input_od_temp_point_reserve').val('');
@@ -504,10 +514,18 @@ $(document).ready(function() {
 
     $(document).on('input', '#input_od_temp_point', function() {
         let input_amt = $(this).val();
-        let reserve   = $('#input_od_temp_point_reserve').val() * 1;
+        let od_tmp_point   = $('#od_tmp_point').val() * 1;
+        let input_od_temp_point_reserve = $('#input_od_temp_point_reserve').val() * 1; // 적립금 입력필드
+
         if (!/^\d*$/.test(input_amt)) {
             validationAlertMessage('숫자만 입력 가능합니다.');
             $(this).val(''); // 입력 초기화
+            return false;
+        }
+
+        if (input_amt > od_tmp_point) {
+            validationAlertMessage('보유한 충전금을 초과 하였습니다.');
+            $(this).val(input_amt.slice(0, -1));
             return false;
         }
 
@@ -524,7 +542,7 @@ $(document).ready(function() {
         }
 
         let payment = $('input[name="payment"]').val() * 1;
-        if (((input_amt * 1) + reserve) > payment) {
+        if ((input_amt * 1) + input_od_temp_point_reserve > payment) {
             validationAlertMessage('결제예정 금액보다 입력값이 큽니다.');
             $(this).val(input_amt.slice(0, -1));
             return false;
@@ -534,10 +552,18 @@ $(document).ready(function() {
 
     $(document).on('input', '#input_od_temp_point_reserve', function() {
         let input_amt = $(this).val();
-        let point   = $('#input_od_temp_point').val() * 1;
+        let od_tmp_reserve = $('#od_tmp_reserve').val() * 1;
+        let input_od_temp_point = $('#input_od_temp_point').val() * 1;
+
         if (!/^\d*$/.test(input_amt)) {
             validationAlertMessage('숫자만 입력 가능합니다.');
             $(this).val(''); // 입력 초기화
+            return false;
+        }
+
+        if (input_amt > od_tmp_reserve) {
+            validationAlertMessage('보유한 적립금을 초과 하였습니다.');
+            $(this).val(input_amt.slice(0, -1));
             return false;
         }
 
@@ -554,7 +580,7 @@ $(document).ready(function() {
         }
 
         let payment = $('input[name="payment"]').val() * 1;
-        if (((input_amt * 1) + point) > payment) {
+        if ((input_amt * 1) + input_od_temp_point > payment) {
             validationAlertMessage('결제예정 금액보다 입력값이 큽니다.');
             $(this).val(input_amt.slice(0, -1));
             return false;
