@@ -193,6 +193,7 @@
       </thead>
 			<tbody>
         <!-- 반복 -->
+{{-- @dd($items['cart_list']); --}}
         @foreach($items['cart_list'] as $key => $row)
         @php
           $image_url = 'images/item/'.$row->it_img1;

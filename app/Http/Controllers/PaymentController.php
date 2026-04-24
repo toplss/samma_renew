@@ -304,7 +304,7 @@ class PaymentController extends Controller
                 ]);
             } else {
                 return redirect()
-                ->route('/')
+                ->route('my_cart')
                 ->with('error', $e->getMessage());
             }
         }
@@ -328,7 +328,7 @@ class PaymentController extends Controller
                 throw new Exception('결제가 실패 하였습니다. 다시 시도해 주세요.');
             }
         } catch (\Exception $e) {
-            return redirect()->route('/')->with('error', $e->getMessage());
+            return redirect()->route('my_cart')->with('error', $e->getMessage());
         }
     }
 
@@ -355,7 +355,7 @@ class PaymentController extends Controller
             $dt_data = json_decode(DB::table('g5_shop_order_data')->where('od_id', $oid)->value('dt_data'));
 
             if (!$dt_data) {
-                return redirect()->route('/')->with('error', '결제정보가 존재하지 않습니다. 관리자에게 문의 바랍니다.');
+                return redirect()->route('my_cart')->with('error', '결제정보가 존재하지 않습니다. 관리자에게 문의 바랍니다.');
             }
 
             $dt_data = (object) $dt_data;
@@ -381,7 +381,7 @@ class PaymentController extends Controller
             }
 
             if ($res['status'] == 'error') {
-                return redirect()->route('/')->with('error', $res['message']);
+                return redirect()->route('my_cart')->with('error', $res['message']);
             } else {
                 $result = app(InicisService::class)->approvePaymentMobile($request);
 
@@ -393,7 +393,7 @@ class PaymentController extends Controller
         }
 
         if (!$oid) {
-            return redirect()->route('/')->with('error', '주문이 취소 되었습니다.');
+            return redirect()->route('my_cart')->with('error', '주문이 취소 되었습니다.');
         }
 
         return redirect()->route('payment.noti_result', ['oid' => $oid, 'price' => $price]);

@@ -91,12 +91,12 @@
 #simple_all:checked::after,#simple_all2:checked::after {content: ''; position: absolute; top: 50%; left: 50%; width: 0.3rem; height: 0.6rem; border: solid #fff; border-width: 0 2px 2px 0; transform: translate(-50%, -60%) rotate(45deg);}
 #simple_all2{margin-right: 5px;}
 
-.prd-box.simple{position: relative;}
+.prd-box.simple{position: relative; overflow: hidden;}
 
 .prd-box:has(.prd-img.sold-out) .prd-check input{display: none;} /* prd-simple 품절일때 체크박스 안보이게 */
-.prd-check{position: absolute; top: 8px; left: 8px; z-index: 3;filter: drop-shadow(0 1px 2px rgba(0,0,0,0.08));}
-.prd-check input[type="checkbox"] {width: 1.2rem; height: 1.2rem; border-color: #8ec251;}
-.prd-check input[type="checkbox"]:checked::after {content: ''; position: absolute; top: 50%; left: 50%; width: 0.3rem; height: 0.6rem; border: solid #fff; border-width: 0 2px 2px 0; transform: translate(-50%, -60%) rotate(45deg);}
+.prd-check{position: absolute; top: 0; left: 0; z-index: 3;filter: drop-shadow(0 1px 2px rgba(0,0,0,0.08));}
+.prd-check input[type="checkbox"] {width: 1.8rem; height: 1.8rem; border-color: #8ec251;}
+.prd-check input[type="checkbox"]:checked::after {content: ''; position: absolute; top: 46%; left: 52%; width: 0.5rem; height: 0.8rem; border: solid #fff; border-width: 0 3px 3px 0; transform: translate(-50%, -60%) rotate(45deg);}
 
 /* 리스트형식일때 */
 .prd-row-head ul{display: grid; grid-template-columns: 5fr 2fr 2fr 3fr; border-top: 1px solid #8ec251; border-bottom: 1px solid #8ec251; margin: 1rem auto;}

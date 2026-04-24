@@ -124,7 +124,13 @@ class MyPageController extends Controller
                     COALESCE(
                         NULLIF(
                             CONCAT_WS('#',
-                                IF(so.pt_sales_delivery > 0, '매출', NULL),
+                                IF(so.pt_sales_delivery > 0 
+                                    and (so.pt_cancel
+                                        + so.pt_return
+                                        + so.pt_outofstock
+                                        + so.pt_damage_staff
+                                        + so.pt_damage_logistic
+                                    ) < so.pt_sales_delivery , '매출', NULL),
                                 IF(so.pt_cancel > 0, '취소', NULL),
                                 IF(so.pt_return > 0, '반품', NULL),
                                 IF(so.pt_return_receivable > 0, '반품채권', NULL),
@@ -132,7 +138,7 @@ class MyPageController extends Controller
                                 IF(so.pt_outofstock_deposit > 0, '결품채권', NULL),
                                 IF(so.pt_damage_staff > 0, '기사파손', NULL),
                                 IF(so.pt_damage_logistic > 0, '물류파손', NULL),
-                                IF(so.od_delivery_step = 8, '잔액이관', NULL)
+                                IF(so.od_delivery_step = 8, '잔액이관', NULL)       
                             ), ''
                         ),
                         so.od_gubun
@@ -481,7 +487,8 @@ class MyPageController extends Controller
         //카트정보 - 납품 / 취소 / 반품... 순으로 한다
         $cart_list = DB::table('g5_shop_cart as sc')
                 ->join('g5_shop_item as si', 'sc.it_id', 'si.it_id')
-                ->orderBy('sc.it_id', 'ASC')
+                ->orderByRaw("(sc.ct_cate = '납품') DESC")
+                ->orderBy('sc.ct_cate', 'ASC')
                 ->addSelect(
                     'sc.od_group_code',
                     'sc.od_id',
@@ -497,6 +504,9 @@ class MyPageController extends Controller
                 )
                 ->where('sc.od_id', $oid)
                 ->get();
+
+
+// dd($cart_list);
 
         $items = [
             'order_list' => $order_list,

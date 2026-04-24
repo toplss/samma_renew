@@ -71,8 +71,10 @@
 
         $str_status = $delivery_step_status[$row->od_delivery_step] ?? '';
 
-      } elseif ($current_gubun == '반품입금' 
+      } elseif ($current_gubun == '취소' 
+                || $current_gubun == '반품' 
                 || $current_gubun == '결품' 
+                || $current_gubun == '반품입금' 
                 || $current_gubun == '결품입금' 
                 || $current_gubun == '기사파손' 
                 || $current_gubun == '물류파손' 
@@ -161,9 +163,9 @@
           <i>{{ number_format($row->order_cnt) }}건</i>|
           <b>{{ $current_gubun }} {{ $str_status }} {{ ($current_gubun_cnt > 1) ? '외 ' . ($current_gubun_cnt - 1) . '건' : '' }}</b>
           @php
-            if($row->od_delivery_step == 0) {
+            if($current_gubun == '매출' && $row->od_delivery_step == 0) {
               $infoMsg = '<br class="show-1280"><span class="txt-blue">일부 또는 전체 취소 가능합니다.</span>';
-            }elseif($row->od_delivery_step <> 8 && $row->od_delivery_step < 20) {
+            }elseif($current_gubun == '매출' && $row->od_delivery_step <> 8 && $row->od_delivery_step < 20) {
               $infoMsg = '<br class="show-1280"><span class="txt-red">일부 또는 전체 취소는 고객센터 (1899-3153) 로 연락주시기 바랍니다.</span>';
             }else {
               $infoMsg = '';

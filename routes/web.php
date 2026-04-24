@@ -303,7 +303,7 @@ Route::middleware(['block.ip'])->group(function () {
 
         
             /********** 장바구니 **********/
-            Route::get('/mypage/cart', [MyCartController::class, 'MyCartList']);
+            Route::get('/mypage/cart', [MyCartController::class, 'MyCartList'])->name('my_cart');
             
         
             /********** 충전금내역 (선불업체 전용) **********/
