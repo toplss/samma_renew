@@ -174,6 +174,7 @@ if (request()->has('page'))  $isDown = false;
                     </p>
                     @endif
                 </li>
+                <li class="prd-memo"><span>24온스 전용</span></li>
 
                 @if($activeMember)
                 <li class="prd-price">

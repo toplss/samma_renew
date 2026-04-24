@@ -71,9 +71,11 @@
 
         $str_status = $delivery_step_status[$row->od_delivery_step] ?? '';
 
-      } elseif ($current_gubun == '취소' 
-                || $current_gubun == '반품' 
-                || $current_gubun == '결품' 
+      } elseif ($current_gubun == '취소' || $current_gubun == '반품' ) {        
+        
+        $str_status = '완료';
+
+      } elseif ($current_gubun == '결품' 
                 || $current_gubun == '반품입금' 
                 || $current_gubun == '결품입금' 
                 || $current_gubun == '기사파손' 
@@ -157,7 +159,7 @@
 
     @endphp
     
-    <div class="odr-content {{ ( $row->od_delivery_step != 8 && $row->od_delivery_step < 90 ) ? 'odr-bg' : '' }}">
+    <div class="odr-content {{ (( $current_gubun == '매출' || $current_gubun == '충전금구매' ) && $row->od_delivery_step != 8 && $row->od_delivery_step < 90 ) ? 'odr-bg' : '' }}">
       <div class="odr-list-title">
         <h6>{{ $date_gubun }} : {{ $str_date }}({{ $str_week }}) 
           <i>{{ number_format($row->order_cnt) }}건</i>|

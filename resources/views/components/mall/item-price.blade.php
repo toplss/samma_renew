@@ -35,6 +35,7 @@ if ($row['it_price_piece_use']) {
 @else
 
 <input type="hidden" class="it_price" value="{{ $price }}" />
+
 <h5 class="price">
     <span class="field_it_price_">{{ number_format($row_list_field_it_price) }}원</span>
     @if($it_price_piece > 0 && $row['it_price_piece_use'])

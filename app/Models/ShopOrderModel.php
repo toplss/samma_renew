@@ -420,4 +420,15 @@ class ShopOrderModel extends Model
 
         return collect($points)->first()->pt_buy_charge;
     }
+
+
+
+    public static function preparePaymentMemberMisu($mb_code)
+    {
+        $points = DB::select("
+        SELECT IFNULL(SUM(od_misu), 0) AS od_misu FROM g5_shop_order WHERE mb_code = ? AND od_delivery_step IN (0) AND od_gubun NOT IN ('충전금구매')
+            ", [$mb_code]);
+
+        return collect($points)->first()->od_misu;
+    }
 }

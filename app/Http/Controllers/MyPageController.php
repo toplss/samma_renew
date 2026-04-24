@@ -211,9 +211,9 @@ class MyPageController extends Controller
                         WHEN so.od_delivery_step IN (90, 99) THEN so.od_delivery_date
                     END DESC
                 ")
-                ->orderBy('so.od_delivery_step', 'ASC')
-                ->orderByRaw("so.od_gubun IN ('기초잔액추가', '잔액조정') ASC")
                 ->orderBy('so.od_delivery_date', 'DESC')
+                ->orderBy('so.od_delivery_step', 'ASC')
+                ->orderByRaw("so.od_gubun IN ('기초잔액추가', '잔액조정') ASC")                
                 ->orderBy('so.od_idx', 'DESC')    
 
                 ->paginate($perPage);
@@ -424,7 +424,13 @@ class MyPageController extends Controller
                         COALESCE(
                             NULLIF(
                                 CONCAT_WS('#',
-                                    IF(pt_sales_delivery > 0, '매출', NULL),
+                                    IF(pt_sales_delivery > 0 
+                                        and (pt_cancel
+                                            + pt_return
+                                            + pt_outofstock
+                                            + pt_damage_staff
+                                            + pt_damage_logistic
+                                        ) < pt_sales_delivery , '매출', NULL),
                                     IF(pt_cancel > 0, '취소', NULL),
                                     IF(pt_return > 0, '반품', NULL),
                                     IF(pt_return_receivable > 0, '반품채권', NULL),

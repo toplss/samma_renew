@@ -53,6 +53,19 @@ class MallShopService
 
             $none_pt_charge =ShopOrderModel::realTimeNonePaymentOrderTopChargePoints($mb_code);
 
+            $payment_type = '';
+            $od_misu  = 0;
+            if (isset($arr_member['level_ca_id2'])) {
+                if (strlen($arr_member['level_ca_id2']) == 4) {
+                    if (substr($arr_member['level_ca_id2'], -1) == '1') $payment_type = '선불';
+                    if (substr($arr_member['level_ca_id2'], -1) == '2') $payment_type = '후불';
+                }
+            }
+
+            if ($payment_type == '선불') {
+                $od_misu = ShopOrderModel::preparePaymentMemberMisu($mb_code);
+            }
+
             $arr_member['mb_point'] = 
                 (isset($reatimeBalance->put_charge) ? $reatimeBalance->put_charge : 0)
                 - ($none_pt_charge ?? 0);
@@ -61,7 +74,7 @@ class MallShopService
                 isset($reatimeBalance->put_reserve) ? $reatimeBalance->put_reserve : 0;
 
             $arr_member['mb_point_balance'] = 
-                isset($reatimeBalance->put_balance) ? $reatimeBalance->put_balance : 0;
+                isset($reatimeBalance->put_balance) ? $reatimeBalance->put_balance - $od_misu : 0;
         }
 
 
