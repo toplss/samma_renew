@@ -38,7 +38,7 @@ class SmsManagementService
 
             $as_info = DB::table('tb_as_reception as ar')
                 ->leftJoin('tb_member as tm', 'ar.mb_num', '=', 'tm.mb_num')
-                ->where('ar.idx', 13)
+                ->where('ar.idx', $as_idx)
                 ->select([
                     'ar.mb_num',
                     'ar.company',

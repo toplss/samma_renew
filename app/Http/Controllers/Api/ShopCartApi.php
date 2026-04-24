@@ -27,6 +27,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Continue_;
+use Illuminate\Support\Facades\Cache;
 
 class ShopCartApi extends Controller
 {
@@ -928,30 +929,38 @@ class ShopCartApi extends Controller
         $mb_code = $member['mb_code'];
         $mb_id   = $member['mb_id'];
 
-        $uniq = DB::table('g5_uniqid')
-        ->where('uq_mb_code', $mb_code)
-        ->where('uq_mb_id', $mb_id)
-        ->where('uq_gubun', '')
-        ->where('uq_chk', '')
-        ->orderByDesc('uq_id')
-        ->first();
+        $key = "uniq_lock:{$mb_code}:{$mb_id}";
 
-        if ($uniq) {
-            $od_id = $uniq->uq_id;
-        } else {
-            $od_id = $this->make_od_id(); // 기존 od_id 생성 함수
+        return Cache::lock($key, 3)->block(3, function () use ($request, $mb_code, $mb_id) {
 
+            $uniq = DB::table('g5_uniqid')
+                ->where('uq_mb_code', $mb_code)
+                ->where('uq_mb_id', $mb_id)
+                ->where('uq_gubun', '')
+                ->where('uq_chk', '')
+                ->orderByDesc('uq_id')
+                ->first();
+        
+            if ($uniq) {
+                return $uniq->uq_id;
+            }
+        
+            $od_id = $this->make_od_id();
+        
             DB::table('g5_uniqid')->insert([
                 'uq_id'       => $od_id,
                 'uq_mb_num'   => $mb_code,
                 'uq_mb_code'  => $mb_code,
                 'uq_mb_id'    => $mb_id,
                 'uq_ip'       => $request->ip(),
-                'uq_datetime' => Carbon::now()
+                'uq_datetime' => now(),
+                'uq_gubun'    => '',
+                'uq_chk'      => ''
             ]);
-        }
-
-        return $od_id;
+        
+            return $od_id;
+        });
+        
     }
 
 
