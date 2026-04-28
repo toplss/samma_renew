@@ -185,8 +185,7 @@
                 {{ $row['it_name'] }}
                 <p class="ea">({{ $row['it_basic'] }}*{{ $row['it_gubun_label'] }})</p>
             </li>
-            <li class="prd-memo"><span>24온스 전용</span></li>
-            
+
             @if($activeMember)
             <li class="prd-price">
                 <x-mall.item-price

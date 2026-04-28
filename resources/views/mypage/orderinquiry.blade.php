@@ -57,7 +57,8 @@
       $current_gubun_cnt = !empty($arr_gubun) ? count($arr_gubun) : 0;
       //가장 처음배열의 상태값으로..
       $current_gubun = $arr_gubun[0];
-      
+          
+      //str_status 가공
       if ($current_gubun == '매출') {
 
         $delivery_step_status = [
@@ -177,8 +178,8 @@
         </h6>
         <p>
           <button type="button" class="btn2 hide-1024" onclick="window.open('/mypage/orderinquiry_pop?ogc={{ $row->od_group_code }}&ods={{ $row->od_delivery_step }}','주문상세','width=600,height=800');">상세보기</button>
-          <button type="button" class="btn3" onclick="location.href='/mypage/orderinquiryview?oid={{ $row->od_id }}&ogc={{ $row->od_group_code }}&ods={{ $row->od_delivery_step }}';">주문정보</button>
-          @if($row->od_delivery_step >= 90)
+          <button type="button" class="btn3" onclick="location.href='/mypage/orderinquiryview?oid={{ $row->od_id }}&ogc={{ $row->od_group_code }}&ods={{ $row->od_delivery_step }}&etc={{ ($row->od_id_org == '') ? 'Y' : 'N' }}';">주문정보</button>
+          @if($row->od_delivery_step >= 90 || $current_gubun == '취소')
             @php 
               $url = "https://samma-erp.com/erp/sales/mall_sales_statement_order_transaction.html?view_type=group&mb_code=" . $activeMember['mb_code'] . "&od_group_code=" . $row->od_group_code;
             @endphp
@@ -232,7 +233,7 @@
       </ul>
       <ul class="odr-list3">
          
-      @if($row->od_delivery_step >= 90)
+      @if($row->od_delivery_step == 8 || $row->od_delivery_step >= 90 || $current_gubun == '취소')
         @if($payment_type == '선불')
           <li><u>매출합계</u><span id="amt_pt_subtotal">{{ ($row->sum_pt_subtotal) ? number_format($row->sum_pt_subtotal).'원' : '0원' }}</span></li>
           <li><u>충전금잔액</u><span id="amt_pt_cur_charge">{{ ($row->pt_cur_charge) ? number_format($row->pt_cur_charge).'원' : '0원' }}</span></li>

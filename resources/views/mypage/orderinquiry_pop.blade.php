@@ -38,6 +38,7 @@
       //가장 처음배열의 상태값으로..
       $current_gubun = $arr_gubun[0];
       
+      //str_status 가공
       if ($current_gubun == '매출') {
 
         $delivery_step_status = [
@@ -51,7 +52,18 @@
 
         $str_status = $delivery_step_status[$items->od_delivery_step] ?? '';
 
-      } elseif ($current_gubun == '반품입금' || $current_gubun == '결품' || $current_gubun == '결품입금' || $current_gubun == '기사파손' || $current_gubun == '물류파손' || $current_gubun == '잔액이관') {
+      } elseif ($current_gubun == '취소' || $current_gubun == '반품' ) {        
+        
+        $str_status = '완료';
+
+      } elseif ($current_gubun == '결품' 
+                || $current_gubun == '반품입금' 
+                || $current_gubun == '결품입금' 
+                || $current_gubun == '기사파손' 
+                || $current_gubun == '물류파손' 
+                || $current_gubun == '장비A/S'
+                || $current_gubun == '잔액이관'
+                ) {
         
         $str_status = '';
 
@@ -69,6 +81,7 @@
         $str_status = $delivery_step_status[$items->od_delivery_step] ?? '';
 
       }
+
 
 
       /*
@@ -160,9 +173,11 @@
         </li>
         <li><h6 class="od_status">{{ $str_od_status }}</h6></li>   
       </ul>
-      @if($items->od_delivery_step >= 90)
+      @if($items->od_delivery_step == 8 || $items->od_delivery_step >= 90)
         <div class="odr-pop2">
-          <p class="total">매출합계 : <span>{{ ($items->sum_pt_subtotal) ? number_format($items->sum_pt_subtotal).'원' : '0원' }}</span></p>
+          @if($payment_type == '선불')
+            <p class="total">매출합계 : <span>{{ ($items->sum_pt_subtotal) ? number_format($items->sum_pt_subtotal).'원' : '0원' }}</span></p>
+          @endif
           <p class="balance">채권잔액 : <span>{{ ($items->pt_cur_balance) ? number_format($items->pt_cur_balance).'원' : '0원' }}</span></p>
         </div>
       @endif

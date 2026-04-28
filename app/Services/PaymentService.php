@@ -883,14 +883,14 @@ class PaymentService
      */
     private function make_lock_date($data)
     {
-        DB::table('g5_shop_order_charge_lock')->insert([
-            'od_group_code' => $data['od_group_code'],
-            'mb_code'       => $data['mb_code'],
-            'pt_charge'     => 0,
-            'pt_reserve'    => 0,
-            'pt_balance'    => 0,
-            'created_at'    => now(),
-        ]);
+        // DB::table('g5_shop_order_charge_lock')->insert([
+        //     'od_group_code' => $data['od_group_code'],
+        //     'mb_code'       => $data['mb_code'],
+        //     'pt_charge'     => 0,
+        //     'pt_reserve'    => 0,
+        //     'pt_balance'    => 0,
+        //     'created_at'    => now(),
+        // ]);
     }
 
 

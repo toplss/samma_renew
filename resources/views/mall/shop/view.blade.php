@@ -185,6 +185,10 @@
         <p>
           + 여러상품을 이용하실 경우 장바구니를 이용하시면 묶음배송이 됩니다.<br>
 					+ 본 사이트의 이미지와 컨텐츠의 불법사용을 금합니다.
+          @if ($items['it_special_explan'])
+          <br>
+          + {{ $items['it_special_explan'] }}
+          @endif
         </p>
       </div>
     </div>

@@ -248,6 +248,15 @@ class ShopOrderModel extends Model
                                         - IFNULL(pt_outofstock, 0)
                                         - IFNULL(pt_outofstock_deposit, 0)
                                 END 
+                                - (
+                                    CASE 
+                                        WHEN JSON_UNQUOTE(JSON_EXTRACT(refund_detail, '$.refund_deposit_status')) 
+                                            IN ('완료', '상계')
+                                        THEN IFNULL(CAST(JSON_UNQUOTE(JSON_EXTRACT(refund_detail, '$.refund_mb_point_balance_prev')) AS SIGNED), 0)
+                                        ELSE 0
+                                    END
+                                )
+                                + IFNULL(pt_buy_balance, 0)
                             ) AS delta_balance,
 
                             SUM(
@@ -264,6 +273,7 @@ class ShopOrderModel extends Model
                                         + IFNULL(pt_outofstock, 0)
                                         - IFNULL(pt_reserve, 0)
                                     ELSE
+                                        IFNULL(pt_buy_reserve, 0)
                                         - IFNULL(pt_reserve, 0)
                                 END
                             ) AS delta_reserve,
@@ -374,6 +384,15 @@ class ShopOrderModel extends Model
                                         - IFNULL(pt_outofstock, 0)
                                         - IFNULL(pt_outofstock_deposit, 0)
                                 END 
+                                - (
+                                    CASE 
+                                        WHEN JSON_UNQUOTE(JSON_EXTRACT(refund_detail, '$.refund_deposit_status')) 
+                                            IN ('완료', '상계')
+                                        THEN IFNULL(CAST(JSON_UNQUOTE(JSON_EXTRACT(refund_detail, '$.refund_mb_point_balance_prev')) AS SIGNED), 0)
+                                        ELSE 0
+                                    END
+                                )
+                                + IFNULL(pt_buy_balance, 0)
                             ) AS delta_balance,
 
                             SUM(
@@ -390,6 +409,7 @@ class ShopOrderModel extends Model
                                         + IFNULL(pt_outofstock, 0)
                                         - IFNULL(pt_reserve, 0)
                                     ELSE
+                                        IFNULL(pt_buy_reserve, 0)
                                         - IFNULL(pt_reserve, 0)
                                 END
                             ) AS delta_reserve,

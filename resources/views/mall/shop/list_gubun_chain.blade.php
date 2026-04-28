@@ -55,10 +55,20 @@
                 @if(file_exists(public_path($image_url)) && $row['it_img1'])
                 <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; ">
                     <img src="{{ asset($image_url) }}">
-                    <span class="{{ $timpArr[$row['it_storage']] }}"><img src="{{ asset('images/icon/snow.svg') }}">{{ $row['it_storage_label'] }}</span>
+                    <span class="{{ $timpArr[$row['it_storage']] }}">
+                        <img src="{{ asset('images/icon/snow.svg') }}">{{ $row['it_storage_label'] }}
+                    </span>
+                    @if ($row['it_special_explan'])
+                        <p class="prd-memo">{{ $row['it_special_explan'] }}</p>
+                    @endif
                 </li>
                 @else
-                <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset('images/common/no_image.gif') }}"></li>
+                <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; ">
+                    <img src="{{ asset('images/common/no_image.gif') }}">
+                    @if ($row['it_special_explan'])
+                        <p class="prd-memo">{{ $row['it_special_explan'] }}</p>
+                    @endif
+                </li>
                 @endif
                 <li class="Qua {{ $sold_out ? 'sold-out' : '' }}">
                     @if($activeMember)

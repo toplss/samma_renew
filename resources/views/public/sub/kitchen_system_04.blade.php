@@ -8,39 +8,38 @@
 <script src="/js/ScrollToPlugin.min.js"></script>
 <script src="https://unpkg.com/split-type"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/SplitText.min.js"></script>
-<script>
-$(function(){
-    $(".kitchen-slide").slick({
-        dots: false,
-        arrows: true,
-        autoplay: false,
-        infinite: false,
-        slidesToShow: 3,
-        speed: 500,
-        autoplaySpeed: 3000,
-        pauseOnHover : false,
-        pauseOnFocus: false,
-        centerMode: true,
-        initialSlide: 3,
-        responsive: [
-            {
-            breakpoint: 1024,
-            settings: {
-                slidesToShow: 2,
-            }
-            },
-            {
-            breakpoint: 680,
-            settings: {
-                slidesToShow: 1,
-            }
-            },      
-        ]
-    });
-})
-</script>
 
 <link rel="stylesheet" href="{{ asset('css/kitchen.css') }}?v={{ config('asset.version') }}">
+
+<script>
+$(function(){
+	$(".kitchen-slide").slick({
+		dots: true,
+		arrows: true,
+		autoplay: false,
+		infinite: true,
+		slidesToShow: 5,
+		speed: 300,
+		pauseOnHover : false,
+		pauseOnFocus: false,
+    initialSlide: 3,
+		centerMode: true,
+    centerPadding: '0px',
+		responsive: [
+			{breakpoint: 1280,
+				settings: {
+					slidesToShow: 3,
+				}
+			},     
+			{breakpoint: 680,
+				settings: {
+					slidesToShow: 1,
+				}
+			},    
+		]
+	});
+})
+</script>
 
 <div class="sub-container">
 
@@ -59,42 +58,62 @@ $(function(){
       </div>
     </div>
   </div>
-<div class="kitchen-wrap">
-  <div class="tab01">
-    <div class="tab-title">
-      <a href="https://vivacook.kr/" target="_blank"><img src="{{ asset('images/icon/viva_icon.png') }}"></a>
-      <h4>Kitchen System.</h4>
-      <h3>비바쿡의 5가지 푸드시스템</h3>
+  <div class="kitchen-wrap">
+    <div class="ks-title">
+      <span>근무강도는 <b>낮게</b> 비용절감은 <b>높게</b></span>
+      <h3>비바쿡의 6가지 <i>푸드시스템</i></h3>
+      <small>Kitchen System</small>
     </div>
     <div class="kitchen-slide">
-        <a class="kitchen-card" href="/public/sub/kitchen_system_01">
-            <img src="{{ asset('images/kitchen/kitchen_03.png') }}">
-            <h6>스마트 조리기</h6>
-            <p>터치 한번으로 60여가지 메뉴를 뚝딱</p>
-        </a>
-        <a class="kitchen-card" href="/public/sub/kitchen_system_02">
-            <img src="{{ asset('images/kitchen/kitchen_02.png') }}">
-            <h6>대용량캡슐 커피머신</h6>
-            <p>1L 아메리카노를 단 한 개의 캡슐로</p>
-        </a>
-        <a class="kitchen-card" href="/public/sub/kitchen_system_03">
-            <img src="{{ asset('images/kitchen/kitchen_05.png') }}">
-            <h6>탄산 디스펜서</h6>
-            <p>업계최초 코카콜라 단독계약</p>
-        </a>
-        <a class="kitchen-card" href="/public/sub/kitchen_system_04">
-            <img src="{{ asset('images/kitchen/kitchen_04.png') }}">
-            <h6>수유식 튀김기</h6>
-                <p>고유가시대, 돈 버는 튀김기</p>
-        </a>
-        <a class="kitchen-card" href="/public/sub/kitchen_system_05">
-            <img src="{{ asset('images/kitchen/kitchen_01.png') }}">
-            <h6>초음파 식세기</h6>
-            <p>설거지 끝판왕! 담그고 빼면 설거지 끝</p>
-        </a>
-    </div>
-    <!-- 슬라이드 -->
-  </div>
+			<a class="kitchen-card" href="/public/sub/kitchen_system_01">
+				<img src="{{ asset('images/sub/ks1.png') }}">
+        <p>
+          <i>Kitchen System 01</i>
+          <strong>스마트조리기</strong>
+          <span>터치 한번으로 <br>60여가지 메뉴를 빠르게</span>
+        </p>
+			</a>
+			<a class="kitchen-card" href="/public/sub/kitchen_system_02">
+				<img src="{{ asset('images/sub/ks2.png') }}" class="kci2">
+        <p>
+          <i>Kitchen System 02</i>
+          <strong>캡슐커피머신</strong>
+          <span>1L 아메리카노를 <br>단 한 개의 캡슐로</span>
+        </p>
+			</a>
+			<a class="kitchen-card" href="/public/sub/kitchen_system_03">
+				<img src="{{ asset('images/sub/ks3.png') }}">
+        <p>
+          <i>Kitchen System 03</i>
+          <strong>탄산디스펜서</strong>
+          <span>업계최초 <br>코카콜라 단독계약</span>
+        </p>
+			</a>
+			<a class="kitchen-card" href="/public/sub/kitchen_system_04">
+				<img src="{{ asset('images/sub/ks4.png') }}">
+        <p>
+          <i>Kitchen System 04</i>
+          <strong>수유식튀김기</strong>
+          <span>고유가시대, <br>돈 버는 튀김기</span>
+        </p>
+			</a>
+			<a class="kitchen-card" href="/public/sub/kitchen_system_05">
+				<img src="{{ asset('images/sub/ks5.png') }}">
+        <p>
+          <i>Kitchen System 05</i>
+          <strong>초음파식세기</strong>
+          <span>설거지 끝판왕 <br>담그고 빼면 설거지 끝</span>
+        </p>
+			</a>
+      <a class="kitchen-card" href="">
+				<img src="{{ asset('images/sub/ks6.png') }}">
+        <p>
+          <i>Kitchen System 06</i>
+          <strong>리프트튀김기</strong>
+          <span>버튼만 누르면 알아서 <br>조리하는 스마트 튀김기</span>
+        </p>
+			</a>
+		</div>
   
 			<div class="tab02 system04">
                 <div class="bg-1"><img src="{{ asset('images/kitchen/kitchen_bg1.svg') }}"></div>

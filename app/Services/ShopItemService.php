@@ -126,7 +126,7 @@ class ShopItemService
             'shop_group.stock_it_id AS it_group_stock_it_id',
             'g5_shop_item.it_img1',
             'g5_shop_item.it_img1_url',
-
+            
             'g5_shop_item_cust_log.it_price1 as cust_price1',
             'g5_shop_item_cust_log.it_price2 as cust_price2',
             'g5_shop_item_cust_log.it_price3 as cust_price3',

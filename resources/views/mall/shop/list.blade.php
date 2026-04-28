@@ -106,9 +106,17 @@ if (request()->has('page'))  $isDown = false;
                 <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; ">
                     <img src="{{ asset($image_url) }}">
                     <span class="{{ $timpArr[$row['it_storage']] }}"><img src="{{ asset('images/icon/snow.svg') }}">{{ $row['it_storage_label'] }}</span>
+                    @if ($row['it_special_explan'])
+                        <p class="prd-memo">{{ $row['it_special_explan'] }}</p>
+                    @endif
                 </li>
                 @else
-                <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset('images/common/no_image.gif') }}"></li>
+                <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; ">
+                    <img src="{{ asset('images/common/no_image.gif') }}">
+                    @if ($row['it_special_explan'])
+                        <p class="prd-memo">{{ $row['it_special_explan'] }}</p>
+                    @endif
+                </li>
                 @endif
                 <li class="Qua {{ $sold_out ? 'sold-out' : '' }}">
                     @if($activeMember)
@@ -174,7 +182,6 @@ if (request()->has('page'))  $isDown = false;
                     </p>
                     @endif
                 </li>
-                <li class="prd-memo"><span>24온스 전용</span></li>
 
                 @if($activeMember)
                 <li class="prd-price">

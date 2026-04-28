@@ -2,38 +2,6 @@
 
 @section('content')
 
-<style>
-  /* 키친시스템 */
-  .ks-title{text-align: left; position: relative; width: 82%; margin: 2rem auto 0 auto;}
-  .ks-title small{position: absolute; top: 0; right: 0; font-size: 1.2rem; letter-spacing: -1px;}
-  .ks-title span{font-size: 1.4rem;}
-  .ks-title span>b{font-weight: 600;}
-  .ks-title h3{font-size: 2.1rem; font-weight: 700; margin-top: 0.5rem;}
-  .ks-title h3>i{font-style: normal; color: #8ec251;}
-
-  .kitchen-slide{visibility: hidden; margin: auto; width: 83%;}
-  .kitchen-slide.slick-initialized{visibility: visible;}
-  .kitchen-slide .slick-slide{margin:0 5px;}
-  .kitchen-slide .slick-track{padding: 75px 0;}
-  .kitchen-slide .slick-arrow{background-color: transparent; font-size: 0; width: 36px; height: 36px; position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;}
-  .kitchen-slide>.slick-prev{background-image: url(/images/sub/ks-arrow.svg);background-repeat: no-repeat; transform: scaleX(-1); left: -7%;}
-  .kitchen-slide>.slick-next{background-image: url(/images/sub/ks-arrow.svg);background-repeat: no-repeat; right: -7%;}
-  .kitchen-slide .slick-dots{position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); display: flex; gap: 0.5rem;}
-  .kitchen-slide .slick-dots button{font-size: 0; background-color: #b3b3b3; width: 0.7rem; height: 0.7rem; border-radius: 1rem; transition: 0.1s;}
-  .kitchen-slide .slick-dots .slick-active button{background-color: #8ec251; width: 1.8rem;}
-
-
-
-  .kitchen-card{background-color: #8ec251; box-shadow: 0 0 6px #8ec251; border-radius: 1rem;  filter: grayscale(1); transition: 0.4s;}
-  .kitchen-card.slick-current{filter: grayscale(0); scale: 1.2; position: relative; z-index: 2;}
-  .kitchen-card>img{width: 72%; margin: auto; position: absolute; bottom: 115px; left: 50%; transform: translateX(-50%); z-index: -1;}
-  .kitchen-card p{background-color: #fff; border: 1px solid #ddd; padding: 1.5rem 0.5rem; letter-spacing: -1px; border-radius: 1rem; margin-top: 150px;}
-  .kitchen-card i{font-style: normal; font-size: 1rem;}
-  .kitchen-card strong{font-size: 1.9rem; display: block;}
-  .kitchen-card span{font-size: 1.2rem;}
-
-</style>
-
 <script>
 $(function(){
 	$(".kitchen-slide").slick({
@@ -48,7 +16,7 @@ $(function(){
 		centerMode: true,
     centerPadding: '0px',
 		responsive: [
-			{breakpoint: 1024,
+			{breakpoint: 1280,
 				settings: {
 					slidesToShow: 3,
 				}
@@ -100,7 +68,7 @@ $(function(){
         </p>
 			</a>
 			<a class="kitchen-card" href="/public/sub/kitchen_system_02">
-				<img src="{{ asset('images/sub/ks2.png') }}" style="width:85%;">
+				<img src="{{ asset('images/sub/ks2.png') }}" class="kci2">
         <p>
           <i>Kitchen System 02</i>
           <strong>캡슐커피머신</strong>
@@ -125,7 +93,7 @@ $(function(){
         </p>
 			</a>
 			<a class="kitchen-card" href="/public/sub/kitchen_system_05">
-				<img src="{{ asset('images/sub/ks5.png') }}" style="width:82%;">
+				<img src="{{ asset('images/sub/ks5.png') }}">
         <p>
           <i>Kitchen System 05</i>
           <strong>초음파식세기</strong>
@@ -137,7 +105,7 @@ $(function(){
         <p>
           <i>Kitchen System 06</i>
           <strong>리프트튀김기</strong>
-          <span>버튼만 누르면 알아서 조리하는 스마트 튀김기</span>
+          <span>버튼만 누르면 알아서 <br>조리하는 스마트 튀김기</span>
         </p>
 				
 				

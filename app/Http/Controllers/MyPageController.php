@@ -105,45 +105,80 @@ class MyPageController extends Controller
                     so.od_group_code,
                     COUNT(*) AS order_cnt,
                     so.od_id,
-
-                    (SELECT COUNT(*) 
-                    FROM g5_shop_cart 
-                    WHERE od_id IN (SELECT od_id 
-                                    FROM g5_shop_order 
-                                    WHERE od_group_code = so.od_group_code 
-                                        AND od_delivery_step = so.od_delivery_step
-                                    )
+                    so.od_id_org,
+                    (SELECT COUNT(*)
+                    FROM g5_shop_cart sc
+                    INNER JOIN g5_shop_order so 
+                        ON sc.od_id = so.od_id
+                    INNER JOIN (
+                        SELECT 
+                            od_id,
+                            it_id,
+                            SUM(CASE WHEN ct_cate = '납품' THEN ct_qty ELSE 0 END) AS sum_supply,
+                            SUM(CASE 
+                                    WHEN ct_cate IN (
+                                        '취소','반품','결품',
+                                        '반품입금','결품입금',
+                                        '기사파손','물류파손'
+                                    ) 
+                                    THEN ct_qty ELSE 0 
+                                END) AS sum_minus
+                        FROM g5_shop_cart where od_group_code = so.od_group_code
+                        GROUP BY od_id, it_id
+                    ) AS t 
+                        ON sc.od_id = t.od_id
+                        AND sc.it_id = t.it_id
+                    WHERE so.od_group_code = so.od_group_code 
+                    AND so.od_delivery_step = so.od_delivery_step
+                    AND (
+                            -- 부분차감 (모두 출력)
+                            (t.sum_supply > t.sum_minus)
+                            -- 전체차감 (차감건만 출력)
+                            OR (
+                                t.sum_supply = t.sum_minus 
+                                AND sc.ct_cate IN (
+                                    '취소','반품','결품',
+                                    '반품입금','결품입금',
+                                    '기사파손','물류파손'
+                                )
+                            )
+                            -- 관리자 별도 처리건
+                            OR (sc.od_id_org = '')
+                        )
                     ) AS ct_cnt,
 
                     (SELECT it_id FROM g5_shop_cart WHERE od_id = so.od_id ORDER BY it_id LIMIT 1) AS it_id,
-
-                    so.od_delivery_step,
+                    (CASE 
+                        WHEN so.od_delivery_step IN (90, 99) THEN 90
+                        ELSE so.od_delivery_step
+                    END) as od_delivery_step,
                     so.od_delivery_date,
                     so.od_gubun,
-
+                    so.od_settle_case,
                     COALESCE(
                         NULLIF(
                             CONCAT_WS('#',
-                                IF(so.pt_sales_delivery > 0 
-                                    and (so.pt_cancel
-                                        + so.pt_return
-                                        + so.pt_outofstock
-                                        + so.pt_damage_staff
-                                        + so.pt_damage_logistic
-                                    ) < so.pt_sales_delivery , '매출', NULL),
-                                IF(so.pt_cancel > 0, '취소', NULL),
-                                IF(so.pt_return > 0, '반품', NULL),
-                                IF(so.pt_return_receivable > 0, '반품채권', NULL),
-                                IF(so.pt_outofstock > 0, '결품', NULL),
-                                IF(so.pt_outofstock_deposit > 0, '결품채권', NULL),
-                                IF(so.pt_damage_staff > 0, '기사파손', NULL),
-                                IF(so.pt_damage_logistic > 0, '물류파손', NULL),
-                                IF(so.od_delivery_step = 8, '잔액이관', NULL)       
-                            ), ''
+                                IF(sub_so.sum_pt_sales_delivery > 0 
+                                    AND (sub_so.sum_pt_cancel
+                                        + sub_so.sum_pt_return
+                                        + sub_so.sum_pt_outofstock
+                                        + sub_so.sum_pt_damage_staff
+                                        + sub_so.sum_pt_damage_logistic
+                                    ) < sub_so.sum_pt_sales_delivery , '매출', NULL),
+
+                                IF(sub_so.sum_pt_cancel > 0, '취소', NULL),
+                                IF(sub_so.sum_pt_return > 0, '반품', NULL),
+                                IF(sub_so.sum_pt_return_receivable > 0, '반품채권', NULL),
+                                IF(sub_so.sum_pt_outofstock > 0, '결품', NULL),
+                                IF(sub_so.sum_pt_outofstock_deposit > 0, '결품채권', NULL),
+                                IF(sub_so.sum_pt_damage_staff > 0, '기사파손', NULL),
+                                IF(sub_so.sum_pt_damage_logistic > 0, '물류파손', NULL),
+                                IF(so.od_delivery_step = 8, '잔액이관', NULL)
+                            ),
+                            ''
                         ),
                         so.od_gubun
                     ) AS current_gubun,
-
                     sub_so.sum_pt_sales,
                     sub_so.sum_pt_delivery,
                     sub_so.sum_pt_sales_delivery,
@@ -199,18 +234,30 @@ class MyPageController extends Controller
                 /**
                  * ORDER BY
                  */
+                
+                // ->orderByRaw("
+                //     CASE 
+                //         WHEN so.od_delivery_step = 8 THEN 2
+                //         WHEN so.od_delivery_step IN (90, 99) THEN 1
+                //         ELSE 0
+                //     END ASC
+                // ")
+
+                // ->orderByRaw("
+                //     CASE 
+                //         WHEN so.od_delivery_step IN (90, 99) THEN so.od_delivery_date
+                //     END DESC
+                // ")
+
                 ->orderByRaw("
                     CASE 
-                        WHEN so.od_delivery_step = 8 THEN 2
-                        WHEN so.od_delivery_step IN (90, 99) THEN 1
-                        ELSE 0
+		WHEN so.od_delivery_step = 0 THEN 1
+		WHEN so.od_delivery_step = 8 THEN 99
+        ELSE 2
                     END ASC
                 ")
-                ->orderByRaw("
-                    CASE 
-                        WHEN so.od_delivery_step IN (90, 99) THEN so.od_delivery_date
-                    END DESC
-                ")
+
+
                 ->orderBy('so.od_delivery_date', 'DESC')
                 ->orderBy('so.od_delivery_step', 'ASC')
                 ->orderByRaw("so.od_gubun IN ('기초잔액추가', '잔액조정') ASC")                
@@ -297,16 +344,24 @@ class MyPageController extends Controller
                 COALESCE(
                     NULLIF(
                         CONCAT_WS('#',
-                            IF(so.pt_sales_delivery > 0, '매출', NULL),
-                            IF(so.pt_cancel > 0, '취소', NULL),
-                            IF(so.pt_return > 0, '반품', NULL),
-                            IF(so.pt_return_receivable > 0, '반품채권', NULL),
-                            IF(so.pt_outofstock > 0, '결품', NULL),
-                            IF(so.pt_outofstock_deposit > 0, '결품채권', NULL),
-                            IF(so.pt_damage_staff > 0, '기사파손', NULL),
-                            IF(so.pt_damage_logistic > 0, '물류파손', NULL),
+                            IF(sub_so.sum_pt_sales_delivery > 0 
+                                AND (sub_so.sum_pt_cancel
+                                    + sub_so.sum_pt_return
+                                    + sub_so.sum_pt_outofstock
+                                    + sub_so.sum_pt_damage_staff
+                                    + sub_so.sum_pt_damage_logistic
+                                ) < sub_so.sum_pt_sales_delivery , '매출', NULL),
+
+                            IF(sub_so.sum_pt_cancel > 0, '취소', NULL),
+                            IF(sub_so.sum_pt_return > 0, '반품', NULL),
+                            IF(sub_so.sum_pt_return_receivable > 0, '반품채권', NULL),
+                            IF(sub_so.sum_pt_outofstock > 0, '결품', NULL),
+                            IF(sub_so.sum_pt_outofstock_deposit > 0, '결품채권', NULL),
+                            IF(sub_so.sum_pt_damage_staff > 0, '기사파손', NULL),
+                            IF(sub_so.sum_pt_damage_logistic > 0, '물류파손', NULL),
                             IF(so.od_delivery_step = 8, '잔액이관', NULL)
-                        ), ''
+                        ),
+                        ''
                     ),
                     so.od_gubun
                 ) AS current_gubun,
@@ -369,10 +424,18 @@ class MyPageController extends Controller
                     END
             ) sub_so
             ON so.od_group_code = sub_so.od_group_code
-            AND so.od_delivery_step = sub_so.od_delivery_step
 
             WHERE so.od_group_code = ?
-            AND so.od_delivery_step = ?
+
+
+                AND (
+                    CASE 
+                        WHEN so.od_delivery_step IN (90, 99) THEN 90
+                        ELSE so.od_delivery_step
+                    END
+                ) = ?
+
+
 
             LIMIT 1
         ";
@@ -419,6 +482,7 @@ class MyPageController extends Controller
                 ->selectRaw("ROW_NUMBER() OVER (ORDER BY order_date ASC) AS row_num")
                 ->addSelect(
                     'od_id',
+                    'od_id_org',
                     'od_gubun',
                     DB::raw("
                         COALESCE(
@@ -454,7 +518,8 @@ class MyPageController extends Controller
                     'od_delivery_step'
                 )
                 ->where('od_group_code', $ogc)
-                ->where('od_delivery_step', $ods)
+                // ->where('od_delivery_step', $ods)
+                ->orderBy('od_id_org', 'DESC')
                 ->get();
 
         $order_info = DB::table('g5_shop_order')
@@ -490,29 +555,81 @@ class MyPageController extends Controller
                     ->where('od_id',$oid)
                     ->first();
 
-        //카트정보 - 납품 / 취소 / 반품... 순으로 한다
+        //카트정보 
         $cart_list = DB::table('g5_shop_cart as sc')
-                ->join('g5_shop_item as si', 'sc.it_id', 'si.it_id')
-                ->orderByRaw("(sc.ct_cate = '납품') DESC")
-                ->orderBy('sc.ct_cate', 'ASC')
-                ->addSelect(
-                    'sc.od_group_code',
-                    'sc.od_id',
-                    'sc.it_name',
-                    'sc.ct_qty',
-                    'sc.ct_price',
-                    'sc.ct_cate',
-                    'si.it_img1',
-                    'si.it_storage',
-                    'si.it_return',
-                    'si.it_return_use',
-                    'si.it_basic'
-                )
-                ->where('sc.od_id', $oid)
-                ->get();
+                    ->select(
+                        'sc.od_group_code',
+                        'sc.od_id',
+                        'sc.od_id_org',
+                        'sc.it_id',
+                        'sc.it_name',
+                        'sc.ct_qty',
+                        'sc.ct_price',
+                        'sc.ct_cate',
+                        'si.it_img1',
+                        'si.it_storage',
+                        'si.it_return',
+                        'si.it_return_use',
+                        'si.it_basic'
+                    )
+                    ->join('g5_shop_item as si', 'sc.it_id', '=', 'si.it_id')
 
+                    // 서브쿼리 join
+                    ->joinSub(
+                        DB::table('g5_shop_cart')
+                            ->select(
+                                'it_id',
+                                DB::raw("SUM(CASE WHEN ct_cate = '납품' THEN ct_qty ELSE 0 END) as sum_supply"),
+                                DB::raw("SUM(CASE 
+                                    WHEN ct_cate IN (
+                                        '취소','반품','결품',
+                                        '반품입금','결품입금',
+                                        '기사파손','물류파손'
+                                    ) 
+                                    THEN ct_qty ELSE 0 
+                                END) as sum_minus")
+                            )
+                            ->where('od_id', $oid)
+                            ->groupBy('it_id'),
+                        't',
+                        function ($join) {
+                            $join->on('sc.it_id', '=', 't.it_id');
+                        }
+                    )
+                    ->where('sc.od_id', $oid)
 
-// dd($cart_list);
+                    ->where(function ($q) {
+
+                        // 충전금은 예외
+                        $q->where('si.ca_id', 10)
+
+                            ->orWhere(function ($q1) {
+
+                            // 충전금 아닌 상품들 조건
+                            $q1->where('si.ca_id', '<>', 10)
+
+                                ->where(function ($q) {
+                                    // 부분변경 (모두 출력)
+                                    $q->whereRaw('t.sum_supply > t.sum_minus')
+
+                                    ->orWhere(function ($q2) {
+                                        // 전체변경 (변경건만)
+                                        $q2->whereRaw('t.sum_supply = t.sum_minus')
+                                            ->whereIn('sc.ct_cate', [
+                                                '취소','반품','결품',
+                                                '반품입금','결품입금',
+                                                '기사파손','물류파손'
+                                        ]);
+                                    })
+
+                                    ->orWhere('sc.od_id_org', '');
+                                });
+                        });
+                    })
+
+                    ->orderByRaw("(sc.ct_cate = '납품') DESC")
+                    ->orderBy('sc.ct_cate', 'ASC')
+                    ->get();
 
         $items = [
             'order_list' => $order_list,

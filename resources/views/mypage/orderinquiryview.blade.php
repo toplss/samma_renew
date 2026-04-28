@@ -4,7 +4,12 @@
 
 <div class="sub-container">
   <div class="sub-title-wrap">
-    <h4>주문번호 [ {{ request('oid') }} ]</h4>
+
+    @if ( request('etc') == 'Y' )
+      <h4>매출 처리</h4>
+    @else
+      <h4>주문번호 [ {{ request('oid') }} ]</h4>
+    @endif
   </div>
 
   <div class="order-info-wrap">
@@ -24,130 +29,152 @@
 
         @php 
 
-      /*
-      |--------------------------------------------
-      | 좌측 주문상태값 가공 START
-      |--------------------------------------------
-      */      
+          /*
+          |--------------------------------------------
+          | 좌측 주문상태값 가공 START
+          |--------------------------------------------
+          */      
 
-      $arr_gubun = explode('#', $row->current_gubun);
-      $current_gubun_cnt = !empty($arr_gubun) ? count($arr_gubun) : 0;
-      //가장 처음배열의 상태값으로..
-      $current_gubun = $arr_gubun[0];
+          $arr_gubun = explode('#', $row->current_gubun);
+          $current_gubun_cnt = !empty($arr_gubun) ? count($arr_gubun) : 0;
+          //가장 처음배열의 상태값으로..
+          $current_gubun = $arr_gubun[0];
 
-      //결품채권, 반품채권은 >>>>  결품입금, 반품입금으로 표기 변경
-      if ($current_gubun == '결품채권') {
-          $current_gubun = '결품입금';
-      }
-
-      if ($current_gubun == '반품채권') {
-          $current_gubun = '반품입금';
-      }
-
-      //str_status 가공
-      if ($current_gubun == '매출') {
-
-        $delivery_step_status = [
-          '0'  => '입금대기',
-          '8'  => '완료',
-          '10' => '배송대기',
-          '85' => '배송대기',
-          '90' => '배송완료',
-          '99' => '배송완료',
-        ];      
-
-        $str_status = $delivery_step_status[$row->od_delivery_step] ?? '';
-
-      } elseif ($current_gubun == '반품입금' || $current_gubun == '결품' || $current_gubun == '결품입금' || $current_gubun == '기사파손' || $current_gubun == '물류파손' || $current_gubun == '잔액이관') {
-        
-        $str_status = '';
-
-      } else{
-
-        $delivery_step_status = [
-          '0'  => '입금대기',
-          '8'  => '완료',
-          '10' => '대기',
-          '85' => '대기',
-          '90' => '완료',
-          '99' => '완료',
-        ];
-
-        $str_status = $delivery_step_status[$row->od_delivery_step] ?? '';
-
-      }
-
-
-      /*
-      |--------------------------------------------
-      | 좌측 주문상태값 가공 END
-      |--------------------------------------------
-      */            
-
-
-      
-      /*
-      |--------------------------------------------
-      | 우측 입금 상태값 가공 START
-      |--------------------------------------------
-      */            
-
-      $color = '';
-
-      //선불, 후불 주문 구분
-      $payment_type = '';
-      if (isset($row->level_ca_id2)) {
-          if (strlen($row->level_ca_id2) == 4) {
-              if (substr($row->level_ca_id2, -1) == '1') $payment_type = '선불';
-              if (substr($row->level_ca_id2, -1) == '2') $payment_type = '후불';
+          //결품채권, 반품채권은 >>>>  결품입금, 반품입금으로 표기 변경
+          if ($current_gubun == '결품채권') {
+              $current_gubun = '결품입금';
           }
-      }        
 
-      $str_od_status = '';
-      if (str_contains($current_gubun, '매출') || $current_gubun == '충전금구매') {
+          if ($current_gubun == '반품채권') {
+              $current_gubun = '반품입금';
+          }
 
-        if ($row->od_delivery_step > 0) {
-          $str_od_status = '입금완료';
-        } else {
-          $str_od_status = '입금대기';
-          $color = 'txt-red';
-        }
+          //str_status 가공
+          if ($current_gubun == '매출') {
 
-        //후불주문인 경우 예금입금을 제외하고 모두 '여신' 으로 표기
-        if ($payment_type == '후불') {
-          $str_od_status = '여신';
-        }
+            $delivery_step_status = [
+              '0'  => '입금대기',
+              '8'  => '완료',
+              '10' => '배송대기',
+              '85' => '배송대기',
+              '90' => '배송완료',
+              '99' => '배송완료',
+            ];      
 
-      } else {
+            $str_status = $delivery_step_status[$row->od_delivery_step] ?? '';
 
-        if ($current_gubun == '반품' || $current_gubun == '취소') {
-            $str_od_status = $current_gubun . '완료';
-        } else {
-            $str_od_status = $current_gubun;
-        }
+          } elseif ($current_gubun == '취소' || $current_gubun == '반품' ) {        
+            
+            $str_status = '완료';
 
-      }
+          } elseif ($current_gubun == '결품' 
+                    || $current_gubun == '반품입금' 
+                    || $current_gubun == '결품입금' 
+                    || $current_gubun == '기사파손' 
+                    || $current_gubun == '물류파손' 
+                    || $current_gubun == '장비A/S'
+                    || $current_gubun == '잔액이관'
+                    ) {
+            
+            $str_status = '';
 
-      /*
-      |--------------------------------------------
-      | 우측 입금 상태값 가공 END
-      |--------------------------------------------
-      */                  
+          } else{
 
-      $days = ['일', '월', '화', '수', '목', '금', '토'];
-      $str_week = $days[date("w", strtotime($row->od_delivery_date))];      
+            $delivery_step_status = [
+              '0'  => '입금대기',
+              '8'  => '완료',
+              '10' => '대기',
+              '85' => '대기',
+              '90' => '완료',
+              '99' => '완료',
+            ];
+
+            $str_status = $delivery_step_status[$row->od_delivery_step] ?? '';
+
+          }
+
+
+
+          /*
+          |--------------------------------------------
+          | 좌측 주문상태값 가공 END
+          |--------------------------------------------
+          */            
+
+
+          
+          /*
+          |--------------------------------------------
+          | 우측 입금 상태값 가공 START
+          |--------------------------------------------
+          */            
+
+          $color = '';
+
+          //선불, 후불 주문 구분
+          $payment_type = '';
+          if (isset($row->level_ca_id2)) {
+              if (strlen($row->level_ca_id2) == 4) {
+                  if (substr($row->level_ca_id2, -1) == '1') $payment_type = '선불';
+                  if (substr($row->level_ca_id2, -1) == '2') $payment_type = '후불';
+              }
+          }        
+
+          $str_od_status = '';
+          if (str_contains($current_gubun, '매출') || $current_gubun == '충전금구매') {
+
+            if ($row->od_delivery_step > 0) {
+              $str_od_status = '입금완료';
+            } else {
+              $str_od_status = '입금대기';
+              $color = 'txt-red';
+            }
+
+            //후불주문인 경우 예금입금을 제외하고 모두 '여신' 으로 표기
+            if ($payment_type == '후불') {
+              $str_od_status = '여신';
+            }
+
+          } else {
+
+            if ($current_gubun == '반품' || $current_gubun == '취소') {
+                $str_od_status = $current_gubun . '완료';
+            } else {
+                $str_od_status = $current_gubun;
+            }
+
+            if ($row->od_id_org == '') {
+              $str_od_status = '처리완료';
+            }            
+
+          }
+
+          /*
+          |--------------------------------------------
+          | 우측 입금 상태값 가공 END
+          |--------------------------------------------
+          */                  
+
+          $days = ['일', '월', '화', '수', '목', '금', '토'];
+          $str_week = $days[date("w", strtotime($row->od_delivery_date))];      
+
+          if ($row->od_id == request('oid')) {
+            $selected_gubun = $current_gubun;
+            $selected_status = $str_status;
+            $selected_cnt = $current_gubun_cnt;
+          }          
 
         @endphp
 
-       <tr data-oid="{{ $row->od_id }}" class="{{ ($row->od_id == request('oid')) ? 'active' : '' }}" style="cursor: pointer;">
-          <td class="hide-680">{{ $row->row_num }}</td>
-          {{-- <td>{{ $row->od_delivery_date }} ({{ $str_week }})</td> --}}
+       <tr data-oid="{{ $row->od_id }}" data-etc="{{ ($row->od_id_org == '') ? 'Y' : 'N' }}" class="{{ ($row->od_id == request('oid')) ? 'active' : '' }}" style="cursor: pointer;">
+          <td class="hide-680">{{ ($row->od_id_org != '') ? $row->row_num : '' }}</td>
           <td>{{ date('Y/m/d', strtotime($row->od_delivery_date)) }}({{ $str_week }})</td>
-          <td>{{ $row->order_date }}</td>
-          {{-- <td>{{ date('Y/m/d h:i:s', strtotime($row->order_date)) }}</td> --}}
+          <td>{{ ($row->od_id_org != '') ? $row->order_date : '매출 처리' }}</td>
           <td>{{ (substr($row->level_ca_id2, -1) == '2') ? '여신' : $row->od_settle_case }}</td>
-          <td>{{ number_format($row->pt_sales_delivery) }}</td>
-          <td><button type="button" class="btn2 {{ $color }}">{{ $str_od_status }}</button></td>
+          <td>{{ ($row->od_id_org != '') ? number_format($row->pt_sales_delivery) : '' }}</td>
+          <td>
+            <button type="button" class="btn2 {{ $color }}">{{ $str_od_status }}</button>
+          </td>
         </tr>
         @endforeach
       </tbody>
@@ -157,26 +184,23 @@
       $(document).ready(function() {
         $(document).on('click', '.odr-table1 > tbody > tr', function() {
           let oid = $(this).data('oid');
+          let etc = $(this).data('etc');
           const url = new URL(window.location.href);
 
           url.searchParams.set("oid", oid);
+          //기타 관리자 처리 여부 (취소, 반품 등..)
+          url.searchParams.set("etc", etc);
 
           location.href = url.toString();
         })
       });
     </script>
 
-    {{-- @php
-			$delivery_step_status = [
-				'0'  => '입금대기',
-				'8'  => '배송완료',
-				'10' => '배송대기',
-				'85' => '배송대기',
-				'90' => '배송완료',
-				'99' => '배송완료',
-			];
-    @endphp --}}
-    <h5 class="odr-title">주문내역<span>{{ $current_gubun }} {{ $str_status }} {{ ($current_gubun_cnt > 1) ? '외 ' . ($current_gubun_cnt - 1) . '건' : '' }}</span></h5>
+    <h5 class="odr-title">{{ (request('etc') == 'Y') ? '처리내역' : '주문내역' }}
+      @if(request('etc') == 'N')
+      <span>{{ $selected_gubun }} {{ $selected_status }} {{ ($selected_cnt > 1) ? '외 ' . ($selected_cnt - 1) . '건' : '' }}</span>
+      @endif
+    </h5>
 
     <table class="table1 odr-table2">
 			<thead>
@@ -193,12 +217,11 @@
       </thead>
 			<tbody>
         <!-- 반복 -->
-{{-- @dd($items['cart_list']); --}}
         @foreach($items['cart_list'] as $key => $row)
         @php
           $image_url = 'images/item/'.$row->it_img1;
         @endphp
-        <tr>
+        <tr {!! ( $row->ct_cate != '납품' ? 'style="background-color:#FBF7F2;"' : '' ) !!}>
           <td>{{ $loop->iteration }}</td>
           <td>
             @if(file_exists(public_path($image_url)) && $row->it_img1)
@@ -233,39 +256,50 @@
                   "2"=>""
                 );
               }
+
+              $ct_cate = $row->ct_cate;
+
+              if ($ct_cate != '납품') {
+                $color = 'txt-blue';
+              } else {
+                $color = '';
+              }
+
+              //결품채권, 반품채권은 >>>>  결품입금, 반품입금으로 표기 변경
+              if ($ct_cate == '결품채권') {
+                  $ct_cate = '결품입금';
+              }
+
+              if ($ct_cate == '반품채권') {
+                  $ct_cate = '반품입금';
+              }              
               
             @endphp
             {!! $it_storage_str[$row->it_storage] !!}{!! $it_return_str[$row->it_return] !!}
           </td>
-          <td>{{ number_format($row->ct_price * $row->ct_qty) }}</td>
-
-          @php
-            $ct_cate = $row->ct_cate;
-
-            if ($ct_cate != '납품') {
-              $color = 'txt-blue';
-            } else {
-              $color = '';
-            }
-
-            //결품채권, 반품채권은 >>>>  결품입금, 반품입금으로 표기 변경
-            if ($ct_cate == '결품채권') {
-                $ct_cate = '결품입금';
-            }
-
-            if ($ct_cate == '반품채권') {
-                $ct_cate = '반품입금';
-            }
-          @endphp
+          @if ($row->ct_cate != '납품')
+            <td class="{{ $color }}">
+               {{ number_format($row->ct_price * $row->ct_qty) }}원
+            </td>
+          @else
+            <td>
+              {{ number_format($row->ct_price * $row->ct_qty) }}원
+            </td>
+            @endif
           <td class="{{ $color }}">{{ $ct_cate }}</td>
         </tr>
+
+
+
         @endforeach
         <!-- 반복 끝 -->
       </tbody>
       <tfoot>
         <tr>
-        @if ( count($items['cart_list']) > 0)        
-          <th colspan="8">주문총액 <strong>{{ number_format($items['order_info']->od_cart_price + $items['order_info']->pt_delivery) }}</strong></th>
+        @if ( count($items['cart_list']) > 0 )
+          @if ( $row->od_id_org != '' )
+            <th colspan="8">주문총액 <strong>{{ number_format($items['order_info']->od_cart_price + $items['order_info']->pt_delivery) }}</strong></th>
+          @endif
         @else
           <td colspan="8" height="50">상품 정보가 없습니다.</td>
         @endif
@@ -274,183 +308,188 @@
 		</table>
   </div>
 
+  
   <div class="flex-center" style="margin-bottom:1.5rem; gap:0.5rem;">
       <button type="button" class="btn1 big-btn" onclick="location.href='/mypage/orderinquiry';">목록 보기</button>
 
-    @php
-    $card_custom_cancel = false;
+    <!-- 관리자 매출 처리인 경우 결제정보 숨김 -->
+    @if ( $row->od_id_org != '' )
+      @php
+      $card_custom_cancel = false;
 
-    $od_status = $items['order_info']->od_status;
+      $od_status = $items['order_info']->od_status;
 
-    switch ($items['order_info']->od_settle_case) {
-      case '신용카드': $card_custom_cancel = false; break;
-      case '계좌이체': $card_custom_cancel = true; break;
-      case '가상계좌': $card_custom_cancel = true; break;
-    }
+      switch ($items['order_info']->od_settle_case) {
+        case '신용카드': $card_custom_cancel = false; break;
+        case '계좌이체': $card_custom_cancel = true; break;
+        case '가상계좌': $card_custom_cancel = true; break;
+      }
 
-    $payment_type = '';
-    if (isset($items['order_info']->level_ca_id2)) {
-        if (strlen($items['order_info']->level_ca_id2) == 4) {
-            if (substr($items['order_info']->level_ca_id2, -1) == '1') $payment_type = '선불';
-            if (substr($items['order_info']->level_ca_id2, -1) == '2') $payment_type = '후불';
-        }
-    }
+      $payment_type = '';
+      if (isset($items['order_info']->level_ca_id2)) {
+          if (strlen($items['order_info']->level_ca_id2) == 4) {
+              if (substr($items['order_info']->level_ca_id2, -1) == '1') $payment_type = '선불';
+              if (substr($items['order_info']->level_ca_id2, -1) == '2') $payment_type = '후불';
+          }
+      }
 
-    @endphp
-    @if ($card_custom_cancel && ($od_status == '주문' || $od_status == '입금'))
-    <div class="sod_fin_cancelfrm">
-      <input type="hidden" id="hide_od_id" value="{{ request('oid') }}" />
-      <button type="button" class="btn1 big-btn" onclick="orderCancel('all')">주문 취소</button>
+      @endphp
+      @if ($card_custom_cancel && ($od_status == '주문' || $od_status == '입금'))
+      <div class="sod_fin_cancelfrm">
+        <input type="hidden" id="hide_od_id" value="{{ request('oid') }}" />
+        <button type="button" class="btn1 big-btn" onclick="orderCancel('all')">주문 취소</button>
+      </div>
+      @endif
+
+      @if (!$card_custom_cancel && ($od_status == '주문'))
+      <div class="sod_fin_cancelfrm">
+        <input type="hidden" id="hide_od_id" value="{{ request('oid') }}" />
+        <button type="button" class="btn1 big-btn" onclick="orderCancel('all')">주문 취소</button>
+      </div>
+      @endif
     </div>
-    @endif
 
-    @if (!$card_custom_cancel && ($od_status == '주문'))
-    <div class="sod_fin_cancelfrm">
-      <input type="hidden" id="hide_od_id" value="{{ request('oid') }}" />
-      <button type="button" class="btn1 big-btn" onclick="orderCancel('all')">주문 취소</button>
+
+    <div class="pay-info-wrap">
+      <div class="pay-result-table">
+        <!-- 주문취소 사용 -->
+        <input type="hidden" id="bf_od_delivery_date" value="{{ $items['order_info']->od_delivery_date }}" />
+        <input type="hidden" id="bf_od_delivery_day" value="{{ $items['order_info']->od_delivery_day }}" />
+        <table>
+          <tr>
+            <th>주문번호</th>
+            <td>{{ $items['order_info']->od_id }}</td>
+          </tr>
+          
+          <tr>
+            <th>주문일</th>
+            <td>{{ $items['order_info']->od_time }} ({{ \Carbon\Carbon::parse($items['order_info']->od_time)->locale('ko')->dayName }})</td>
+          </tr>
+          
+          <tr>
+            <th>배송일</th>
+            <td>{{ $items['order_info']->od_delivery_date }} ({{ \Carbon\Carbon::parse($items['order_info']->od_delivery_date)->locale('ko')->dayName }})</td>
+          </tr>
+          
+          <tr>
+            <th>상호/이름</th>
+            <td>{{ $items['order_info']->od_company }} / {{ $items['order_info']->od_name }}</td>
+          </tr>
+          
+          <tr>
+            <th>휴대폰번호</th>
+            <td>{{ $items['order_info']->od_tel }}</td>
+          </tr>
+          
+          <tr>
+            <th>전화번호</th>
+            <td>{{ $items['order_info']->od_hp }}</td>
+          </tr>
+          <tr>
+            <th>이메일</th>
+            <td>{{ $items['order_info']->od_email }}</td>
+          </tr>
+          <tr>
+            <th>전용계좌</th>
+            <td>{{ $activeMember['mb_virtual_bank']. ' '.$activeMember['mb_virtual_account'] }}</td>
+          </tr>
+          <tr>
+            <th>배송주소</th>
+            <td>{{ $items['order_info']->od_addr1 }} {{ $items['order_info']->od_addr2 }}</td>
+          </tr>
+          <tr>
+            <th>요청사항</th>
+            <td>{{ $items['order_info']->od_memo }}</td>
+          </tr>
+        </table>
+
+        <table>
+          <tr>
+            <th>주문금액</th>
+            <td>{{ number_format($items['order_info']->od_cart_price) }}원</td>
+          </tr>
+          <tr>
+            <th>배송비</th>
+            <td>{{ number_format($items['order_info']->pt_delivery) }}원</td>
+          </tr>
+
+          <tr>
+            <th>합계금액</th>
+            <td class="blue">{{ number_format($items['order_info']->od_cart_price + $items['order_info']->pt_delivery) }}원</td>
+          </tr>
+
+
+          @if ($payment_type == '선불')
+
+            @if ( $items['order_info']->od_temp_point )
+            <tr>
+              <th>충전금사용</th>
+              <td>{{ number_format($items['order_info']->od_temp_point) ?? '0' }}원</td>
+            </tr>
+            @endif
+            @if ( $items['order_info']->od_temp_point_reserve )
+            <tr>
+              <th>적립금사용</th>
+              <td>{{ number_format($items['order_info']->od_temp_point_reserve) ?? '0' }}원</td>
+            </tr>
+            @endif
+            @if ($items['order_info']->od_settle_case == '금융권가상계좌' || $items['order_info']->od_settle_case == '신용카드' || $items['order_info']->od_settle_case == '무통장입금')
+            <tr>
+              <th>{{ $items['order_info']->od_settle_case }}</th>
+              <td>{{ number_format($items['order_info']->od_receipt_price) ?? '0' }}원</td>
+            </tr>
+            @endif
+
+            <tr>
+              <th>총결제액</th>
+              @php
+                $od_temp_point          = $items['order_info']->od_temp_point ?? 0;
+                $od_temp_point_reserve  = $items['order_info']->od_temp_point_reserve ?? 0;
+                $od_receipt_price       = $items['order_info']->od_receipt_price ?? 0;
+                $total_pay = $od_temp_point + $od_temp_point_reserve + $od_receipt_price;
+              @endphp
+              <td class="blue">{{ number_format($total_pay) }}원</td>
+            </tr>
+            <tr>
+              <th>미결제액</th>
+              <td class="red">{{ number_format($items['order_info']->od_misu) }}원</td>
+            </tr>
+
+            <tr>
+              <th>결제수단</th>
+              @php
+              $settleLabel = null;
+              if ($items['order_info']->od_settle_case == '충전금' || $items['order_info']->od_settle_case == '적립금' || $items['order_info']->od_settle_case == '충전금+적립금') {
+                  $settleLabel = '';
+              } else {
+                  $settleLabel = $items['order_info']->od_settle_case;
+              }
+              @endphp
+              <td>
+                {{ implode(' / ', array_filter([
+                    $items['order_info']->od_temp_point ? '충전금' : null,
+                    $items['order_info']->od_temp_point_reserve ? '적립금' : null,
+                    $settleLabel,
+                ])) }}
+              </td>
+            </tr>
+            <tr>
+              <th>{{ $items['order_info']->od_settle_case == '신용카드' ? '결제자명' : '입금자명' }}</th>
+              <td>{{ $items['order_info']->od_deposit_name }}</td>
+            </tr>
+            <tr>
+              <th>{{ $items['order_info']->od_settle_case == '신용카드' ? '결제카드' : '입금계좌' }}</th>
+              <td>{{ $items['order_info']->od_bank_account }}</td>
+            </tr>
+
+          @endif
+
+        </table>
+      </div>
     </div>
-    @endif
-  </div>
-
-
-  <div class="pay-info-wrap">
-    <div class="pay-result-table">
-      <!-- 주문취소 사용 -->
-      <input type="hidden" id="bf_od_delivery_date" value="{{ $items['order_info']->od_delivery_date }}" />
-      <input type="hidden" id="bf_od_delivery_day" value="{{ $items['order_info']->od_delivery_day }}" />
-      <table>
-        <tr>
-          <th>주문번호</th>
-          <td>{{ $items['order_info']->od_id }}</td>
-        </tr>
-        
-        <tr>
-          <th>주문일</th>
-          <td>{{ $items['order_info']->od_time }} ({{ \Carbon\Carbon::parse($items['order_info']->od_time)->locale('ko')->dayName }})</td>
-        </tr>
-        
-        <tr>
-          <th>배송일</th>
-          <td>{{ $items['order_info']->od_delivery_date }} ({{ \Carbon\Carbon::parse($items['order_info']->od_delivery_date)->locale('ko')->dayName }})</td>
-        </tr>
-        
-        <tr>
-          <th>상호/이름</th>
-          <td>{{ $items['order_info']->od_company }} / {{ $items['order_info']->od_name }}</td>
-        </tr>
-        
-        <tr>
-          <th>휴대폰번호</th>
-          <td>{{ $items['order_info']->od_tel }}</td>
-        </tr>
-        
-        <tr>
-          <th>전화번호</th>
-          <td>{{ $items['order_info']->od_hp }}</td>
-        </tr>
-        <tr>
-          <th>이메일</th>
-          <td>{{ $items['order_info']->od_email }}</td>
-        </tr>
-        <tr>
-          <th>전용계좌</th>
-          <td>{{ $activeMember['mb_virtual_bank']. ' '.$activeMember['mb_virtual_account'] }}</td>
-        </tr>
-        <tr>
-          <th>배송주소</th>
-          <td>{{ $items['order_info']->od_addr1 }} {{ $items['order_info']->od_addr2 }}</td>
-        </tr>
-        <tr>
-          <th>요청사항</th>
-          <td>{{ $items['order_info']->od_memo }}</td>
-        </tr>
-      </table>
-
-      <table>
-        <tr>
-          <th>주문금액</th>
-          <td>{{ number_format($items['order_info']->od_cart_price) }}원</td>
-        </tr>
-        <tr>
-          <th>배송비</th>
-          <td>{{ number_format($items['order_info']->pt_delivery) }}원</td>
-        </tr>
-
-        <tr>
-          <th>합계금액</th>
-          <td class="blue">{{ number_format($items['order_info']->od_cart_price + $items['order_info']->pt_delivery) }}원</td>
-        </tr>
-
-
-        @if ($payment_type == '선불')
-
-          @if ( $items['order_info']->od_temp_point )
-          <tr>
-            <th>충전금사용</th>
-            <td>{{ number_format($items['order_info']->od_temp_point) ?? '0' }}원</td>
-          </tr>
-          @endif
-          @if ( $items['order_info']->od_temp_point_reserve )
-          <tr>
-            <th>적립금사용</th>
-            <td>{{ number_format($items['order_info']->od_temp_point_reserve) ?? '0' }}원</td>
-          </tr>
-          @endif
-          @if ($items['order_info']->od_settle_case == '금융권가상계좌' || $items['order_info']->od_settle_case == '신용카드' || $items['order_info']->od_settle_case == '무통장입금')
-          <tr>
-            <th>{{ $items['order_info']->od_settle_case }}</th>
-            <td>{{ number_format($items['order_info']->od_receipt_price) ?? '0' }}원</td>
-          </tr>
-          @endif
-
-          <tr>
-            <th>총결제액</th>
-            @php
-              $od_temp_point          = $items['order_info']->od_temp_point ?? 0;
-              $od_temp_point_reserve  = $items['order_info']->od_temp_point_reserve ?? 0;
-              $od_receipt_price       = $items['order_info']->od_receipt_price ?? 0;
-              $total_pay = $od_temp_point + $od_temp_point_reserve + $od_receipt_price;
-            @endphp
-            <td class="blue">{{ number_format($total_pay) }}원</td>
-          </tr>
-          <tr>
-            <th>미결제액</th>
-            <td class="red">{{ number_format($items['order_info']->od_misu) }}원</td>
-          </tr>
-
-          <tr>
-            <th>결제수단</th>
-            @php
-            $settleLabel = null;
-            if ($items['order_info']->od_settle_case == '충전금' || $items['order_info']->od_settle_case == '적립금' || $items['order_info']->od_settle_case == '충전금+적립금') {
-                $settleLabel = '';
-            } else {
-                $settleLabel = $items['order_info']->od_settle_case;
-            }
-            @endphp
-            <td>
-              {{ implode(' / ', array_filter([
-                  $items['order_info']->od_temp_point ? '충전금' : null,
-                  $items['order_info']->od_temp_point_reserve ? '적립금' : null,
-                  $settleLabel,
-              ])) }}
-            </td>
-          </tr>
-          <tr>
-            <th>{{ $items['order_info']->od_settle_case == '신용카드' ? '결제자명' : '입금자명' }}</th>
-            <td>{{ $items['order_info']->od_deposit_name }}</td>
-          </tr>
-          <tr>
-            <th>{{ $items['order_info']->od_settle_case == '신용카드' ? '결제카드' : '입금계좌' }}</th>
-            <td>{{ $items['order_info']->od_bank_account }}</td>
-          </tr>
-
-        @endif
-
-      </table>
-    </div>
-  </div>
+  @endif
 </div>
+
 
 
 <script>

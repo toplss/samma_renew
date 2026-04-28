@@ -2,6 +2,10 @@
 
 @section('content')
 
+<style>
+section{min-height: 54vh;}
+</style>
+
 <div class="sub-container">
   <div class="sub-title-wrap">
     <h4>반품 접수</h4>  

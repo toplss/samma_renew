@@ -77,9 +77,19 @@
         @endphp
             <ul class="prd-box equip" data-item="{{ $it_id }}">
                 @if(file_exists(public_path($image_url)) && $row['it_img1'])
-                <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset($image_url) }}"></li>
+                <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; ">
+                    <img src="{{ asset($image_url) }}">
+                    @if ($row['it_special_explan'])
+                        <p class="prd-memo">{{ $row['it_special_explan'] }}</p>
+                    @endif
+                </li>
                 @else
-                <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; "><img src="{{ asset('images/common/no_image.gif') }}"></li>
+                <li class="prd-img  {{ $sold_out ? 'sold-out' : '' }}" onclick="location.href = '/mall/shop/view?it_id={{ $it_id }}'; ">
+                    <img src="{{ asset('images/common/no_image.gif') }}">
+                    @if ($row['it_special_explan'])
+                        <p class="prd-memo">{{ $row['it_special_explan'] }}</p>
+                    @endif
+                </li>
                 @endif
                 <li class="Qua-equip {{ $sold_out ? 'sold-out' : '' }}">
                     @if($activeMember)
