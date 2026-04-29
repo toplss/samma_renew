@@ -104,7 +104,7 @@
     <ul class="sale-item-tab">
       <li class="active" data-tab="si4">지난주 베스트</li>
       <li data-tab="si5">이번주 추천상품</li>
-      <li data-tab="si6">이벤트 상품</li>
+      <li data-tab="si6">선착순 샘플링</li>
     </ul>
 
     <!-- 지난주 베스트 -->

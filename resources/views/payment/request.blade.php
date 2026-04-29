@@ -292,7 +292,8 @@ if (isset($activeMember['mb_level_type'])) {
                 </tr>
                 <tr>
                     <th>요청사항</th>
-                    <td><textarea name="od_memo" id=""></textarea></td>
+                    <!-- <td><textarea name="od_memo" id=""></textarea></td> -->
+                     <td><button type="button" onclick="window.open('/customer_service/my_qa_write');" class="btn1">문의하기</button></td>
                 </tr>
             </table>
 

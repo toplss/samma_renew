@@ -11,38 +11,41 @@
 
   <div class="qa-wrap">
     <div class="qbtns">
-      <button type="button"class="btn1" onclick="location.href='/customer_service/my_qa_write'">상품 문의하기</button>
-      <button type="button" class="btn3" onclick="location.href='/customer_service/my_contact_write'">1:1 문의하기</button>
+      <button type="button"class="btn3" onclick="location.href='/customer_service/my_qa_write'">문의하기</button>
+      <!-- <button type="button" class="btn3" onclick="location.href='/customer_service/my_contact_write'">1:1 문의하기</button> -->
     </div>
     <table class="table1 qa-table">
       <thead>
         <tr>
           <th class="hide-1024">번호</th>
-          <th>상품정보</th>
+          <!-- <th>상품정보</th> -->
           <th>문의종류</th>
+          <th>제목</th>
           <th>작성일</th>
           <th>상태</th>
           <th>관리</th>
         </tr>
       </thead>
       <tbody>
+{{-- @dd($items); --}}
         @foreach($items as $key => $row)
         <tr>
           <td class="hide-1024" data-label="번호">{{ $row->row_num }}</td>
-          <td class="qa1" data-label="상품정보" onclick="view_qa(`{{ $row->table_name }}`, {{ $row->iq_id }})" style="cursor: pointer;">
-            @php
+          <!-- <td class="qa1" data-label="상품정보" onclick="view_qa(`{{ $row->table_name }}`, {{ $row->iq_id }})" style="cursor: pointer;">
+            {{-- @php
             $image_url = 'images/item/'.$row->it_img1;
-            @endphp
+            @endphp --}}
             <div class="flex items-center">
-              @if(file_exists(public_path($image_url)) && $row->it_img1)
-              <img src="{{ asset($image_url) }}"/>
-              @else
-              <img src="{{ asset('images/common/no_image.gif') }}"/>
-              @endif
-              <p>{{ $row->it_name }}</p>
+              {{-- @if(file_exists(public_path($image_url)) && $row->it_img1) --}}
+              {{-- <img src="{{ asset($image_url) }}"/> --}}
+              {{-- @else --}}
+              {{-- <img src="{{ asset('images/common/no_image.gif') }}"/> --}}
+              {{-- @endif --}}
+              {{-- <p>{{ $row->it_name }}</p> --}}
             </div>
-          </td>
-          <td data-label="문의종류">{{ $row->iq_gubun }}</td>
+          </td> -->
+          <td data-label="문의종류">{{ $row->iq_gubun }} </td>
+          <td data-label="제목" onclick="view_qa(`{{ $row->table_name }}`, {{ $row->iq_id }})" style="cursor: pointer;">{{ $row->iq_subject }}</td>
           <td data-label="작성일">{{ date('Y/m/d', strtotime($row->iq_time)) }}</td>
           <td data-label="상태">
             @if ($row->iq_answer)

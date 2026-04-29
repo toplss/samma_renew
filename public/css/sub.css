@@ -52,7 +52,7 @@
 .prd-img .room_temp,.prd-img .low_temp,.prd-img .frozen_temp{position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; justify-content: center; flex-direction: column; width: 42px; height: 42px; border-radius: 40px; font-size: 0.8rem; background-color: rgba(255, 255, 255, 0.9);}
 .prd-img .low_temp{border: 1px solid #21c1c1; color: #21c1c1;}
 .prd-img .frozen_temp{border: 1px solid #5494de; color: #5494de;}
-.prd-memo{position: absolute; bottom: 0; left: 0; width: 100%; padding: 0.4rem 0.8rem; background-color: rgba(0, 0, 0, 0.6); color: #fff; font-size: 0.95rem; color: #e7be22; text-align: center;}
+.prd-memo{position: absolute; bottom: 0; left: 0; width: 100%; padding: 0.4rem 0.2rem; background-color: rgba(0, 0, 0, 0.6); color: #fff; font-size: 0.95rem; color: #e7be22; text-align: center;}
 
 .Qua{border: 1px solid #eee; display: flex; justify-content: space-around; align-items: center; border-radius: 0.5rem; position:relative; overflow: hidden;}
 .Qua.sold-out{opacity: 0.3;}
@@ -78,7 +78,6 @@
 .prd-name{font-size: 1.1rem; font-weight: 500; line-height: 1.4rem; word-break: break-word; overflow-wrap: anywhere; /* safari 깨짐 방어 */}
 .prd-name .ea{color: #999;font-size: 0.95rem;}
 .prd-name .ea>i{display: none; font-style: normal;white-space: nowrap; margin-left: 0.3rem;}
-/* .prd-memo>span{border: 1px solid #22429b; border-radius: 0.3rem; padding: 0.1rem 0.3rem; color: #22429b; font-size: 0.95rem; font-weight: 500; margin-bottom: 4px;} */
 
 
 .prd-price{margin-top: auto;}
@@ -295,13 +294,15 @@
 .odr-list-title h6 i{font-style: normal; background-color: #da2727; color: #FFF; padding: 0.1rem 0.2rem; display: inline-block; margin: 0 5px;}
 .odr-list-title h6 b{margin:0 5px;}
 .odr-list-title h6 span{font-size: 1rem;}
-.odr-list-item{display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin: 1rem auto;}
+.odr-list-info{text-align: right; margin-top: 0.5rem;}
+.odr-list-info>span{color: #fff; background-color: #f05f5f; border-radius: 3px; padding: 2px 4px;}
+.odr-list-item{display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin: 0.5rem auto;}
 .odr-list-item>div{display: flex; gap: 1rem; align-items: center;}
 .odr-list-item img{width: 100px;}
 .odr-list-item span{color: #da2727; border: 1px solid #da2727; padding: 0.2rem; margin-left: 5px;}
 .odr-list-item h6{font-size: 1.2rem;}
 .odr-list-item p{text-align: left;}
-.odr-content{margin-bottom: 1.7rem;}
+.odr-content{margin-bottom: 2rem; border: 2px solid #d3ccc2; border-radius: 0.5rem; padding: 0.7rem;}
 .odr-bg{border-radius: 0.5rem;  padding: 0.7rem; background-color: #FBF7F2; border: 2px dashed #a8a094;}
 
 
@@ -732,6 +733,7 @@
   .prd-list.type-row .prd-box{grid-template-columns: 1fr 3fr 2fr 2.5fr 2fr;}
   .prd-list.type-row .Qua-equip{flex-direction: column;}
   .prd-name .ea{font-size: 0.9rem;}
+  .prd-memo{font-size: 0.9rem;}
   .prd-view-img .sold-out:after{font-size: 3.5rem;}
   .recipe-list{grid-template-columns: repeat(5,1fr);}
   .recipe-detail{grid-template-columns: 1.3fr 2fr;}
@@ -939,6 +941,7 @@
   .prd-price h5::after {content: ""; display: block; height: 1.27rem;}
   .prd-price h5:has(u)::after {display: none;}
   .prd-price .price-dis{font-weight: 400;}
+  .prd-memo{padding: 0.2rem;}
 
 	.prd-img .room_temp,.prd-img .low_temp,.prd-img .frozen_temp{top: 4px; right: 4px; width: 34px; height: 34px; font-size: 0.7rem;}
 	.room_temp>img,.low_temp>img,.frozen_temp>img{width: 17px;} 
@@ -1027,7 +1030,7 @@
   .odr-table1 td .btn1{font-size: 0.8rem;}
   .odr-table2 img{width: 35px;}
   .odr-bg{border-width: 1px !important;}
-  .odr-content{margin-bottom: 1rem;}
+  .odr-content{margin-bottom: 1rem; border-width: 1px !important;}
   .odr-content ul{grid-template-columns: repeat(2,1fr); font-size: 0.9rem;}
   .odr-content ul li:nth-of-type(4){border-bottom: 1px solid #eee;}
   .odr-list-title h6{font-size: 1rem;}
@@ -1035,6 +1038,7 @@
   .odr-list-item h6{font-size: 1.1rem;}
   .odr-list-item img{width: 60px;}
   .odr-list-title h6 span{font-size: 0.9rem;}
+  .odr-list-info>span{font-size: 0.9rem;}
   .odr-payment{grid-template-columns: 4fr 3fr;}
   .odr-cart{margin-top: 1.5rem; padding: 1.2rem 1rem;}
   .pw-check-box #mb_password{width: 180px;}

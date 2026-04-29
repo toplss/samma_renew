@@ -42,7 +42,7 @@ class MyPageController extends Controller
     public function orderinquiry(Request $request)
     {
         $page    = $request->get('page', 1);
-        $desc    = $request->get('desc', '');
+        // $desc    = $request->get('desc', '');
         $perPage = $request->get('scale', 20);
 
         $start_date = $request->input('start_date', '');
@@ -83,7 +83,7 @@ class MyPageController extends Controller
             ->groupByRaw("
                 od_group_code,
                 CASE 
-                    WHEN od_delivery_step IN (90, 99) THEN 90
+                    WHEN od_delivery_step IN (90, 99) THEN 99
                     ELSE od_delivery_step
                 END
             ");
@@ -123,7 +123,10 @@ class MyPageController extends Controller
                                     ) 
                                     THEN ct_qty ELSE 0 
                                 END) AS sum_minus
-                        FROM g5_shop_cart where od_group_code = so.od_group_code
+                        FROM g5_shop_cart WHERE od_id IN (SELECT od_id 
+                                                            FROM g5_shop_order 
+                                                            WHERE od_group_code = so.od_group_code 
+                                                                AND od_delivery_step = so.od_delivery_step)
                         GROUP BY od_id, it_id
                     ) AS t 
                         ON sc.od_id = t.od_id
@@ -149,7 +152,7 @@ class MyPageController extends Controller
 
                     (SELECT it_id FROM g5_shop_cart WHERE od_id = so.od_id ORDER BY it_id LIMIT 1) AS it_id,
                     (CASE 
-                        WHEN so.od_delivery_step IN (90, 99) THEN 90
+                        WHEN so.od_delivery_step IN (90, 99) THEN 99
                         ELSE so.od_delivery_step
                     END) as od_delivery_step,
                     so.od_delivery_date,
@@ -226,7 +229,7 @@ class MyPageController extends Controller
                 ->groupByRaw("
                     so.od_group_code,
                     CASE 
-                        WHEN so.od_delivery_step IN (90, 99) THEN 90
+                        WHEN so.od_delivery_step IN (90, 99) THEN 99
                         ELSE so.od_delivery_step
                     END
                 ")
@@ -235,34 +238,18 @@ class MyPageController extends Controller
                  * ORDER BY
                  */
                 
-                // ->orderByRaw("
-                //     CASE 
-                //         WHEN so.od_delivery_step = 8 THEN 2
-                //         WHEN so.od_delivery_step IN (90, 99) THEN 1
-                //         ELSE 0
-                //     END ASC
-                // ")
-
-                // ->orderByRaw("
-                //     CASE 
-                //         WHEN so.od_delivery_step IN (90, 99) THEN so.od_delivery_date
-                //     END DESC
-                // ")
-
                 ->orderByRaw("
                     CASE 
-		WHEN so.od_delivery_step = 0 THEN 1
-		WHEN so.od_delivery_step = 8 THEN 99
-        ELSE 2
+                        WHEN so.od_delivery_step = 8 THEN 99
+                        WHEN so.od_delivery_step IN (90, 99) THEN 1
+                        WHEN current_gubun not like '%매출%' THEN 1
+                        ELSE 0
                     END ASC
                 ")
-
-
                 ->orderBy('so.od_delivery_date', 'DESC')
+                ->orderBy('so.od_idx', 'DESC')    
                 ->orderBy('so.od_delivery_step', 'ASC')
                 ->orderByRaw("so.od_gubun IN ('기초잔액추가', '잔액조정') ASC")                
-                ->orderBy('so.od_idx', 'DESC')    
-
                 ->paginate($perPage);
 
         $items = new LengthAwarePaginator(
@@ -374,7 +361,7 @@ class MyPageController extends Controller
                 SELECT
                     od_group_code,
                     CASE 
-                        WHEN od_delivery_step IN (90, 99) THEN 90
+                        WHEN od_delivery_step IN (90, 99) THEN 99
                         ELSE od_delivery_step
                     END AS od_delivery_step,
 
@@ -419,7 +406,7 @@ class MyPageController extends Controller
                 WHERE mb_code = ?
                 GROUP BY od_group_code,
                     CASE 
-                        WHEN od_delivery_step IN (90, 99) THEN 90
+                        WHEN od_delivery_step IN (90, 99) THEN 99
                         ELSE od_delivery_step
                     END
             ) sub_so
@@ -430,12 +417,10 @@ class MyPageController extends Controller
 
                 AND (
                     CASE 
-                        WHEN so.od_delivery_step IN (90, 99) THEN 90
+                        WHEN so.od_delivery_step IN (90, 99) THEN 99
                         ELSE so.od_delivery_step
                     END
                 ) = ?
-
-
 
             LIMIT 1
         ";
@@ -518,7 +503,12 @@ class MyPageController extends Controller
                     'od_delivery_step'
                 )
                 ->where('od_group_code', $ogc)
-                // ->where('od_delivery_step', $ods)
+                ->whereRaw("
+                    (CASE 
+                        WHEN od_delivery_step IN (90, 99) THEN 99
+                        ELSE od_delivery_step
+                    END) = $ods
+                ")
                 ->orderBy('od_id_org', 'DESC')
                 ->get();
 
@@ -1445,6 +1435,7 @@ class MyPageController extends Controller
 
         //은행
         $mb_bank_code = '';
+        $mb_bank_name = '';
         $mb_bank = $request->input('mb_bank');      
         if($mb_bank != '') {
             $arr_mb_bank = explode('/', $mb_bank);

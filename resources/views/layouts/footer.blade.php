@@ -722,15 +722,21 @@
 					var amount_min_use    = $('#amount_min_use').val();
 					var min_order_amount  = $('#min_order_amount').val();
 
+					var virtual_bank_str = `
+					<div style="background:#fff3cd; padding:12px; border-radius:6px; margin-bottom:15px; line-height:1.6;">
+						<div style="font-weight:bold; color:#333;">
+							구매후 점주님의 전용계좌로 입금을 해주시기 바랍니다.
+						</div>
+						<div style="margin-top:6px; font-weight:bold;">
+							[입금계좌] : 
+							<span style="color:#d32f2f;">
+								{{ $activeMember['mb_virtual_bank'] }} {{ $activeMember['vr_account_info'] }} 
+							</span>
+						</div>
+					</div>
+					`;
+
 					var confirm_content = '';
-
-
-
-
-
-
-
-
 
 					if (level_ca_id2 == '20' && mb_credit_type == '1' && mb_credit_amount > 0 && total_amount > mb_credit_amount) {
 						if (mb_manager_staff_code) {
@@ -778,7 +784,7 @@
 						Swal.fire({
 							toast : false,
 							title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
-							html: confirm_content,
+							html: virtual_bank_str + confirm_content,
 							icon: 'warning',
 							showCancelButton: true,
 							confirmButtonText: '닫기',
@@ -789,7 +795,7 @@
 						Swal.fire({
 							toast : false,
 							title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
-							html: confirm_content,
+							html: virtual_bank_str + confirm_content,
 							icon: 'warning',
 							showCancelButton: true,
 							confirmButtonText: '닫기',
@@ -809,7 +815,7 @@
 							Swal.fire({
 								toast : false,
 								title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
-								html: confirm_content,
+								html: virtual_bank_str + confirm_content,
 								icon: 'warning',
 								confirmButtonText: '닫기',
 								focusConfirm: false
@@ -860,7 +866,7 @@
 									Swal.fire({
 										toast : false,
 										title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
-										html: confirm_content,
+										html: virtual_bank_str + confirm_content,
 										icon: 'question',
 										showCancelButton: true,
 										confirmButtonText: '확인',
@@ -887,7 +893,7 @@
 							// Swal.fire({
 							// 	toast : false,
 							// 	title: '<i class="fas fa-solid fa-plus"></i> 상품 구매하기',
-							// 	html: confirm_content,
+							// 	html: virtual_bank_str + confirm_content,
 							// 	icon: 'question',
 							// 	showCancelButton: true,
 							// 	confirmButtonText: '확인',

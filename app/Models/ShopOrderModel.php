@@ -215,7 +215,10 @@ class ShopOrderModel extends Model
                             od_company,
                             od_id,
                             od_group_code,
-                            od_delivery_step,
+                            (CASE 
+								WHEN od_delivery_step IN (90, 99) THEN 99
+								ELSE od_delivery_step
+							END) as od_delivery_step,
 
                             SUM(
                                 CASE 
@@ -284,6 +287,7 @@ class ShopOrderModel extends Model
 
                         FROM g5_shop_order
                         WHERE mb_code = ?
+                            AND od_delivery_step > 0
                         GROUP BY od_group_code,    
 							CASE 
 								WHEN od_delivery_step IN (90, 99) THEN 99
@@ -351,7 +355,10 @@ class ShopOrderModel extends Model
                             od_company,
                             od_id,
                             od_group_code,
-                            od_delivery_step,
+                            (CASE 
+								WHEN od_delivery_step IN (90, 99) THEN 99
+								ELSE od_delivery_step
+							END) as od_delivery_step,
 
                             SUM(
                                 CASE 

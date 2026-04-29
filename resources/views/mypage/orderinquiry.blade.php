@@ -57,6 +57,15 @@
       $current_gubun_cnt = !empty($arr_gubun) ? count($arr_gubun) : 0;
       //가장 처음배열의 상태값으로..
       $current_gubun = $arr_gubun[0];
+
+      //결품채권, 반품채권은 >>>>  결품입금, 반품입금으로 표기 변경
+      if ($current_gubun == '결품채권') {
+          $current_gubun = '결품입금';
+      }
+
+      if ($current_gubun == '반품채권') {
+          $current_gubun = '반품입금';
+      }      
           
       //str_status 가공
       if ($current_gubun == '매출') {
@@ -181,13 +190,19 @@
           <button type="button" class="btn3" onclick="location.href='/mypage/orderinquiryview?oid={{ $row->od_id }}&ogc={{ $row->od_group_code }}&ods={{ $row->od_delivery_step }}&etc={{ ($row->od_id_org == '') ? 'Y' : 'N' }}';">주문정보</button>
           @if($row->od_delivery_step >= 90 || $current_gubun == '취소')
             @php 
-              $url = "https://samma-erp.com/erp/sales/mall_sales_statement_order_transaction.html?view_type=group&mb_code=" . $activeMember['mb_code'] . "&od_group_code=" . $row->od_group_code;
+              $url = "https://samma-erp.com/erp/sales/mall_sales_statement_order_transaction.html?view_type=group&mb_code=" . $activeMember['mb_code'] . "&od_group_code=" . $row->od_group_code . "&od_delivery_step=" . $row->od_delivery_step;
             @endphp
             <button type="button" class="btn2 hide-1024" id="erpBtn" onclick="javascript:show_modal('{{ $url }}');">거래명세서 확인</button>
           @endif
 
         </p>
       </div>
+
+      @if( ( $current_gubun == '매출' || $current_gubun == '충전금구매' ) && $row->od_delivery_step != 8 && $row->od_delivery_step < 90 )
+      <div class="odr-list-info">
+        <span>잔액은 주문 배송일에 정산 예정입니다.</span>
+      </div>
+      @endif
       <div class="odr-list-item">
         <div>
           @if(file_exists(public_path($image_url)) && $row->it_img1)

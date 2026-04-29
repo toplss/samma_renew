@@ -85,7 +85,7 @@ main{margin: 0.5rem auto;}
 #mc1 ul,#mc3 ul{border-top: 2px solid #8ec251; margin-top: 0.5rem; padding-top: 0.6rem;}
 
 #mc1 ul li{background-color: #f9f9f9; margin-bottom: 0.5rem; padding: 0.4rem;}
-#mc1 ul b{font-weight: 400; background-color: #999; color: #fff; width: 16px; padding: 0.2rem; border-radius: 0.2rem; display: inline-block; font-size: 0.9rem; margin-right: 0.5rem;}
+#mc1 ul b{font-weight: 400; background-color: #999; color: #fff; width: 16px; padding: 0.2rem; border-radius: 0.2rem; display: inline-block; font-size: 0.9rem; margin-right: 0.5rem; text-align: center;}
 #mc1 ul li:nth-child(-n+3) b{background-color: #8ec251;}
 #mc3 ul li{margin-bottom: 1rem;}
 #mc3 ul li:last-child{margin-bottom: 0;}

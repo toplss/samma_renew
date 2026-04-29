@@ -313,11 +313,11 @@
 				<td><a href="/mall/shop/list?ca_id=a0">잡화류</a></td>
 				<td><a href="/mall/shop/list?ca_id=b0">식자재</a></td>
 				<td><a href="/mall/shop/list?ca_id=c0">주방용품</a></td>
-				<td><a href="/mall/shop/list?ca_id=e0">배달메뉴</a></td>
+				<td><a href="/mall/shop/list?ca_id=f0">디자인지원</a></td>
 			</tr>
 			<tr>
-				<td><a href="/mall/shop/list?ca_id=f0">디자인지원</a></td>
 				<td><a href="/mall/shop/list?ca_id=h0">프로모션</a></td>
+				<td><a href="/mall/shop/list?ca_id=n0">전용상품관</a></td>
 				<td></td>
 				<td></td>
 			</tr>

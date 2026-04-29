@@ -40,7 +40,7 @@ class CustomerServiceController extends Controller
     }
 
 
-    public function MyPageQaList(Request $request)
+    public function MyPageQaList_old(Request $request)
     {
         $start_date = $request->input('start_date', '');
         $end_date = $request->input('end_date', '');
@@ -105,6 +105,54 @@ class CustomerServiceController extends Controller
 
         return view('customer_service.my_qa_list', compact('items'));
     }
+
+
+    public function MyPageQaList(Request $request)
+    {
+        $start_date = $request->input('start_date', '');
+        $end_date = $request->input('end_date', '');
+        $mb_code = session('ss_mb_code');
+
+        if (!$mb_code) {
+            throw new Exception('로그인 사용자가 아닙니다.');
+        }
+
+        $itemQa = DB::table('g5_shop_item_qa')
+            ->select([
+                'g5_shop_item_qa.iq_id',
+                'g5_shop_item_qa.it_id',
+                'g5_shop_item_qa.it_mb_num',
+                'g5_shop_item_qa.mb_id',
+                'g5_shop_item_qa.iq_gubun',
+                'g5_shop_item_qa.iq_subject',
+                'g5_shop_item_qa.iq_question',
+                'g5_shop_item_qa.iq_answer',
+                'g5_shop_item_qa.iq_time',
+                DB::raw("'item_qa' as table_name")
+            ])
+            ->where('g5_shop_item_qa.it_mb_num', $mb_code)
+            ->when($start_date && $end_date, function($query) use($start_date, $end_date) {
+                $query->whereBetween(DB::raw('DATE(g5_shop_item_qa.iq_time)'), [$start_date, $end_date]);
+            });
+
+        $items = DB::query()
+        ->fromSub($itemQa, 'qa')
+        ->select([
+            '*',
+            DB::raw('ROW_NUMBER() OVER (ORDER BY iq_id DESC) as row_num')
+        ])
+        ->paginate(10);
+
+        return view('customer_service.my_qa_list', compact('items'));
+    }
+
+
+
+
+
+
+
+
 
 
     

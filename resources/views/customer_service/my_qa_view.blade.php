@@ -20,15 +20,16 @@
       <tr>
         <th>문의종류</th>
         <td>
-          <input type="radio" name="iq_gubun"  class="gubun" value="상품" {{ $info->iq_gubun == '상품' ? 'checked' : ''  }}><label onclick="javascript:$('.gubun_1').click();"> 상품</label>
-          <input type="radio" name="iq_gubun"  class="gubun" value="배송" {{ $info->iq_gubun == '배송' ? 'checked' : ''  }}><label onclick="javascript:$('.gubun_2').click();"> 배송</label>
-          <input type="radio" name="iq_gubun"  class="gubun" value="취소" {{ $info->iq_gubun == '취소' ? 'checked' : ''  }}><label onclick="javascript:$('.gubun_3').click();"> 취소</label>
-          <input type="radio" name="iq_gubun"  class="gubun" value="반품/취소" {{ $info->iq_gubun == '반품/취소' ? 'checked' : ''  }}><label onclick="javascript:$('.gubun_4').click();"> 반품/취소</label>
-          <input type="radio" name="iq_gubun"  class="gubun" value="교환" {{ $info->iq_gubun == '교환' ? 'checked' : ''  }}><label onclick="javascript:$('.gubun_5').click();"> 교환</label>
-          <input type="radio" name="iq_gubun"  class="gubun" value="기타" {{ $info->iq_gubun == '기타' ? 'checked' : ''  }}><label onclick="javascript:$('.gubun_6').click();"> 기타</label>
+          <label onclick="javascript:$('.gubun_1').click();"><input type="radio" name="iq_gubun" class="gubun" value="상품" checked {{ isset($idx) && $info->iq_gubun == '상품' ? 'checked' : ''  }}> 상품 관련</label>
+          <label onclick="javascript:$('.gubun_2').click();"><input type="radio" name="iq_gubun"  class="gubun" value="배송" {{ isset($idx) && $info->iq_gubun == '배송' ? 'checked' : ''  }}> 배송 관련</label>
+          <!-- <label onclick="javascript:$('.gubun_3').click();"><input type="radio" name="iq_gubun"  class="gubun" value="취소" {{ isset($idx) && $info->iq_gubun == '취소' ? 'checked' : ''  }}> 취소</label> -->
+          <label onclick="location.href='/customer_service/return_reception'"><input type="radio" name="iq_gubun"  class="gubun" value="반품" {{ isset($idx) && $info->iq_gubun == '반품/취소' ? 'checked' : ''  }}> 반품 관련</label>
+          <!-- <input type="radio" name="iq_gubun"  class="gubun" value="교환" {{ isset($idx) && $info->iq_gubun == '교환' ? 'checked' : ''  }}><label onclick="javascript:$('.gubun_5').click();"> 교환</label> -->
+          <label onclick="location.href='/customer_service/as_reception'"><input type="radio" name="iq_gubun"  class="gubun" value="a/s"> A/S 관련</label>
+          <label onclick="javascript:$('.gubun_6').click();"><input type="radio" name="iq_gubun"  class="gubun" value="기타" {{ isset($idx) && $info->iq_gubun == '기타' ? 'checked' : ''  }}> 기타</label>
         </td>
       </tr>
-      <tr>
+      <!-- <tr>
         <th>상품선택</th>
         <td>
           <select name="it_id" id="it_id" class="qa-select">
@@ -38,7 +39,7 @@
             @endforeach
 					</select>
         </td>
-      </tr>
+      </tr> -->
       <tr>
         <th>이름</th>
         <td>{{ $activeMember['mb_company'] }}</td>
