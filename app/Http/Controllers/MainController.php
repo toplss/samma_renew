@@ -81,9 +81,12 @@ class MainController extends Controller
             self::setRedis($redis_member_key_generate, $resArr);
         }
 
+
+
         $event_items = $this->main_event_items($request);
 
         $resArr = array_merge($resArr, $event_items);
+
 
         $service = app(MallShopService::class);
         if (session()->has('ss_mb_code')) {

@@ -27,7 +27,7 @@ $(document).ready(function(){
     infinite: true,
     slidesToShow: 1,
     speed: 500,
-    autoplaySpeed: 3500,
+    autoplaySpeed: 5500,
     pauseOnHover : false,
     pauseOnFocus: false,
   });
@@ -38,7 +38,7 @@ $(document).ready(function(){
     infinite: true,
     slidesToShow: 1,
     speed: 500,
-    autoplaySpeed: 3500,
+    autoplaySpeed: 5500,
     pauseOnHover : false,
     pauseOnFocus: false,
   });

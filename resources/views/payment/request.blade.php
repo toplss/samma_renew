@@ -381,12 +381,13 @@ if (isset($activeMember['mb_level_type'])) {
                             <label>
                                 <input type="radio" id="od_settle_vbank" class="od_settle_case" name="od_settle_case" value="PG사가상계좌">PG사 가상계좌
                             </label>
-                        </li> -->
+                        </li>
                         <li class="od_settle_bank">
                             <label>
                                 <input type="radio" id="od_settle_bank" name="od_settle_case" value="무통장입금">무통장입금
                             </label>
                         </li>
+                         -->
                         <li class="od_settle_charge" style="display: none;">
                             <label>
                                 <input type="radio" id="od_settle_charge" class="od_settle_case" name="od_settle_case" value="충전금">충전금결제

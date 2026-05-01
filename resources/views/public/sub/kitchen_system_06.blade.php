@@ -13,6 +13,7 @@ $(function(){
 		speed: 300,
 		pauseOnHover : false,
 		pauseOnFocus: false,
+    initialSlide: 5,
 		centerMode: true,
     centerPadding: '0px',
 		responsive: [
@@ -37,7 +38,7 @@ $(function(){
     <div class="st-left">
       <h4>키친시스템</h4>  
       <div class="category">
-        <button type="button" class="btn3 kitchen-btn" id="cateBtn">스마트조리기<img src="{{ asset('images/icon/down.svg') }}"></button>
+        <button type="button" class="btn3 kitchen-btn" id="cateBtn">리프트튀김기<img src="{{ asset('images/icon/down.svg') }}"></button>
         <ul id="cateList" class="kitchen-list">
           <li><a href="/public/sub/kitchen_system_01" data-name="스마트조리기">스마트조리기</a></li>
           <li><a href="/public/sub/kitchen_system_02" data-name="캡슐커피머신">캡슐커피머신</a></li>
@@ -112,12 +113,16 @@ $(function(){
 			</a>
 		</div>
 
-
+    <div class="kitchen-content">
+      <img src="{{ asset('images/sub/ks6_01.jpg') }}">
+      <img src="{{ asset('images/sub/ks6_02.jpg') }}">
+      <img src="{{ asset('images/sub/ks6_03.jpg') }}">
+      <img src="{{ asset('images/sub/ks6_04.jpg') }}">
+      <img src="{{ asset('images/sub/ks6_05.jpg') }}">
+    </div>
 
 	</div>
 </div>
-
-
 
 @endsection
 

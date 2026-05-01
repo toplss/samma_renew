@@ -96,6 +96,19 @@ class MallShopService
             $cost = $service->getMemberCostField($arr_member);
             $arr_member['field_it_price']       = $cost['field_it_price'];
             $arr_member['field_it_price_unit']  = $cost['field_it_price'];
+
+            // 전화번호 포맷팅
+            if ($arr_member['mb_manager_staff_code']) {
+                $manager = DB::table('tb_member as tm')
+                ->select('mb_hp', 'mb_business_hp')
+                ->leftJoin('tb_employee as te', 'tm.mb_code', '=', 'te.mb_code')
+                ->where('tm.mb_code', $arr_member['mb_manager_staff_code'])
+                ->first();
+
+                $arr_member['mb_tel'] = ($manager->mb_business_hp) ? $manager->mb_business_hp : $manager->mb_hp;
+            } else {
+                $arr_member['mb_tel'] = '';
+            }
         }
 
         return $arr_member ?? [];

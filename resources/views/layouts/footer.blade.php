@@ -702,7 +702,8 @@
 					var mb_credit_amount = $('#mb_credit_amount').val() * 1;
 					var total_amount    = $('#total_amount').val() * 1;
 					var diff_amount     = $('#diff_amount').val() * 1;
-					var level_ca_id2    = $('#level_ca_id2').val();
+					// var level_ca_id2    = $('#level_ca_id2').val();
+					var level_ca_id2    = {{ $activeMember['level_ca_id2'] }};
 					var mb_credit_type  = $('#mb_credit_type').val();
 					var item_sold_out   = $('#item_sold_out').val() * 1;
 
@@ -722,19 +723,29 @@
 					var amount_min_use    = $('#amount_min_use').val();
 					var min_order_amount  = $('#min_order_amount').val();
 
-					var virtual_bank_str = `
-					<div style="background:#fff3cd; padding:12px; border-radius:6px; margin-bottom:15px; line-height:1.6;">
-						<div style="font-weight:bold; color:#333;">
-							구매후 점주님의 전용계좌로 입금을 해주시기 바랍니다.
+					var payment_type = '';
+					if (level_ca_id2 && String(level_ca_id2).length == 4) {
+						const lastChar = String(level_ca_id2).slice(-1);
+
+						if (lastChar === '1') payment_type = '선불';
+						if (lastChar === '2') payment_type = '후불';
+					}
+
+					var virtual_bank_str = '';
+					if (payment_type == '선불') {
+						var virtual_bank_str = `
+						<div style="background:#fff3cd; padding:12px; border-radius:6px; margin-bottom:15px; line-height:1.6;">
+							<div style="font-weight:bold; color:#333;">
+								구매 후 점주님의 입금계좌로 입금을 해주시기 바랍니다.
+							</div>
+							<div style="margin-top:6px; font-weight:bold;">
+								<span style="color:#d32f2f;">
+									{{ $activeMember['mb_virtual_bank'] }} {{ $activeMember['vr_account_info'] }} 
+								</span>
+							</div>
 						</div>
-						<div style="margin-top:6px; font-weight:bold;">
-							[입금계좌] : 
-							<span style="color:#d32f2f;">
-								{{ $activeMember['mb_virtual_bank'] }} {{ $activeMember['vr_account_info'] }} 
-							</span>
-						</div>
-					</div>
-					`;
+						`;						
+					} 
 
 					var confirm_content = '';
 

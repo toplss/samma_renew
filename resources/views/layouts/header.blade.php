@@ -317,7 +317,7 @@
 			</tr>
 			<tr>
 				<td><a href="/mall/shop/list?ca_id=h0">프로모션</a></td>
-				<td><a href="/mall/shop/list?ca_id=n0">전용상품관</a></td>
+				<td></td>
 				<td></td>
 				<td></td>
 			</tr>

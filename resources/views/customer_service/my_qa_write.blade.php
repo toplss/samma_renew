@@ -82,13 +82,13 @@ function Sendit_chk() {
   // }
 
   if (form.iq_subject.value.trim() == '') {
-    validationAlertMessage('제목을 입력해 주세요.');
     form.iq_subject.focus();
+    validationAlertMessage('제목을 입력해 주세요.');    
     return false;
   }
   if (form.iq_question.value.trim() == '') {
-    validationAlertMessage('내용을 입력해 주세요.');
     form.iq_question.focus();
+    validationAlertMessage('내용을 입력해 주세요.');    
     return false;
   }
 

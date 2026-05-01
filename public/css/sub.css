@@ -672,6 +672,7 @@
 .kitchen-card i{font-style: normal; font-size: 1rem;}
 .kitchen-card strong{font-size: 1.9rem; display: block; margin-bottom: 0.5rem;}
 .kitchen-card span{font-size: 1.2rem;}
+.kitchen-content{max-width: 1080px; margin: auto; margin-top: 2rem;}
 
 
 
@@ -921,7 +922,7 @@
 }
 
 @media screen and (max-width: 680px){
-  .sub-title-wrap{width: 110%; margin-left: -5%; border-radius: 0; padding: 0.8rem 0.6rem;}
+  .sub-title-wrap{width: 108%; margin-left: -4%; border-radius: 0; padding: 0.8rem 0.6rem; border: none; border-bottom: 1px solid #ddd;}
   .st-left button{padding: 0.2rem; border-radius: 0.2rem;}
   .st-left ul{font-size: 0.9rem;}
   .st-right select{width: 75px; border-radius: 0.2rem; padding: 0.2rem; font-size: 0.9rem;}
@@ -998,6 +999,8 @@
   .recipe-btn{display: none;}
   .recipe-pin span{padding: 0.1rem; font-size: 0.85rem;}
   .recipe-title p{display: none;}
+  .recipe-list ul{padding: 0 0 0.7rem 0;}
+  .recipe-name{margin: 0.5rem 0.3rem;}
 
   .simple-all-btn{padding: 0.3rem 0.4rem;}
 
